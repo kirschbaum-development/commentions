@@ -23,6 +23,4 @@ interface Commentable
      * @return string
      */
     public function getMorphClass();
-    
-    public function commentableResourceUrl(): string;
 }

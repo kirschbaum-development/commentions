@@ -9,6 +9,11 @@
             "Kirschbaum\\FilamentComments\\Database\\Factories\\": "database/factories/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Luís Dalmolin",
@@ -20,13 +25,26 @@
         "league/html-to-markdown": "^5.1",
         "illuminate/support": "^11.0",
         "illuminate/database": "^11.0",
-        "livewire/livewire": "^3.0"
+        "livewire/livewire": "^3.5",
+        "filament/support": "^3.2"
     },
     "extra": {
         "laravel": {
             "providers": [
                 "Kirschbaum\\FilamentComments\\FilamentCommentsServiceProvider"
             ]
+        }
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.7",
+        "illuminate/auth": "^11.0",
+        "orchestra/testbench": "^9.9",
+        "pestphp/pest-plugin-laravel": "^3.1",
+        "pestphp/pest-plugin-livewire": "^3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }
