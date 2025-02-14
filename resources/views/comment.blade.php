@@ -1,4 +1,4 @@
-<div class="flex items-start space-x-4 border p-4 rounded-lg shadow-sm mb-2" id="filament-comment-{{ $comment->id }}">
+<div class="flex items-start gap-x-4 border p-4 rounded-lg shadow-sm mb-2" id="filament-comment-{{ $comment->id }}">
     <img
         src="{{ filament()->getUserAvatarUrl($comment->author) }}"
         alt="User Avatar"
@@ -6,11 +6,11 @@
     />
 
     <div class="flex-1">
-        <div class="text-sm font-bold text-gray-900 flex justify-between items-center">
+        <div class="text-sm font-bold text-gray-900 dark:text-gray-100 flex justify-between items-center">
             <div>
                 {{ $comment->author->name }}
                 <span
-                    class="text-xs text-gray-500"
+                    class="text-xs text-gray-500 dark:text-gray-300"
                     title="Commented at {{ $comment->created_at->format('Y-m-d H:i:s') }}"
                 >{{ $comment->created_at->diffForHumans() }}</span>
 
@@ -23,7 +23,7 @@
             </div>
 
             @if ($comment->isAuthor(auth()->user()))
-                <div class="flex space-x-1">
+                <div class="flex gap-x-1">
                     <x-filament::icon-button
                         icon="heroicon-s-pencil-square"
                         wire:click="edit"
@@ -49,7 +49,7 @@
                     </div>
                 </div>
 
-                <div class="flex space-x-2">
+                <div class="flex gap-x-2">
                     <x-filament::button
                         wire:click="updateComment({{ $comment->id }})"
                         size="sm"
@@ -67,7 +67,7 @@
                 </div>
             </div>
         @else
-            <div class="mt-1 space-y-6 text-sm text-gray-800">{!! $comment->body_parsed !!}</div>
+            <div class="mt-1 space-y-6 text-sm text-gray-800 dark:text-gray-200">{!! $comment->body_parsed !!}</div>
         @endif
     </div>
 

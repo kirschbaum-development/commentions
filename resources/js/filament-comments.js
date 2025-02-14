@@ -30,7 +30,7 @@ document.addEventListener('alpine:init', () => {
                     ],
                     editorProps: {
                         attributes: {
-                            class: `prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none min-w-full w-full rounded-lg border border-gray-300 p-4`,
+                            class: `prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none p-4 min-w-full w-full rounded-lg border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100`,
                         },
                     },
                     placeholder: 'Type something...',

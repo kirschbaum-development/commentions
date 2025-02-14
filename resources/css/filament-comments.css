@@ -1,0 +1,40 @@
+@import "tailwindcss" source(none);
+@source "../views/";
+@source "../../src";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.tiptap p.is-editor-empty::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.tiptap .mention {
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-weight: bold;
+    color: #3b82f6;
+}
+
+.mention-suggestion {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.mention-item {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.mention-item:hover {
+    background: #f3f4f6;
+}

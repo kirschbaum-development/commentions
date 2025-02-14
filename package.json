@@ -3,10 +3,13 @@
   "scripts": {
     "dev:scripts": "node bin/build.js --dev",
     "build:scripts": "node bin/build.js",
+    "dev:styles": "npx @tailwindcss/cli -i ./resources/css/filament-comments.css -o ./resources/dist/filament-comments.css --watch",
+    "build:styles": "npx @tailwindcss/cli -i ./resources/css/filament-comments.css -o ./resources/dist/filament-comments.css --minify",
     "dev": "npm-run-all --parallel dev:*",
     "build": "npm-run-all build:*"
   },
   "dependencies": {
+    "@tailwindcss/cli": "^4.0.6",
     "@tiptap/core": "^2.11.2",
     "@tiptap/extension-mention": "^2.11.2",
     "@tiptap/extension-placeholder": "^2.11.2",
@@ -15,6 +18,7 @@
     "@tiptap/suggestion": "^2.11.2",
     "alpinejs": "^3.14.8",
     "esbuild": "^0.24.2",
+    "npm-run-all": "^4.1.5",
     "tippy.js": "^6.3.7"
   }
 }
