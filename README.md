@@ -66,8 +66,3 @@ Infolists\Components\Section::make('Comments')
 And that's it!
 
 ![](screenshots/comments.png)
-
-## TODO
-
-- [ ] Dark mode support
-- [ ] More examples on how to integrate in other Filament parts
