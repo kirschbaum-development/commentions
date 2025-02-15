@@ -3,8 +3,8 @@
 namespace Kirschbaum\FilamentComments;
 
 use Kirschbaum\FilamentComments\Actions\SaveComment;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Kirschbaum\FilamentComments\Contracts\CommentAuthor;
 
 trait HasComments
 {
@@ -12,8 +12,8 @@ trait HasComments
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+    public function comment(string $body, ?Commenter $author): Comment
 
-    public function comment(string $body, ?CommentAuthor $author): Comment
     {
         return SaveComment::run($this, $author, $body);
     }

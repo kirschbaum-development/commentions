@@ -7,13 +7,14 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
 
 class CommentList extends Component
 {
     public Model $record;
 
     /**
-     * @var CommentAuthor[]
+     * @var Commenter[]
      */
     public array $mentionables = [];
 

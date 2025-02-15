@@ -5,7 +5,7 @@ namespace Kirschbaum\FilamentComments\Actions;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\FilamentComments\Comment;
-use Kirschbaum\FilamentComments\Contracts\CommentAuthor;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
 use Kirschbaum\FilamentComments\Events\UserWasMentionedEvent;
 
 class SaveComment
@@ -15,7 +15,7 @@ class SaveComment
         return (new static)(...$args);
     }
 
-    public function __invoke(Model $commentable, CommentAuthor $author, string $body): Comment
+    public function __invoke(Model $commentable, Commenter $author, string $body): Comment
     {
         $comment = $commentable->comments()->create([
             'body' => $body,
@@ -36,7 +36,8 @@ class SaveComment
             return;
         }
 
-        $users = User::find($this->getMentionIds($body));
+        $userModel = config('filament-comments.user_model');
+        $users = $userModel::find($this->getMentionIds($body));
 
         $users->each(function ($user) use ($comment) {
             UserWasMentionedEvent::dispatch($comment, $user);

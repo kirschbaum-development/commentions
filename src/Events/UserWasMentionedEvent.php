@@ -2,44 +2,25 @@
 
 namespace Kirschbaum\FilamentComments\Events;
 
-use App\Models\User;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Kirschbaum\FilamentComments\Comment;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
 
 class UserWasMentionedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
+    use InteractsWithSockets;
 
     public readonly Comment $comment;
 
-    public readonly User $user;
+    public readonly Commenter $user;
 
-    /**
-     * Create a new event instance.
-     */
     public function __construct($comment, $user)
     {
         $this->comment = $comment;
         $this->user = $user;
-
-        logger()->debug('UserWasMentionedEvent dispatched');
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
     }
 }

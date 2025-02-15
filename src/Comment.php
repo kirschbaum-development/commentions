@@ -7,11 +7,11 @@ use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
 use Kirschbaum\FilamentComments\Actions\ParseComment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kirschbaum\FilamentComments\Contracts\Commentable;
 use Kirschbaum\FilamentComments\Actions\HtmlToMarkdown;
-use Kirschbaum\FilamentComments\Contracts\CommentAuthor;
 use Kirschbaum\FilamentComments\Database\Factories\CommentFactory;
 
 /**
@@ -63,8 +63,8 @@ class Comment extends Model
             mentionedCallback: $mentionedCallback,
         );
     }
-
-    public function isAuthor(CommentAuthor $author)
+    
+    public function isAuthor(Commenter $author)
     {
         return $this->author_id === $author->getKey();
     }

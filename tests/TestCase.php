@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Kirschbaum\FilamentComments\FilamentCommentsServiceProvider;
+use Tests\Models\User;
 
 class TestCase extends Orchestra
 {
@@ -15,6 +16,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         $this->setUpDatabase();
+        config()->set('filament-comments.user_model', User::class);
     }
 
     protected function getPackageProviders($app)

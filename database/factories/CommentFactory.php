@@ -2,10 +2,10 @@
 
 namespace Kirschbaum\FilamentComments\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Kirschbaum\FilamentComments\Comment;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
 use Kirschbaum\FilamentComments\Contracts\Commentable;
-use Kirschbaum\FilamentComments\Contracts\CommentAuthor;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -34,7 +34,8 @@ class CommentFactory extends Factory
         ]);
     }
 
-    public function author(CommentAuthor $author): self
+    public function author(Commenter $author): self
+
     {
         return $this->state(fn (array $attributes) => [
             'author_type' => $author->getMorphClass(),

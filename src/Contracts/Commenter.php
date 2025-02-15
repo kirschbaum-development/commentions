@@ -2,7 +2,7 @@
 
 namespace Kirschbaum\FilamentComments\Contracts;
 
-interface CommentAuthor
+interface Commenter
 {
     /**
      * Get the identifier key for the object. Usually the primary key.

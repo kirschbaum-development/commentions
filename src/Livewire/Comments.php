@@ -5,18 +5,19 @@ namespace Kirschbaum\FilamentComments\Livewire;
 use Closure;
 use Livewire\Component;
 use Livewire\Attributes\On;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
-use Kirschbaum\FilamentComments\Actions\SaveComment;
-use Kirschbaum\FilamentComments\Contracts\CommentAuthor;
 use Livewire\Attributes\Computed;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\FilamentComments\Actions\SaveComment;
+use Kirschbaum\FilamentComments\Contracts\Commenter;
+use Kirschbaum\FilamentComments\FilamentComments;
 
 class Comments extends Component
 {
     public Model $record;
 
     /**
-     * @var CommentAuthor[]
+     * @var Commenter[]
      */
     public array|Collection $mentionables = [];
 
@@ -30,10 +31,11 @@ class Comments extends Component
     {
         $this->validate();
 
-        /** @var CommentAuthor */
-        $author = auth()->user();
-
-        SaveComment::run($this->record, $author, $this->commentBody);
+        SaveComment::run(
+            $this->record, 
+            FilamentComments::resolveAuthenticatedUser(), 
+            $this->commentBody
+        );
 
         $this->clear();
         $this->dispatch('comment:saved');
