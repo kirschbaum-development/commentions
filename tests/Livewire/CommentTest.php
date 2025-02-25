@@ -32,7 +32,11 @@ test('can render a comment', function () {
 });
 
 test('can render a custom renderable comment', function () {
-    $comment = new RenderableComment(authorName: 'System', body: 'System notification');
+    $comment = new RenderableComment(
+        id: 1,
+        authorName: 'System',
+        body: 'System notification'
+    );
 
     livewire(CommentComponent::class, [
         'comment' => $comment,
