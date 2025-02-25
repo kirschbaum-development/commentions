@@ -187,7 +187,6 @@ Infolists\Components\Section::make('Comments')
         ])
     ]),
 ```
-```
 
 ### Rendering non-Comments in the list
 
