@@ -16,8 +16,8 @@ jobs:
         include:
           - laravel: 11.*
             testbench: 9.*
-          - laravel: 12.*-dev
-            testbench: 10.*-dev
+          - laravel: 12.*
+            testbench: 10.*
 
     name: Tests - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
     steps:
