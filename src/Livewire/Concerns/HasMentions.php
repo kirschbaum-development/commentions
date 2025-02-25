@@ -4,7 +4,7 @@ namespace Kirschbaum\Commentions\Livewire\Concerns;
 
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Collection;
-use Filament\Models\Contracts\HasName;
+use Kirschbaum\Commentions\Manager;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
 trait HasMentions
@@ -26,13 +26,7 @@ trait HasMentions
                     ] :
                     [
                     'id' => $mentionable->getKey(),
-                    'name' => method_exists($mentionable, 'getCommenterName')
-                        ? call_user_func_array([$mentionable, 'getCommenterName'], [])
-                        : (
-                            $mentionable instanceof HasName
-                                ? $mentionable->getFilamentName()
-                                : $mentionable->name
-                        ),
+                    'name' => Manager::getName($mentionable),
                 ];
             });
     }

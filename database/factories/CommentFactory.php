@@ -35,7 +35,6 @@ class CommentFactory extends Factory
     }
 
     public function author(Commenter $author): self
-
     {
         return $this->state(fn (array $attributes) => [
             'author_type' => $author->getMorphClass(),

@@ -3,6 +3,8 @@
 namespace Tests;
 
 use Tests\Models\User;
+use Filament\Facades\Filament;
+use Filament\FilamentServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,12 +19,14 @@ class TestCase extends Orchestra
 
         $this->setUpDatabase();
 
+        config()->set('app.key', '7xE3Nz29bGRceBATftriyTuiYF7DcOjb');
         config()->set('commentions.commenter.model', User::class);
     }
 
     protected function getPackageProviders($app)
     {
         return [
+            FilamentServiceProvider::class,
             LivewireServiceProvider::class,
             CommentionsServiceProvider::class,
         ];

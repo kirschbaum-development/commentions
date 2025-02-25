@@ -10,13 +10,14 @@ use Livewire\Attributes\Renderless;
 use Filament\Notifications\Notification;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\Comment as CommentModel;
+use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 
 class Comment extends Component
 {
     use HasMentions;
 
-    public CommentModel $comment;
+    public CommentModel|RenderableComment $comment;
 
     public string $commentBody = '';
     public bool $editing = false;

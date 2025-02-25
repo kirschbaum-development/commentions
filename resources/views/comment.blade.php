@@ -1,4 +1,4 @@
-<div class="flex items-start gap-x-4 border p-4 rounded-lg shadow-sm mb-2" id="filament-comment-{{ $comment->id }}">
+<div class="flex items-start gap-x-4 border p-4 rounded-lg shadow-sm mb-2" id="filament-comment-{{ $comment->getId() }}">
     <img
         src="{{ $comment->getAuthorAvatar() }}"
         alt="User Avatar"
@@ -8,35 +8,37 @@
     <div class="flex-1">
         <div class="text-sm font-bold text-gray-900 dark:text-gray-100 flex justify-between items-center">
             <div>
-                {{ $comment->author->name }}
+                {{ $comment->getAuthorName() }}
                 <span
                     class="text-xs text-gray-500 dark:text-gray-300"
-                    title="Commented at {{ $comment->created_at->format('Y-m-d H:i:s') }}"
-                >{{ $comment->created_at->diffForHumans() }}</span>
+                    title="Commented at {{ $comment->getCreatedAt()->format('Y-m-d H:i:s') }}"
+                >{{ $comment->getCreatedAt()->diffForHumans() }}</span>
 
-                @if ($comment->updated_at->gt($comment->created_at))
+                @if ($comment->getUpdatedAt()->gt($comment->getCreatedAt()))
                     <span
                         class="text-xs text-gray-300 ml-1"
-                        title="Edited at {{ $comment->updated_at->format('Y-m-d H:i:s') }}"
+                        title="Edited at {{ $comment->getUpdatedAt()->format('Y-m-d H:i:s') }}"
                     >(edited)</span>
                 @endif
             </div>
 
-            @if ($comment->isAuthor(Kirschbaum\Commentions\Config::resolveAuthenticatedUser()))
+            @if ($comment->isComment() && $comment->canEdit())
                 <div class="flex gap-x-1">
-                    <x-filament::icon-button
+                    {{-- <x-filament::icon-button
                         icon="heroicon-s-pencil-square"
                         wire:click="edit"
                         size="xs"
                         color="gray"
                     />
 
-                    <x-filament::icon-button
-                        icon="heroicon-s-trash"
-                        wire:click="$dispatch('open-modal', { id: 'delete-comment-modal-{{ $comment->id }}' })"
-                        size="xs"
-                        color="gray"
-                    />
+                    @if ($comment->canDelete())
+                        <x-filament::icon-button
+                            icon="heroicon-s-trash"
+                            wire:click="$dispatch('open-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
+                            size="xs"
+                            color="gray"
+                        />
+                    @endif --}}
                 </div>
             @endif
         </div>
@@ -50,8 +52,8 @@
                 </div>
 
                 <div class="flex gap-x-2">
-                    <x-filament::button
-                        wire:click="updateComment({{ $comment->id }})"
+                    {{-- <x-filament::button
+                        wire:click="updateComment({{ $comment->getId() }})"
                         size="sm"
                     >
                         Save
@@ -63,44 +65,45 @@
                         color="gray"
                     >
                         Cancel
-                    </x-filament::button>
+                    </x-filament::button> --}}
                 </div>
             </div>
         @else
-            <div class="mt-1 space-y-6 text-sm text-gray-800 dark:text-gray-200">{!! $comment->body_parsed !!}</div>
+            <div class="mt-1 space-y-6 text-sm text-gray-800 dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
         @endif
     </div>
 
-    <x-filament::modal
-        id="delete-comment-modal-{{ $comment->id }}"
-        wire:model="showDeleteModal"
-        width="sm"
-    >
-        <x-slot name="heading">
-            Delete Comment
-        </x-slot>
+    @if ($comment->isComment() && $comment->canDelete())
+        {{-- <x-filament::modal
+            id="delete-comment-modal-{{ $comment->getId() }}"
+            wire:model="showDeleteModal"
+            width="sm"
+        >
+            <x-slot name="heading">
+                Delete Comment
+            </x-slot>
 
-        <div class="py-4">
-            Are you sure you want to delete this comment? This action cannot be undone.
-        </div>
-
-        <x-slot name="footer">
-            <div class="flex justify-end gap-x-4">
-                <x-filament::button
-                    wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->id }}' })"
-                    color="gray"
-                >
-                    Cancel
-                </x-filament::button>
-
-                <x-filament::button
-                    wire:click="delete"
-                    color="danger"
-                >
-                    Delete
-                </x-filament::button>
+            <div class="py-4">
+                Are you sure you want to delete this comment? This action cannot be undone.
             </div>
-        </x-slot>
-    </x-filament::modal>
 
+            <x-slot name="footer">
+                <div class="flex justify-end gap-x-4">
+                    <x-filament::button
+                        wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
+                        color="gray"
+                    >
+                        Cancel
+                    </x-filament::button>
+
+                    <x-filament::button
+                        wire:click="delete"
+                        color="danger"
+                    >
+                        Delete
+                    </x-filament::button>
+                </div>
+            </x-slot>
+        </x-filament::modal> --}}
+    @endif
 </div>

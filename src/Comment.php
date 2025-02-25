@@ -2,17 +2,22 @@
 
 namespace Kirschbaum\Commentions;
 
-use App\Models\User;
 use Closure;
+use App\Models\User;
+use Spatie\Color\Rgb;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Support\Facades\FilamentColor;
+use Filament\AvatarProviders\UiAvatarsProvider;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\Actions\ParseComment;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Actions\HtmlToMarkdown;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Database\Factories\CommentFactory;
 
 /**
@@ -20,10 +25,10 @@ use Kirschbaum\Commentions\Database\Factories\CommentFactory;
  * @property string $body
  * @property string $body_markdown
  * @property string $body_parsed
- * @property User $author
+ * @property Model|Commenter $author
  * @property Commentable $commentable
  */
-class Comment extends Model
+class Comment extends Model implements RenderableComment
 {
     use HasFactory;
 
@@ -95,8 +100,65 @@ class Comment extends Model
             ->filter(fn ($mentioned) => $mentioned !== null);
     }
 
+    public function isComment(): bool
+    {
+        return true;
+    }
+
+    public function getId(): string|int|null
+    {
+        return $this->id;
+    }
+
+    public function getAuthorName(): string
+    {
+        return $this->author->name;
+    }
+
     public function getAuthorAvatar(): string
     {
-        return filament()->getUserAvatarUrl($this->author);
+        if ($this->author instanceof HasAvatar) {
+            $avatar = $this->author->getFilamentAvatarUrl();
+        }
+
+        $name = str(Manager::getName($this->author))
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+    }
+
+    public function getBody(): string
+    {
+        return $this->body;
+    }
+
+    public function getParsedBody(): string
+    {
+        return $this->body_parsed;
+    }
+
+    public function getCreatedAt(): \DateTime|\Carbon\Carbon
+    {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt(): \DateTime|\Carbon\Carbon
+    {
+        return $this->updated_at;
+    }
+
+    public function canEdit(): bool
+    {
+        return $this->isAuthor(Config::resolveAuthenticatedUser());
+    }
+
+    public function canDelete(): bool
+    {
+        return $this->canEdit();
     }
 }
