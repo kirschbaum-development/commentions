@@ -10,9 +10,9 @@ use Carbon\Carbon;
 class RenderableComment implements RenderableCommentContract, Wireable
 {
     protected bool $isComment;
-    protected string|int|null $id;
-    protected string $authorName;
-    protected string $authorAvatar;
+    protected string|int $id;
+    protected ?string $authorName;
+    protected ?string $authorAvatar;
     protected string $body;
     protected ?string $parsedBody;
     protected DateTime|Carbon $createdAt;
@@ -21,16 +21,16 @@ class RenderableComment implements RenderableCommentContract, Wireable
     protected bool $canDelete;
 
     public function __construct(
-        bool $isComment = false,
-        string|int|null $id = null,
-        string $authorName = '',
-        string $authorAvatar = '',
-        string $body = '',
-        ?string $parsedBody = null,
+        string|int $id,
+        ?string $authorName,
+        string $body,
+        ?string $authorAvatar = null,
         DateTime|Carbon $createdAt = new Carbon(),
         DateTime|Carbon $updatedAt = new Carbon(),
         bool $canEdit = false,
-        bool $canDelete = false
+        bool $canDelete = false,
+        bool $isComment = false,
+        ?string $parsedBody = null,
     ) {
         $this->isComment = $isComment;
         $this->id = $id;
@@ -39,7 +39,7 @@ class RenderableComment implements RenderableCommentContract, Wireable
         $this->body = $body;
         $this->parsedBody = $parsedBody;
         $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = $updatedAt ?? $createdAt;
         $this->canEdit = $canEdit;
         $this->canDelete = $canDelete;
     }
@@ -59,7 +59,7 @@ class RenderableComment implements RenderableCommentContract, Wireable
         return $this->authorName;
     }
 
-    public function getAuthorAvatar(): string
+    public function getAuthorAvatar(): ?string
     {
         return $this->authorAvatar;
     }
@@ -113,16 +113,16 @@ class RenderableComment implements RenderableCommentContract, Wireable
     public static function fromLivewire($value)
     {
         return new static(
-            $value['isComment'],
-            $value['id'],
-            $value['authorName'],
-            $value['authorAvatar'],
-            $value['body'],
-            $value['parsedBody'],
-            new Carbon($value['createdAt']),
-            new Carbon($value['updatedAt']),
-            $value['canEdit'],
-            $value['canDelete']
+            isComment: $value['isComment'],
+            id: $value['id'],
+            authorName: $value['authorName'],
+            authorAvatar: $value['authorAvatar'],
+            body: $value['body'],
+            parsedBody: $value['parsedBody'],
+            createdAt: new Carbon($value['createdAt']),
+            updatedAt: new Carbon($value['updatedAt']),
+            canEdit: $value['canEdit'],
+            canDelete: $value['canDelete'],
         );
     }
 }

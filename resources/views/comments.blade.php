@@ -30,5 +30,7 @@
     <livewire:commentions::comment-list
         :record="$record"
         :mentionables="$this->mentions"
+        :polling-enabled="$this->pollingEnabled"
+        :polling-interval="$this->pollingInterval"
     />
 </div>

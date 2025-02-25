@@ -1,4 +1,4 @@
-# Commentions
+<h1 align="center">Commentions</h1>
 
 ![Laravel Supported Versions](https://img.shields.io/badge/laravel-10.x/11.x/12.x-green.svg)
 [![run-tests](https://github.com/kirschbaum-development/commentions/actions/workflows/ci.yaml/badge.svg)](https://github.com/kirschbaum-development/commentions/actions/workflows/tests.yaml)
@@ -7,6 +7,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/kirschbaum-development/commentions.svg?style=flat-square)](https://packagist.org/packages/kirschbaum-development/commentions)
 
 Commentions is a drop-in package for Filament that allows you to add comments to your resources. You can configure it so your users are mentionable in the comments, and it dispatches events so you can handle mentions in your own application however you like.
+
+![](screenshots/comments.png)
 
 ## Installation
 
@@ -83,8 +85,6 @@ protected function getHeaderActions(): array
 ```
 
 And that's it!
-
-![](screenshots/comments.png)
 
 ### Configuring the User model and the mentionables
 
@@ -170,6 +170,21 @@ Config::resolveAuthenticatedUserUsing(
 $comment->getMentioned()->each(function (Commenter $commenter) {
     // do something with $commenter...
 });
+```
+
+### Polling for new comments
+
+Commentions supports polling for new comments. You can enable it by setting the `pollingEnabled` property to `true` and setting the `pollingInterval` property to the number of seconds between polls when you register the component.
+
+```php
+Infolists\Components\Section::make('Comments')
+    ->schema([
+        Livewire::make(Comments::class, [
+            'pollingEnabled' => true,
+            'pollingInterval' => 30, // optional, default is 60 seconds
+        ])
+    ]),
+```
 ```
 
 ### Rendering non-Comments in the list

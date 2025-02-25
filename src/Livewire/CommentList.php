@@ -16,6 +16,10 @@ class CommentList extends Component
 
     public Model $record;
 
+    public bool $pollingEnabled = false;
+
+    public int $pollingInterval = 60;
+
     public function render()
     {
         return view('commentions::comment-list');

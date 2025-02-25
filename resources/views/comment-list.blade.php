@@ -1,4 +1,8 @@
-<div>
+<div
+    @if ($pollingEnabled && $pollingInterval > 0)
+        wire:poll.{{ $pollingInterval }}s
+    @endif
+>
     @if ($this->comments->isEmpty())
         <div class="flex items-center justify-center p-6 text-center rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
             <div class="flex flex-col items-center gap-y-2">
@@ -16,7 +20,7 @@
 
     @foreach ($this->comments as $comment)
         <livewire:commentions::comment
-            :key="'comment-' . $comment->id"
+            :key="'comment-' . $comment->getId()"
             :comment="$comment"
             :mentionables="$mentionables"
         />

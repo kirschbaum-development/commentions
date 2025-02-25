@@ -1,9 +1,13 @@
 <div class="flex items-start gap-x-4 border p-4 rounded-lg shadow-sm mb-2" id="filament-comment-{{ $comment->getId() }}">
-    <img
-        src="{{ $comment->getAuthorAvatar() }}"
-        alt="User Avatar"
-        class="w-10 h-10 rounded-full mt-0.5 object-cover object-center"
-    />
+    @if ($avatar = $comment->getAuthorAvatar())
+        <img
+            src="{{ $comment->getAuthorAvatar() }}"
+            alt="User Avatar"
+            class="w-10 h-10 rounded-full mt-0.5 object-cover object-center"
+        />
+    @else
+        <div class="w-10 h-10 rounded-full mt-0.5 "></div>
+    @endif
 
     <div class="flex-1">
         <div class="text-sm font-bold text-gray-900 dark:text-gray-100 flex justify-between items-center">

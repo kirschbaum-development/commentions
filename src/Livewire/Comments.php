@@ -18,6 +18,10 @@ class Comments extends Component
 
     public string $commentBody = '';
 
+    public bool $pollingEnabled = false;
+
+    public int $pollingInterval = 60;
+
     protected $rules = [
         'commentBody' => 'required|string',
     ];
