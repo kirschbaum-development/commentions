@@ -1,12 +1,10 @@
 <h1 align="center">Commentions</h1>
 
-<p align="center">
 ![Laravel Supported Versions](https://img.shields.io/badge/laravel-10.x/11.x/12.x-green.svg)
 [![run-tests](https://github.com/kirschbaum-development/commentions/actions/workflows/ci.yaml/badge.svg)](https://github.com/kirschbaum-development/commentions/actions/workflows/tests.yaml)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kirschbaum-development/commentions.svg?style=flat-square)](https://packagist.org/packages/kirschbaum-development/commentions)
 [![Total Downloads](https://img.shields.io/packagist/dt/kirschbaum-development/commentions.svg?style=flat-square)](https://packagist.org/packages/kirschbaum-development/commentions)
-</p>
 
 Commentions is a drop-in package for Filament that allows you to add comments to your resources. You can configure it so your users are mentionable in the comments, and it dispatches events so you can handle mentions in your own application however you like.
 
