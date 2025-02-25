@@ -24,7 +24,7 @@ class CommentList extends Component
     #[Computed]
     public function comments(): Collection
     {
-        return $this->record->comments()->latest()->with('author')->get();
+        return $this->record->getComments();
     }
 
     #[On('comment:saved')]

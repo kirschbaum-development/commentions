@@ -172,6 +172,27 @@ $comment->getMentioned()->each(function (Commenter $commenter) {
 });
 ```
 
+### Rendering non-Comments in the list
+
+Sometimes you might want to render non-Comments in the list of comments. For example, you might want to render when the status of a project is changed. For this, you can override the `getComments` method in your model, and return instances of the `Kirschbaum\Commentions\RenderableComment` data object.
+
+```php
+use Kirschbaum\Commentions\RenderableComment;
+
+public function getComments(): Collection
+{
+    $statusHistory = $this->statusHistory()->get()->map(fn (StatusHistory $statusHistory) => new RenderableComment(
+        authorName: $statusHistory->user->name,
+        body: sprintf('Status changed from %s to %s', $statusHistory->old_status, $statusHistory->new_status),
+        createdAt: $statusHistory->created_at,
+    ));
+
+    $comments = $this->comments()->latest()->with('author')->get();
+
+    return $statusHistory->merge($comments);
+}
+```
+
 ***
 
 ## Security
