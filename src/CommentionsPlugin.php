@@ -37,6 +37,7 @@ class CommentionsPlugin implements Plugin
     public function disallowEdits(): static
     {
         $this->allowEdits = false;
+        Config::allowEdits(false);
         
         return $this;
     }
@@ -44,6 +45,7 @@ class CommentionsPlugin implements Plugin
     public function disallowDeletes(): static
     {
         $this->allowDeletes = false;
+        Config::allowDeletes(false);
         
         return $this;
     }
