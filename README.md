@@ -49,7 +49,7 @@ class Project extends Model implements Commentable
 
 ### Usage with Filament
 
-You are free to register the plugin in your Panel(s); however, there is currently no configuration required or supported at the Panel level although it is a good habit:
+You can register the plugin in your Panel(s) and configure editing and deleting permissions:
 
 ```php
 use Kirschbaum\Commentions\CommentionsPlugin;
@@ -57,6 +57,8 @@ use Kirschbaum\Commentions\CommentionsPlugin;
 return $panel
     ->plugins([
         CommentionsPlugin::make()
+            ->disallowEdits()    // Prevent users from editing their comments
+            ->disallowDeletes()  // Prevent users from deleting their comments
     ])
 ```
 
@@ -107,6 +109,37 @@ If your `User` model lives in a different namespace than `App\Models\User`, you 
         'model' => \App\Domains\Users\User::class,
     ],
 ```
+
+### Disabling comment editing and deletion
+
+By default, users can edit and delete their own comments. You can disable this functionality in two ways:
+
+#### 1. Using the plugin configuration
+
+```php
+use Kirschbaum\Commentions\CommentionsPlugin;
+
+return $panel
+    ->plugins([
+        CommentionsPlugin::make()
+            ->disallowEdits()    // Prevent users from editing their comments
+            ->disallowDeletes()  // Prevent users from deleting their comments
+    ])
+```
+
+#### 2. Using the configuration file
+
+Set the `allow_edits` and `allow_deletes` options in your `config/commentions.php` file:
+
+```php
+    /**
+     * Comment editing/deleting options.
+     */
+    'allow_edits' => false,
+    'allow_deletes' => false,
+```
+
+> **Note:** The plugin configuration takes precedence over the config file settings.
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
 

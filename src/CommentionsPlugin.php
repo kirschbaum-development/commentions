@@ -25,4 +25,18 @@ class CommentionsPlugin implements Plugin
     {
         return filament(app(static::class)->getId());
     }
+    
+    public function disallowEdits(): static
+    {
+        Config::allowEdits(false);
+        
+        return $this;
+    }
+    
+    public function disallowDeletes(): static
+    {
+        Config::allowDeletes(false);
+        
+        return $this;
+    }
 }
