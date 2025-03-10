@@ -7,20 +7,12 @@ use Filament\Panel;
 
 class CommentionsPlugin implements Plugin
 {
-    protected bool $allowEdits = true;
-    
-    protected bool $allowDeletes = true;
-
     public function getId(): string
     {
         return CommentionsServiceProvider::$name;
     }
 
-    public function register(Panel $panel): void 
-    {
-        Config::allowEdits($this->allowEdits);
-        Config::allowDeletes($this->allowDeletes);
-    }
+    public function register(Panel $panel): void {}
 
     public function boot(Panel $panel): void {}
 
@@ -36,7 +28,6 @@ class CommentionsPlugin implements Plugin
     
     public function disallowEdits(): static
     {
-        $this->allowEdits = false;
         Config::allowEdits(false);
         
         return $this;
@@ -44,7 +35,6 @@ class CommentionsPlugin implements Plugin
     
     public function disallowDeletes(): static
     {
-        $this->allowDeletes = false;
         Config::allowDeletes(false);
         
         return $this;
