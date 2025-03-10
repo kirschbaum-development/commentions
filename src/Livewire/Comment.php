@@ -30,7 +30,7 @@ class Comment extends Component
     #[Renderless]
     public function delete()
     {
-        if (! $this->comment->isAuthor(Config::resolveAuthenticatedUser())) {
+        if (! $this->comment->canDelete()) {
             return;
         }
 
@@ -67,7 +67,7 @@ class Comment extends Component
 
     public function edit(): void
     {
-        if (! $this->comment->isAuthor(Config::resolveAuthenticatedUser())) {
+        if (! $this->comment->canEdit()) {
             return;
         }
 
@@ -79,7 +79,7 @@ class Comment extends Component
 
     public function updateComment()
     {
-        if (! $this->comment->isAuthor(Config::resolveAuthenticatedUser())) {
+        if (! $this->comment->canEdit()) {
             return;
         }
 

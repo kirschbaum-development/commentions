@@ -12,4 +12,10 @@ return [
     'commenter' => [
         'model' => \App\Models\User::class,
     ],
+
+    /**
+     * Comment editing/deleting options.
+     */
+    'allow_edits' => true,
+    'allow_deletes' => true,
 ];
