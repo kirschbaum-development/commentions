@@ -85,13 +85,12 @@
                 <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-x-1 flex-wrap">
                     @php
                         $allowedReactions = \Kirschbaum\Commentions\Config::getAllowedReactions();
-                        $currentReactionSummary = $this->reactionSummary();
                     @endphp
 
                     {{-- Buttons for adding/removing reactions --}}
                     @foreach ($allowedReactions as $reactionEmoji)
                         @php
-                            $reactionData = $currentReactionSummary[$reactionEmoji] ?? ['count' => 0, 'reacted_by_current_user' => false];
+                            $reactionData = $this->reactionSummary[$reactionEmoji] ?? ['count' => 0, 'reacted_by_current_user' => false];
                         @endphp
                         <button
                             wire:click="toggleReaction('{{ $reactionEmoji }}')"
@@ -112,7 +111,7 @@
                     @endforeach
 
                     {{-- Display summary of reactions not explicitly in the allowed list  --}}
-                    @foreach ($currentReactionSummary as $reactionEmoji => $data)
+                    @foreach ($this->reactionSummary as $reactionEmoji => $data)
                         @if (!in_array($reactionEmoji, $allowedReactions) && $data['count'] > 0)
                             <span
                                 wire:key="reaction-extra-{{ $reactionEmoji }}-{{ $comment->getId() }}"
