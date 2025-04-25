@@ -20,11 +20,16 @@ class Config
         static::$resolveAuthenticatedUser = $callback;
     }
 
-    public static function resolveAuthenticatedUser(): Commenter
+    public static function resolveAuthenticatedUser(): ?Commenter
     {
-        return static::$resolveAuthenticatedUser
-            ? call_user_func(static::$resolveAuthenticatedUser)
-            : auth()->guard(static::$guard)->user();
+        $resolver = static::$resolveAuthenticatedUser;
+        $user = $resolver ? call_user_func($resolver) : auth()->guard(static::$guard)->user();
+
+        if ($user !== null && ! ($user instanceof Commenter)) {
+            throw new \InvalidArgumentException('Resolved user must implement ' . Commenter::class);
+        }
+
+        return $user;
     }
 
     public static function getCommenterModel(): string
@@ -32,23 +37,25 @@ class Config
         return config('commentions.commenter.model');
     }
 
-    public static function allowEdits(?bool $allow = null): bool|null
+    public static function allowEdits(?bool $allow = null): ?bool
     {
         if (is_bool($allow)) {
             static::$allowEdits = $allow;
+
             return null;
         }
-        
+
         return static::$allowEdits ?? config('commentions.allow_edits', true);
     }
 
-    public static function allowDeletes(?bool $allow = null): bool|null
+    public static function allowDeletes(?bool $allow = null): ?bool
     {
         if (is_bool($allow)) {
             static::$allowDeletes = $allow;
+
             return null;
         }
-        
+
         return static::$allowDeletes ?? config('commentions.allow_deletes', true);
     }
 }
