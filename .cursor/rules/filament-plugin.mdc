@@ -5,6 +5,8 @@ alwaysApply: true
 ---
 # Filament package rules
 - Always add new migrations to [create_commentions_tables.php.stub](mdc:database/migrations/create_commentions_tables.php.stub) stub, don't create a new migration file.
+## Models
+- Add models under src/ directory.
 ## Testing
 - We use Pest for testing. So, create tests following Pest conventions.
 - Everytime you do changes to any php file, you have to run tests to verify everything works as expected.

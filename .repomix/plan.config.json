@@ -26,13 +26,11 @@
         "useGitignore": true,
         "useDefaultPatterns": true,
         "customPatterns": [
-            "./repomix/**",
-            "tmp/",
+            ".repomix/**/*",
+            "resources/dist/**/*",
+            "tmp/**/*",
             "*.log",
-            "storage/**",
-            ".github/**",
-            "artisan",
-            "bootstrap/cache/**"
+            ".github/**/*"
         ]
     },
     "security": {
