@@ -128,13 +128,7 @@ class Comment extends Component
             ]);
         }
 
-        // Reload the comment with updated reactions relationship count/data
-        // Livewire might handle this automatically if the comment object is updated,
-        // but explicitly reloading might be necessary depending on how data is passed/managed.
-        $this->comment->load('reactions'); // Or $this->comment->loadCount('reactions');
-
-        // We might need to explicitly re-render or notify the parent list if counts are displayed there.
-        // $this->dispatch('comment:reactions-updated', commentId: $this->comment->id); // Example dispatch
+        $this->dispatch('comment:reactions-updated');
     }
 
     #[Computed]
