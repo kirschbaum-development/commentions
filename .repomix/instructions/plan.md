@@ -28,8 +28,8 @@ Your generated plan **must** include the following sections, clearly delineated:
 
     - Provide a numbered list of specific, actionable steps required to implement the feature or modification.
     - **1. Prepare Git Branch:**
-        - Instruct the user to check their current Git branch (e.g., using `git branch` or `git status`).
-        - Instruct the user that if they are not already on a dedicated feature branch for this task (e.g., they are on `main`, `master`, or `develop`), they **must** create and check out a new feature branch before proceeding. Provide an example command with a placeholder name (e.g., `git checkout -b feature/your-feature-name`).
+        - Instruct the user they MUST check their current Git branch (e.g., using `git branch` or `git status`).
+        - Instruct the user that IF they are not already on a feature branch like `main`, `master`, or `develop` they **must** create and check out a new feature branch before proceeding. Provide an example command with a placeholder name (e.g., `git checkout -b feature/your-feature-name`).
         - Emphasize that all subsequent code changes described in the plan should be committed to this new feature branch.
     - **2. [Original Step 1 - e.g., Modify File X]:** (Renumbered) Describe the next logical step...
     - **3. [Original Step 2 - e.g., Create File Y]:** (Renumbered) Describe the next logical step...
