@@ -8,6 +8,7 @@ use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Kirschbaum\Commentions\Actions\HtmlToMarkdown;
@@ -149,6 +150,11 @@ class Comment extends Model implements RenderableComment
     public function getUpdatedAt(): \DateTime|\Carbon\Carbon
     {
         return $this->updated_at;
+    }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(CommentReaction::class);
     }
 
     public function canEdit(): bool

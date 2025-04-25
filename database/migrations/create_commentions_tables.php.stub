@@ -15,5 +15,21 @@ return new class extends Migration
             $table->text('body');
             $table->timestamps();
         });
+
+        Schema::create('comment_reactions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('comment_id')->constrained(config('commentions.table_name'))->cascadeOnDelete();
+            $table->morphs('reactor');
+            $table->string('reaction', 50);
+            $table->timestamps();
+
+            $table->unique(['comment_id', 'reactor_id', 'reactor_type', 'reaction'], 'comment_reactor_reaction_unique');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('comment_reactions');
+        Schema::dropIfExists(config('commentions.table_name'));
     }
 };

@@ -3,10 +3,12 @@
 namespace Kirschbaum\Commentions\Livewire;
 
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -94,5 +96,69 @@ class Comment extends Component
     {
         $this->editing = false;
         $this->commentBody = '';
+    }
+
+    #[Renderless]
+    public function toggleReaction(string $reactionType)
+    {
+        if (! $this->comment instanceof CommentModel) {
+            Log::warning('Attempted to react to a non-CommentModel instance.', ['comment_id' => $this->comment->getId()]);
+            return;
+        }
+
+        $user = Config::resolveAuthenticatedUser();
+
+        if (! $user) {
+            return;
+        }
+
+        $existingReaction = $this->comment->reactions()
+            ->where('reactor_id', $user->getKey())
+            ->where('reactor_type', $user->getMorphClass())
+            ->where('reaction', $reactionType)
+            ->first();
+
+        if ($existingReaction) {
+            $existingReaction->delete();
+        } else {
+            $this->comment->reactions()->create([
+                'reactor_id' => $user->getKey(),
+                'reactor_type' => $user->getMorphClass(),
+                'reaction' => $reactionType,
+            ]);
+        }
+
+        // Reload the comment with updated reactions relationship count/data
+        // Livewire might handle this automatically if the comment object is updated,
+        // but explicitly reloading might be necessary depending on how data is passed/managed.
+        $this->comment->load('reactions'); // Or $this->comment->loadCount('reactions');
+
+        // We might need to explicitly re-render or notify the parent list if counts are displayed there.
+        // $this->dispatch('comment:reactions-updated', commentId: $this->comment->id); // Example dispatch
+    }
+
+    #[Computed]
+    public function reactionSummary()
+    {
+        if (! $this->comment instanceof CommentModel) {
+            return [];
+        }
+
+        if (! $this->comment->relationLoaded('reactions')) {
+            $this->comment->load('reactions.reactor');
+        }
+
+        return $this->comment->reactions
+            ->groupBy('reaction')
+            ->map(function ($group) {
+                $user = Config::resolveAuthenticatedUser();
+
+                return [
+                    'count' => $group->count(),
+                    'reacted_by_current_user' => $user && $group->contains(fn ($reaction) => $reaction->reactor_id == $user->getKey() && $reaction->reactor_type == $user->getMorphClass()),
+                ];
+            })
+            ->sortByDesc('count')
+            ->toArray();
     }
 }
