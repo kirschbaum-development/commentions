@@ -1,15 +1,11 @@
 ---
 description:
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # Filament package rules
 - Always add new migrations to [create_commentions_tables.php.stub](mdc:database/migrations/create_commentions_tables.php.stub) stub, don't create a new migration file.
 ## Testing
 - We use Pest for testing. So, create tests following Pest conventions.
 - Everytime you do changes to any php file, you have to run tests to verify everything works as expected.
-- You can run tests with `pest`.
 - Never use `uses(RefreshDatabase::class)` because it's already setup on [TestCase.php](mdc:tests/TestCase.php).
-
-## Formatting
-- Make sure you run `herd composer fix-style` command, after you do any change to php files.
