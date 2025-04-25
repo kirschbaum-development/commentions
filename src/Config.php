@@ -58,4 +58,9 @@ class Config
 
         return static::$allowDeletes ?? config('commentions.allow_deletes', true);
     }
+
+    public static function getAllowedReactions(): array
+    {
+        return config('commentions.allowed_reactions', ['👍']);
+    }
 }

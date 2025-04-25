@@ -82,35 +82,44 @@
             <div class="mt-1 space-y-6 text-sm text-gray-800 dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
 
             @if ($comment->isComment() && $comment instanceof \Kirschbaum\Commentions\Comment)
-                <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-x-2">
+                <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-x-1 flex-wrap">
                     @php
-                        $reactions = $this->reactionSummary();
-                        $thumbsUpData = $reactions['👍'] ?? ['count' => 0, 'reacted_by_current_user' => false];
+                        $allowedReactions = \Kirschbaum\Commentions\Config::getAllowedReactions();
+                        $currentReactionSummary = $this->reactionSummary();
                     @endphp
-                    <button
-                        wire:click="toggleReaction('👍')"
-                        type="button"
-                        @disabled(! auth()->check())
-                        class="inline-flex items-center justify-center gap-1 rounded-full border px-2 py-1 text-sm font-medium transition hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed
-                               {{ $thumbsUpData['reacted_by_current_user']
-                                   ? 'bg-primary-100 dark:bg-primary-800 border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-200'
-                                   : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200' }}"
-                        title="Thumbs Up"
-                    >
-                        <span>👍</span>
-                        @if ($thumbsUpData['count'] > 0)
-                            <span wire:key="reaction-count-thumbs-up-{{ $comment->getId() }}">{{ $thumbsUpData['count'] }}</span>
-                        @endif
-                    </button>
 
-                    @foreach ($reactions as $reaction => $data)
-                        @if ($reaction !== '👍' && $data['count'] > 0)
+                    {{-- Buttons for adding/removing reactions --}}
+                    @foreach ($allowedReactions as $reactionEmoji)
+                        @php
+                            $reactionData = $currentReactionSummary[$reactionEmoji] ?? ['count' => 0, 'reacted_by_current_user' => false];
+                        @endphp
+                        <button
+                            wire:click="toggleReaction('{{ $reactionEmoji }}')"
+                            type="button"
+                            @disabled(! auth()->check())
+                            class="inline-flex items-center justify-center gap-1 rounded-full border px-2 py-1 text-sm font-medium transition hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed
+                                   {{ $reactionData['reacted_by_current_user']
+                                       ? 'bg-primary-100 dark:bg-primary-800 border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-200'
+                                       : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200' }}"
+                            title="{{ $reactionEmoji }}"
+                            wire:key="reaction-button-{{ $reactionEmoji }}-{{ $comment->getId() }}"
+                        >
+                            <span>{{ $reactionEmoji }}</span>
+                            @if ($reactionData['count'] > 0)
+                                <span wire:key="reaction-count-{{ $reactionEmoji }}-{{ $comment->getId() }}">{{ $reactionData['count'] }}</span>
+                            @endif
+                        </button>
+                    @endforeach
+
+                    {{-- Display summary of reactions not explicitly in the allowed list  --}}
+                    @foreach ($currentReactionSummary as $reactionEmoji => $data)
+                        @if (!in_array($reactionEmoji, $allowedReactions) && $data['count'] > 0)
                             <span
-                                wire:key="reaction-{{ $reaction }}-{{ $comment->getId() }}"
+                                wire:key="reaction-extra-{{ $reactionEmoji }}-{{ $comment->getId() }}"
                                 class="inline-flex items-center justify-center gap-1 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 px-2 py-1 text-sm font-medium text-gray-600 dark:text-gray-300"
-                                title="{{ $reaction }}"
+                                title="{{ $reactionEmoji }}"
                             >
-                                <span>{{ $reaction }}</span>
+                                <span>{{ $reactionEmoji }}</span>
                                 <span>{{ $data['count'] }}</span>
                             </span>
                         @endif

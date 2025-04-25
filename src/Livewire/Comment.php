@@ -99,23 +99,24 @@ class Comment extends Component
     }
 
     #[Renderless]
-    public function toggleReaction(string $reactionType)
+    public function toggleReaction(string $reaction): void
     {
-        if (! $this->comment instanceof CommentModel) {
-            Log::warning('Attempted to react to a non-CommentModel instance.', ['comment_id' => $this->comment->getId()]);
-            return;
-        }
-
         $user = Config::resolveAuthenticatedUser();
 
         if (! $user) {
             return;
         }
 
-        $existingReaction = $this->comment->reactions()
+        if (! in_array($reaction, Config::getAllowedReactions())) {
+            return;
+        }
+
+        /** @var CommentReaction $existingReaction */
+        $existingReaction = $this->comment
+            ->reactions()
             ->where('reactor_id', $user->getKey())
             ->where('reactor_type', $user->getMorphClass())
-            ->where('reaction', $reactionType)
+            ->where('reaction', $reaction)
             ->first();
 
         if ($existingReaction) {
@@ -124,10 +125,11 @@ class Comment extends Component
             $this->comment->reactions()->create([
                 'reactor_id' => $user->getKey(),
                 'reactor_type' => $user->getMorphClass(),
-                'reaction' => $reactionType,
+                'reaction' => $reaction,
             ]);
         }
 
+        $this->comment->refresh();
         $this->dispatch('comment:reactions-updated');
     }
 

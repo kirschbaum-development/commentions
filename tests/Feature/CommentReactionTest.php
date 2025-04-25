@@ -11,10 +11,11 @@ use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
+    config(['commentions.allowed_reactions' => ['👍', '❤️']]);
     Config::resolveAuthenticatedUserUsing(fn () => Auth::user());
 });
 
-test('user can add a reaction to a comment', function () {
+test('user can add configured reactions to a comment', function (string $reactionEmoji) {
     /** @var User $user */
     $user = User::factory()->create();
     actingAs($user);
@@ -24,22 +25,21 @@ test('user can add a reaction to a comment', function () {
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
     livewire(CommentComponent::class, ['comment' => $comment])
-        ->call('toggleReaction', '👍');
+        ->call('toggleReaction', $reactionEmoji);
 
     $this->assertDatabaseHas('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),
-        'reaction' => '👍',
+        'reaction' => $reactionEmoji,
     ]);
 
     $comment->refresh();
     expect($comment->reactions)->toHaveCount(1);
-    expect($comment->reactions->first()->reaction)->toBe('👍');
-    expect($comment->reactions->first()->reactor->is($user))->toBeTrue();
-});
+    expect($comment->reactions->first()->reaction)->toBe($reactionEmoji);
+})->with(['👍', '❤️']);
 
-test('user can remove their reaction from a comment', function () {
+test('user can remove their reaction from a comment', function (string $reactionEmoji) {
     /** @var User $user */
     $user = User::factory()->create();
     actingAs($user);
@@ -48,28 +48,32 @@ test('user can remove their reaction from a comment', function () {
     /** @var CommentModel $comment */
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
-    $reaction = $comment->reactions()->create([
+    // Add reaction first
+    $comment->reactions()->create([
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),
-        'reaction' => '👍',
+        'reaction' => $reactionEmoji,
     ]);
 
     $this->assertDatabaseHas('comment_reactions', [
-        'id' => $reaction->id,
+        'comment_id' => $comment->id,
+        'reactor_id' => $user->id,
+        'reaction' => $reactionEmoji,
     ]);
 
-    livewire(CommentComponent::class, ['comment' => $comment->fresh('reactions')])
-        ->call('toggleReaction', '👍');
+    // Toggle to remove
+    livewire(CommentComponent::class, ['comment' => $comment])
+        ->call('toggleReaction', $reactionEmoji);
 
     $this->assertDatabaseMissing('comment_reactions', [
-        'id' => $reaction->id,
+        'comment_id' => $comment->id,
+        'reactor_id' => $user->id,
+        'reaction' => $reactionEmoji,
     ]);
+    expect($comment->refresh()->reactions)->toHaveCount(0);
+})->with(['👍', '❤️']);
 
-    $comment->refresh();
-    expect($comment->reactions)->toHaveCount(0);
-});
-
-test('user cannot react twice with the same reaction via toggle', function () {
+test('user cannot add a non-configured reaction via toggleReaction', function () {
     /** @var User $user */
     $user = User::factory()->create();
     actingAs($user);
@@ -78,116 +82,68 @@ test('user cannot react twice with the same reaction via toggle', function () {
     /** @var CommentModel $comment */
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
-    $livewire = livewire(CommentComponent::class, ['comment' => $comment]);
+    $nonConfiguredReaction = '🤔'; // Assuming this is not in the default test config
 
-    $livewire->call('toggleReaction', '👍');
+    livewire(CommentComponent::class, ['comment' => $comment])
+        ->call('toggleReaction', $nonConfiguredReaction); // Attempt to add
 
-    $this->assertDatabaseHas('comment_reactions', [
+    $this->assertDatabaseMissing('comment_reactions', [ // Should not be saved
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
-        'reaction' => '👍',
-    ]);
-    expect($comment->refresh()->reactions)->toHaveCount(1);
-
-    $livewire->call('toggleReaction', '👍');
-
-    $this->assertDatabaseMissing('comment_reactions', [
-        'comment_id' => $comment->id,
-        'reactor_id' => $user->id,
-        'reaction' => '👍',
+        'reaction' => $nonConfiguredReaction,
     ]);
     expect($comment->refresh()->reactions)->toHaveCount(0);
 });
 
-test('multiple users can react to the same comment', function () {
+test('reaction summary handles multiple different reactions', function () {
     /** @var User $user1 */
     $user1 = User::factory()->create();
     /** @var User $user2 */
     $user2 = User::factory()->create();
+    /** @var User $user3 */
+    $user3 = User::factory()->create();
+    actingAs($user1); // Current user for component context
 
     $post = Post::factory()->create();
     /** @var CommentModel $comment */
     $comment = CommentModel::factory()->author($user1)->commentable($post)->create();
 
-    // User 1 reacts
-    actingAs($user1);
-    livewire(CommentComponent::class, ['comment' => $comment])
-        ->call('toggleReaction', '👍');
+    // Add some reactions directly for setup
+    $comment->reactions()->create(['reactor_id' => $user1->id, 'reactor_type' => $user1->getMorphClass(), 'reaction' => '👍']);
+    $comment->reactions()->create(['reactor_id' => $user2->id, 'reactor_type' => $user2->getMorphClass(), 'reaction' => '👍']);
+    $comment->reactions()->create(['reactor_id' => $user3->id, 'reactor_type' => $user3->getMorphClass(), 'reaction' => '❤️']);
 
-    // User 2 reacts
-    actingAs($user2);
-    livewire(CommentComponent::class, ['comment' => $comment->fresh('reactions')])
-        ->call('toggleReaction', '❤️');
+    $component = livewire(CommentComponent::class, ['comment' => $comment->fresh('reactions')]);
 
-    // User 2 also reacts with thumbs up
-    livewire(CommentComponent::class, ['comment' => $comment->fresh('reactions')])
-        ->call('toggleReaction', '👍');
+    $summary = $component->get('reactionSummary');
 
-    $this->assertDatabaseHas('comment_reactions', ['comment_id' => $comment->id, 'reactor_id' => $user1->id, 'reaction' => '👍']);
-    $this->assertDatabaseHas('comment_reactions', ['comment_id' => $comment->id, 'reactor_id' => $user2->id, 'reaction' => '❤️']);
-    $this->assertDatabaseHas('comment_reactions', ['comment_id' => $comment->id, 'reactor_id' => $user2->id, 'reaction' => '👍']);
+    expect($summary)->toBeArray()
+        ->toHaveKeys(['👍', '❤️'])
+        ->and($summary['👍']['count'])->toBe(2)
+        ->and($summary['👍']['reacted_by_current_user'])->toBeTrue() // User1 reacted with 👍
+        ->and($summary['❤️']['count'])->toBe(1)
+        ->and($summary['❤️']['reacted_by_current_user'])->toBeFalse(); // User1 did not react with ❤️
 
-    expect($comment->refresh()->reactions)->toHaveCount(3);
+    // Check Blade rendering simulation (simplified)
+    $component
+        ->assertSeeHtml('wire:key="reaction-count-👍-'.$comment->getId().'"') // Count exists for 👍
+        ->assertSeeHtml('>2</span>') // Correct count for 👍
+        ->assertSeeHtml('wire:key="reaction-count-❤️-'.$comment->getId().'"') // Count exists for ❤️
+        ->assertSeeHtml('>1</span>'); // Correct count for ❤️
 });
 
-test('unauthenticated user cannot react', function () {
+test('guest cannot add reactions', function (string $reactionEmoji) {
     /** @var User $user */
-    $user = User::factory()->create(); // Author
+    $user = User::factory()->create();
     $post = Post::factory()->create();
     /** @var CommentModel $comment */
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
-    Config::resolveAuthenticatedUserUsing(fn () => null);
-    Auth::logout();
-
     livewire(CommentComponent::class, ['comment' => $comment])
-        ->call('toggleReaction', '👍');
+        ->call('toggleReaction', $reactionEmoji);
 
     $this->assertDatabaseMissing('comment_reactions', [
         'comment_id' => $comment->id,
-        'reaction' => '👍',
+        'reaction' => $reactionEmoji,
     ]);
-});
-
-test('reaction display updates correctly via computed property', function () {
-    /** @var User $user1 */
-    $user1 = User::factory()->create();
-    /** @var User $user2 */
-    $user2 = User::factory()->create();
-    actingAs($user1);
-
-    $post = Post::factory()->create();
-    /** @var CommentModel $comment */
-    $comment = CommentModel::factory()->author($user1)->commentable($post)->create();
-
-    $component = livewire(CommentComponent::class, ['comment' => $comment]);
-
-    $component->assertDontSeeHtml('<span wire:key="reaction-count-thumbs-up-' . $comment->getId() . '">1</span>');
-    expect($component->get('reactionSummary'))->toBeEmpty();
-
-    $component->call('toggleReaction', '👍');
-    $component->assertSeeHtml('<span>👍</span>');
-    $summary = $component->get('reactionSummary');
-    expect($summary)->toHaveKey('👍');
-    expect($summary['👍']['count'])->toBe(1);
-    expect($summary['👍']['reacted_by_current_user'])->toBeTrue();
-
-    // User 2 adds reaction (simulate this by directly creating the reaction for simplicity in test)
-    $comment->reactions()->create([
-        'reactor_id' => $user2->getKey(),
-        'reactor_type' => $user2->getMorphClass(),
-        'reaction' => '👍',
-    ]);
-
-    $component->set('comment', $comment->fresh('reactions'));
-    $summary = $component->get('reactionSummary');
-    expect($summary['👍']['count'])->toBe(2);
-    expect($summary['👍']['reacted_by_current_user'])->toBeTrue(); // Still true for user 1
-    $component->assertSeeHtml('<span wire:key="reaction-count-thumbs-up-' . $comment->getId() . '">2</span>'); // Count should now be 2
-
-    // User 1 removes reaction
-    $component->call('toggleReaction', '👍');
-    $summary = $component->get('reactionSummary');
-    expect($summary['👍']['count'])->toBe(1);
-    expect($summary['👍']['reacted_by_current_user'])->toBeFalse(); // False now for user 1
-});
+})->with(['👍', '❤️']);

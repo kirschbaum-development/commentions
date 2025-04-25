@@ -18,4 +18,10 @@ return [
      */
     'allow_edits' => true,
     'allow_deletes' => true,
+
+    /**
+     * Allowed reactions for comments.
+     * Define the list of emojis that users can react with.
+     */
+    'allowed_reactions' => ['👍', '❤️', '😂', '😮', '😢', '🤔'],
 ];
