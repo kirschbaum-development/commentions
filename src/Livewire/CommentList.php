@@ -25,13 +25,7 @@ class CommentList extends Component
     #[Computed]
     public function comments(): Collection
     {
-        // Eager load author, reactions, and reactions with their reactors
-        return $this->record
-            ->comments() // Assuming this returns the relationship builder
-            ->with(['author', 'reactions.reactor']) // Load relationships
-            ->withCount('reactions') // Get total reaction count if needed
-            ->latest()
-            ->get();
+        return $this->record->getComments();
     }
 
     #[On('comment:saved')]

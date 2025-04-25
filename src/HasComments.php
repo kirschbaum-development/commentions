@@ -21,6 +21,9 @@ trait HasComments
 
     public function getComments(): Collection
     {
-        return $this->comments()->latest()->with('author')->get();
+        return $this->comments()
+            ->latest()
+            ->with(['author', 'reactions.reactor'])
+            ->get();
     }
 }
