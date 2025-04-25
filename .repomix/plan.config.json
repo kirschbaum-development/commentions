@@ -1,0 +1,41 @@
+{
+    "output": {
+        "filePath": ".repomix/output/plan.xml",
+        "style": "xml",
+        "parsableStyle": true,
+        "compress": false,
+        "headerText": "Custom header text",
+        "instructionFilePath": ".repomix/instructions/plan.md",
+        "fileSummary": true,
+        "directoryStructure": true,
+        "removeComments": false,
+        "removeEmptyLines": false,
+        "topFilesLength": 5,
+        "showLineNumbers": false,
+        "copyToClipboard": false,
+        "includeEmptyDirectories": false,
+        "git": {
+            "sortByChanges": true,
+            "sortByChangesMaxCommits": 100
+        }
+    },
+    "include": [
+        "**/*"
+    ],
+    "ignore": {
+        "useGitignore": true,
+        "useDefaultPatterns": true,
+        "customPatterns": [
+            "./repomix/**",
+            "tmp/",
+            "*.log",
+            "storage/**",
+            ".github/**",
+            "artisan",
+            "bootstrap/cache/**"
+        ]
+    },
+    "security": {
+        "enableSecurityCheck": true
+    }
+}
