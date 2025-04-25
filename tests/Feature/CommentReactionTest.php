@@ -147,8 +147,6 @@ test('unauthenticated user cannot react', function () {
         'comment_id' => $comment->id,
         'reaction' => '👍',
     ]);
-
-    Config::resolveAuthenticatedUserUsing(fn () => Auth::user());
 });
 
 test('reaction display updates correctly via computed property', function () {
