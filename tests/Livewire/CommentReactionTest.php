@@ -4,8 +4,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
+use Kirschbaum\Commentions\Database\Factories\CommentFactory;
 use Kirschbaum\Commentions\Events\CommentReactionToggledEvent;
 use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
+use Kirschbaum\Commentions\Livewire\ReactionManager;
+use Tests\Database\Factories\PostFactory;
 use Tests\Models\Post;
 use Tests\Models\User;
 
@@ -125,17 +128,18 @@ test('reaction summary handles multiple different reactions', function () {
     $user3 = User::factory()->create();
     actingAs($user1); // Current user for component context
 
-    $post = Post::factory()->create();
+    /** @var Post $post */
+    $post = PostFactory::new()->create();
+
     /** @var CommentModel $comment */
-    $comment = CommentModel::factory()->author($user1)->commentable($post)->create();
+    $comment = CommentFactory::new()->author($user1)->commentable($post)->create();
 
     // Add some reactions directly for setup
     $comment->reactions()->create(['reactor_id' => $user1->id, 'reactor_type' => $user1->getMorphClass(), 'reaction' => '👍']);
     $comment->reactions()->create(['reactor_id' => $user2->id, 'reactor_type' => $user2->getMorphClass(), 'reaction' => '👍']);
     $comment->reactions()->create(['reactor_id' => $user3->id, 'reactor_type' => $user3->getMorphClass(), 'reaction' => '❤️']);
 
-    $component = livewire(CommentComponent::class, ['comment' => $comment->fresh('reactions')]);
-
+    $component = livewire(ReactionManager::class, ['comment' => $comment->fresh('reactions')]);
     $summary = $component->get('reactionSummary');
 
     expect($summary)->toBeArray()
@@ -147,9 +151,9 @@ test('reaction summary handles multiple different reactions', function () {
 
     // Check Blade rendering simulation (simplified)
     $component
-        ->assertSeeHtml('wire:key="reaction-count-👍-'.$comment->getId().'"') // Count exists for 👍
+        ->assertSeeHtml('wire:key="inline-reaction-button-👍-'.$comment->getId().'"') // Count exists for 👍
         ->assertSeeHtml('>2</span>') // Correct count for 👍
-        ->assertSeeHtml('wire:key="reaction-count-❤️-'.$comment->getId().'"') // Count exists for ❤️
+        ->assertSeeHtml('wire:key="inline-reaction-button-❤️-'.$comment->getId().'"') // Count exists for ❤️
         ->assertSeeHtml('>1</span>'); // Correct count for ❤️
 });
 

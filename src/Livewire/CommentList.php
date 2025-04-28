@@ -25,17 +25,14 @@ class CommentList extends Component
     #[Computed]
     public function comments(): Collection
     {
-        info('Getting comments');
         return $this->record->getComments();
     }
 
     #[On('comment:saved')]
     #[On('comment:updated')]
     #[On('comment:deleted')]
-    #[On('comment:reactions-updated')]
     public function reloadComments(): void
     {
-        info('Reloading comments');
         unset($this->comments);
     }
 }

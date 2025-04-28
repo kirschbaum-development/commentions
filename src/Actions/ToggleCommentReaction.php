@@ -2,15 +2,15 @@
 
 namespace Kirschbaum\Commentions\Actions;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\CommentReaction;
-use Kirschbaum\Commentions\Config;
+use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\Events\CommentReactionToggledEvent;
 
 class ToggleCommentReaction
 {
-    public static function run(Comment $comment, string $reaction, ?Authenticatable $user = null): void
+    public static function run(Comment $comment, string $reaction, ?Commenter $user = null): void
     {
         if (! $user) {
             return;
