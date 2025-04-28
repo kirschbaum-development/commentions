@@ -11,7 +11,9 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Illuminate\Contracts\View\View;
 
 class Comment extends Component
 {
@@ -28,6 +30,16 @@ class Comment extends Component
     protected $rules = [
         'commentBody' => 'required|string',
     ];
+
+    #[On('comment:reaction:toggled')]
+    public function handleReactionToggledEvent(string $reaction, int $commentId): void
+    {
+        if ($this->comment->getId() !== $commentId) {
+            return;
+        }
+
+        $this->toggleReaction($reaction);
+    }
 
     #[Renderless]
     public function delete()
@@ -47,7 +59,7 @@ class Comment extends Component
             ->send();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('commentions::comment');
     }
@@ -98,7 +110,7 @@ class Comment extends Component
         $this->commentBody = '';
     }
 
-    #[Renderless]
+    // #[Renderless]
     public function toggleReaction(string $reaction): void
     {
         $user = Config::resolveAuthenticatedUser();
@@ -108,6 +120,10 @@ class Comment extends Component
         }
 
         if (! in_array($reaction, Config::getAllowedReactions())) {
+            return;
+        }
+
+        if (! $this->comment instanceof CommentModel) {
             return;
         }
 
@@ -129,32 +145,6 @@ class Comment extends Component
             ]);
         }
 
-        $this->comment->refresh();
-        $this->dispatch('comment:reactions-updated');
-    }
-
-    #[Computed]
-    public function reactionSummary()
-    {
-        if (! $this->comment instanceof CommentModel) {
-            return [];
-        }
-
-        if (! $this->comment->relationLoaded('reactions')) {
-            $this->comment->load('reactions.reactor');
-        }
-
-        return $this->comment->reactions
-            ->groupBy('reaction')
-            ->map(function ($group) {
-                $user = Config::resolveAuthenticatedUser();
-
-                return [
-                    'count' => $group->count(),
-                    'reacted_by_current_user' => $user && $group->contains(fn ($reaction) => $reaction->reactor_id == $user->getKey() && $reaction->reactor_type == $user->getMorphClass()),
-                ];
-            })
-            ->sortByDesc('count')
-            ->toArray();
+        $this->dispatch('comment:reaction:saved');
     }
 }

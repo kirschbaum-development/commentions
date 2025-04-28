@@ -20,11 +20,6 @@ class RenderableCommentSynth extends Synth
     {
         $instance = new RenderableComment();
 
-        // $instance->street = $value['street'];
-        // $instance->city = $value['city'];
-        // $instance->state = $value['state'];
-        // $instance->zip = $value['zip'];
-
         return $instance;
     }
 

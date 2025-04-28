@@ -25,6 +25,7 @@ class CommentList extends Component
     #[Computed]
     public function comments(): Collection
     {
+        info('Getting comments');
         return $this->record->getComments();
     }
 
@@ -34,6 +35,7 @@ class CommentList extends Component
     #[On('comment:reactions-updated')]
     public function reloadComments(): void
     {
+        info('Reloading comments');
         unset($this->comments);
     }
 }
