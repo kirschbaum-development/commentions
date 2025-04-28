@@ -110,40 +110,14 @@ class Comment extends Component
         $this->commentBody = '';
     }
 
-    // #[Renderless]
+    #[Renderless]
     public function toggleReaction(string $reaction): void
     {
-        $user = Config::resolveAuthenticatedUser();
-
-        if (! $user) {
-            return;
-        }
-
-        if (! in_array($reaction, Config::getAllowedReactions())) {
-            return;
-        }
-
         if (! $this->comment instanceof CommentModel) {
             return;
         }
 
-        /** @var CommentReaction $existingReaction */
-        $existingReaction = $this->comment
-            ->reactions()
-            ->where('reactor_id', $user->getKey())
-            ->where('reactor_type', $user->getMorphClass())
-            ->where('reaction', $reaction)
-            ->first();
-
-        if ($existingReaction) {
-            $existingReaction->delete();
-        } else {
-            $this->comment->reactions()->create([
-                'reactor_id' => $user->getKey(),
-                'reactor_type' => $user->getMorphClass(),
-                'reaction' => $reaction,
-            ]);
-        }
+        $this->comment->toggleReaction($reaction);
 
         $this->dispatch('comment:reaction:saved');
     }

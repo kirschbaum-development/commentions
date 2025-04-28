@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
+use Kirschbaum\Commentions\Events\CommentReactionToggledEvent;
 use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
 use Tests\Models\Post;
 use Tests\Models\User;
@@ -13,6 +15,7 @@ use function Pest\Livewire\livewire;
 beforeEach(function () {
     config(['commentions.allowed_reactions' => ['👍', '❤️']]);
     Config::resolveAuthenticatedUserUsing(fn () => Auth::user());
+    Event::fake();
 });
 
 test('user can add configured reactions to a comment', function (string $reactionEmoji) {
@@ -26,6 +29,15 @@ test('user can add configured reactions to a comment', function (string $reactio
 
     livewire(CommentComponent::class, ['comment' => $comment])
         ->call('toggleReaction', $reactionEmoji);
+
+    Event::assertDispatched(CommentReactionToggledEvent::class, function (CommentReactionToggledEvent $event) use ($comment, $user, $reactionEmoji) {
+        return $event->comment->is($comment)
+            && $event->user->is($user)
+            && $event->reactionType === $reactionEmoji
+            && $event->wasCreated === true
+            && $event->reaction !== null
+            && $event->reaction->reaction === $reactionEmoji;
+    });
 
     $this->assertDatabaseHas('comment_reactions', [
         'comment_id' => $comment->id,
@@ -49,7 +61,7 @@ test('user can remove their reaction from a comment', function (string $reaction
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
     // Add reaction first
-    $comment->reactions()->create([
+    $reaction = $comment->reactions()->create([
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),
         'reaction' => $reactionEmoji,
@@ -64,6 +76,15 @@ test('user can remove their reaction from a comment', function (string $reaction
     // Toggle to remove
     livewire(CommentComponent::class, ['comment' => $comment])
         ->call('toggleReaction', $reactionEmoji);
+
+    Event::assertDispatched(CommentReactionToggledEvent::class, function (CommentReactionToggledEvent $event) use ($comment, $user, $reactionEmoji, $reaction) {
+        return $event->comment->is($comment)
+            && $event->user->is($user)
+            && $event->reactionType === $reactionEmoji
+            && $event->wasCreated === false
+            && $event->reaction !== null // The deleted reaction model is passed
+            && $event->reaction->is($reaction);
+    });
 
     $this->assertDatabaseMissing('comment_reactions', [
         'comment_id' => $comment->id,

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Kirschbaum\Commentions\Actions\HtmlToMarkdown;
 use Kirschbaum\Commentions\Actions\ParseComment;
+use Kirschbaum\Commentions\Actions\ToggleCommentReaction;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
@@ -165,6 +166,11 @@ class Comment extends Model implements RenderableComment
     public function canDelete(): bool
     {
         return Config::allowDeletes() && $this->isAuthor(Config::resolveAuthenticatedUser());
+    }
+
+    public function toggleReaction(string $reaction): void
+    {
+        ToggleCommentReaction::run($this, $reaction, Config::resolveAuthenticatedUser());
     }
 
     public function getLabel(): ?string
