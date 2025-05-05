@@ -4,7 +4,6 @@ namespace Kirschbaum\Commentions\Livewire;
 
 use Filament\Notifications\Notification;
 use Kirschbaum\Commentions\Comment as CommentModel;
-use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Livewire\Attributes\On;

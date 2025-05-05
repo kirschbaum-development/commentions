@@ -32,23 +32,25 @@ class Config
         return config('commentions.commenter.model');
     }
 
-    public static function allowEdits(?bool $allow = null): bool|null
+    public static function allowEdits(?bool $allow = null): ?bool
     {
         if (is_bool($allow)) {
             static::$allowEdits = $allow;
+
             return null;
         }
-        
+
         return static::$allowEdits ?? config('commentions.allow_edits', true);
     }
 
-    public static function allowDeletes(?bool $allow = null): bool|null
+    public static function allowDeletes(?bool $allow = null): ?bool
     {
         if (is_bool($allow)) {
             static::$allowDeletes = $allow;
+
             return null;
         }
-        
+
         return static::$allowDeletes ?? config('commentions.allow_deletes', true);
     }
 }
