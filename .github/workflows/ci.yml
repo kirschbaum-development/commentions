@@ -17,9 +17,11 @@ jobs:
           - laravel: 11.*
             testbench: 9.*
             larastan: 3.*
+            pint: 1.*
           - laravel: 12.*
             testbench: 10.*
             larastan: 3.*
+            pint: 1.*
 
     name: CI - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
     steps:
@@ -46,8 +48,12 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer require "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
           composer require "larastan/larastan:${{ matrix.larastan }}" --no-interaction --no-update --dev
+          composer require "laravel/pint:${{ matrix.pint }}" --no-interaction --no-update --dev
           composer update --prefer-dist --no-interaction --no-suggest --dev
           composer dump
 
       - name: Run Larastan
         run: composer static-analysis
+
+      - name: Run Pint
+        run: composer check-style
