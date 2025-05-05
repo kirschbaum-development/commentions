@@ -22,6 +22,12 @@ parameters:
             message: '#^Unsafe usage of new static\(\)\.$#'
             identifier: new.static
             count: 1
+            path: src/Actions/ParseComment.php
+
+        -
+            message: '#^Unsafe usage of new static\(\)\.$#'
+            identifier: new.static
+            count: 1
             path: src/Actions/SaveComment.php
 
         -
