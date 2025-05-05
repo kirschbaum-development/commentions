@@ -1,0 +1,49 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - database/
+        - src/
+        - tests/
+
+    # Level 10 is the highest level
+    level: 0
+
+    ignoreErrors:
+        -
+            message: '#^Unsafe usage of new static\(\)\.$#'
+            identifier: new.static
+            count: 1
+            path: src/Actions/HtmlToMarkdown.php
+
+        -
+            message: '#^Unsafe usage of new static\(\)\.$#'
+            identifier: new.static
+            count: 1
+            path: src/Actions/ParseComment.php
+
+        -
+            message: '#^Unsafe usage of new static\(\)\.$#'
+            identifier: new.static
+            count: 1
+            path: src/Actions/SaveComment.php
+
+        -
+            message: '#^Cannot instantiate interface Kirschbaum\\Commentions\\Contracts\\RenderableComment\.$#'
+            identifier: new.interface
+            count: 1
+            path: src/Livewire/RenderableCommentSynth.php
+
+        -
+            message: '#^Unsafe usage of new static\(\)\.$#'
+            identifier: new.static
+            count: 1
+            path: src/RenderableComment.php
+
+        -
+            message: '#^Undefined variable\: \$this$#'
+            identifier: variable.undefined
+            count: 3
+            path: tests/Pest.php

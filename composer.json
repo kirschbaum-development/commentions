@@ -43,7 +43,8 @@
         "orchestra/testbench": "^9.9|^10.0",
         "pestphp/pest-plugin-laravel": "^3.1",
         "pestphp/pest-plugin-livewire": "^3.0",
-        "laravel/pint": "^1.21"
+        "laravel/pint": "^1.21",
+        "larastan/larastan": "^3.0"
     },
     "config": {
         "allow-plugins": {
@@ -52,6 +53,7 @@
     },
     "scripts": {
         "fix-style": "./vendor/bin/pint --config pint.json",
-        "check-style": "./vendor/bin/pint --config pint.json --test"
+        "check-style": "./vendor/bin/pint --config pint.json --test",
+        "static-analysis": "./vendor/bin/phpstan analyse -c phpstan.neon"
     }
 }
