@@ -1,0 +1,53 @@
+name: run-ci
+
+on:
+  push:
+
+jobs:
+  ci:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.3, 8.4]
+        laravel: [11.*, 12.*]
+        include:
+          - laravel: 11.*
+            testbench: 9.*
+            larastan: 3.*
+          - laravel: 12.*
+            testbench: 10.*
+            larastan: 3.*
+
+    name: CI - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-pw-v2-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, zip, pcntl, iconv
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer --version
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
+          composer require "larastan/larastan:${{ matrix.larastan }}" --no-interaction --no-update --dev
+          composer update --prefer-dist --no-interaction --no-suggest --dev
+          composer dump
+
+      - name: Run Larastan
+        run: composer static-analysis
