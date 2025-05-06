@@ -30,14 +30,28 @@ class ToggleCommentReaction
 
         if ($existingReaction) {
             $existingReaction->delete();
-            event(new CommentReactionToggledEvent($comment, $existingReaction, $user, $reaction, false));
+
+            event(new CommentReactionToggledEvent(
+                comment: $comment,
+                reaction: $existingReaction,
+                user: $user,
+                reactionType: $reaction,
+                wasCreated: false
+            ));
         } else {
             $newReaction = $comment->reactions()->create([
                 'reactor_id' => $user->getKey(),
                 'reactor_type' => $user->getMorphClass(),
                 'reaction' => $reaction,
             ]);
-            event(new CommentReactionToggledEvent($comment, $newReaction, $user, $reaction, true));
+
+            event(new CommentReactionToggledEvent(
+                comment: $comment,
+                reaction: $newReaction,
+                user: $user,
+                reactionType: $reaction,
+                wasCreated: true
+            ));
         }
     }
 }

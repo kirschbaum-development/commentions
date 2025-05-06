@@ -7,7 +7,7 @@ use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Database\Factories\CommentFactory;
 use Kirschbaum\Commentions\Events\CommentReactionToggledEvent;
 use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
-use Kirschbaum\Commentions\Livewire\ReactionManager;
+use Kirschbaum\Commentions\Livewire\Reactions;
 use Tests\Database\Factories\PostFactory;
 use Tests\Models\Post;
 use Tests\Models\User;
@@ -16,7 +16,7 @@ use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
-    config(['commentions.allowed_reactions' => ['👍', '❤️']]);
+    config(['commentions.reactions.allowed' => ['👍', '❤️']]);
     Config::resolveAuthenticatedUserUsing(fn () => Auth::user());
     Event::fake();
 });
@@ -26,9 +26,8 @@ test('user can add configured reactions to a comment', function (string $reactio
     $user = User::factory()->create();
     actingAs($user);
 
-    $post = Post::factory()->create();
-    /** @var CommentModel $comment */
-    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+    $post = PostFactory::new()->create();
+    $comment = CommentFactory::new()->author($user)->commentable($post)->create();
 
     livewire(CommentComponent::class, ['comment' => $comment])
         ->call('toggleReaction', $reactionEmoji);
@@ -59,9 +58,8 @@ test('user can remove their reaction from a comment', function (string $reaction
     $user = User::factory()->create();
     actingAs($user);
 
-    $post = Post::factory()->create();
-    /** @var CommentModel $comment */
-    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+    $post = PostFactory::new()->create();
+    $comment = CommentFactory::new()->author($user)->commentable($post)->create();
 
     // Add reaction first
     $reaction = $comment->reactions()->create([
@@ -76,7 +74,6 @@ test('user can remove their reaction from a comment', function (string $reaction
         'reaction' => $reactionEmoji,
     ]);
 
-    // Toggle to remove
     livewire(CommentComponent::class, ['comment' => $comment])
         ->call('toggleReaction', $reactionEmoji);
 
@@ -106,16 +103,17 @@ test('user cannot add a non-configured reaction via toggleReaction', function ()
     /** @var CommentModel $comment */
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
-    $nonConfiguredReaction = '🤔'; // Assuming this is not in the default test config
+    $nonConfiguredReaction = '🙈';
 
     livewire(CommentComponent::class, ['comment' => $comment])
-        ->call('toggleReaction', $nonConfiguredReaction); // Attempt to add
+        ->call('toggleReaction', $nonConfiguredReaction);
 
-    $this->assertDatabaseMissing('comment_reactions', [ // Should not be saved
+    $this->assertDatabaseMissing('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
         'reaction' => $nonConfiguredReaction,
     ]);
+
     expect($comment->refresh()->reactions)->toHaveCount(0);
 });
 
@@ -139,7 +137,7 @@ test('reaction summary handles multiple different reactions', function () {
     $comment->reactions()->create(['reactor_id' => $user2->id, 'reactor_type' => $user2->getMorphClass(), 'reaction' => '👍']);
     $comment->reactions()->create(['reactor_id' => $user3->id, 'reactor_type' => $user3->getMorphClass(), 'reaction' => '❤️']);
 
-    $component = livewire(ReactionManager::class, ['comment' => $comment->fresh('reactions')]);
+    $component = livewire(Reactions::class, ['comment' => $comment->fresh('reactions')]);
     $summary = $component->get('reactionSummary');
 
     expect($summary)->toBeArray()

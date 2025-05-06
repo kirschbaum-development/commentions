@@ -81,10 +81,9 @@
         @else
             <div class="mt-1 space-y-6 text-sm text-gray-800 dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
 
-            @if ($comment->isComment() && $comment instanceof \Kirschbaum\Commentions\Comment)
-                <livewire:commentions::reaction-manager
+            @if ($comment->isComment())
+                <livewire:commentions::reactions
                     :comment="$comment"
-                    {{-- :reaction-summary="$this->reactionSummary" --}}
                     :wire:key="'reaction-manager-' . $comment->getId()"
                 />
             @endif

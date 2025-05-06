@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions;
 
 use Closure;
+use InvalidArgumentException;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
 class Config
@@ -26,7 +27,7 @@ class Config
         $user = $resolver ? call_user_func($resolver) : auth()->guard(static::$guard)->user();
 
         if ($user !== null && ! ($user instanceof Commenter)) {
-            throw new \InvalidArgumentException('Resolved user must implement ' . Commenter::class);
+            throw new InvalidArgumentException('Resolved user must implement ' . Commenter::class);
         }
 
         return $user;
@@ -61,6 +62,6 @@ class Config
 
     public static function getAllowedReactions(): array
     {
-        return config('commentions.allowed_reactions', ['👍']);
+        return config('commentions.reactions.allowed', ['👍']);
     }
 }

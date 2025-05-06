@@ -8,9 +8,9 @@ use Filament\Support\Assets\Css;
 use Spatie\LaravelPackageTools\Package;
 use Filament\Support\Facades\FilamentAsset;
 use Kirschbaum\Commentions\Livewire\Comment;
+use Kirschbaum\Commentions\Livewire\Reactions;
 use Kirschbaum\Commentions\Livewire\Comments;
 use Kirschbaum\Commentions\Livewire\CommentList;
-use Kirschbaum\Commentions\Livewire\ReactionManager;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class CommentionsServiceProvider extends PackageServiceProvider
@@ -39,8 +39,8 @@ class CommentionsServiceProvider extends PackageServiceProvider
         Livewire::component('commentions::comment', Comment::class);
         Livewire::component('commentions::comment-list', CommentList::class);
         Livewire::component('commentions::comments', Comments::class);
-        Livewire::component('commentions::reaction-manager', ReactionManager::class);
-        // Asset Registration
+        Livewire::component('commentions::reactions', Reactions::class);
+
         FilamentAsset::register(
             [
                 Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js'),

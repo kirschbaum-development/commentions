@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create(config('commentions.table_name'), function (Blueprint $table) {
+        Schema::create(config('commentions.tables.comments', 'comments'), function (Blueprint $table) {
             $table->id();
             $table->morphs('author');
             $table->morphs('commentable');
@@ -19,6 +19,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists(config('commentions.table_name'));
+        Schema::dropIfExists(config('commentions.tables.comments', 'comments'));
     }
 };
