@@ -9,8 +9,15 @@ use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 
 class SaveComment
 {
+    /**
+     * @throws \Exception
+     */
     public function __invoke(Model $commentable, Commenter $author, string $body): Comment
     {
+        if ($author->cannot('create', Comment::class)) {
+            throw new \Exception('Cannot create comment');
+        }
+
         $comment = $commentable->comments()->create([
             'body' => $body,
             'author_id' => $author->getKey(),

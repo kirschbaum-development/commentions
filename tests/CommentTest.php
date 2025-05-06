@@ -25,6 +25,17 @@ test('it can save a comment', function () {
     expect($post->comments)->toHaveCount(1);
 });
 
+test('it cannot save a comment when the policy denies it', function () {
+    $user = User::factory()->create();
+    $post = Post::factory()->create();
+
+    \Gate::policy(Comment::class, \Tests\Policies\BlockedCommentPolicy::class);
+
+    expect(fn () => $post->comment('This is a test comment', $user))
+        ->toThrow(\Exception::class)
+        ->and($post->comments)->toHaveCount(0);
+});
+
 test('it dispatches events for mentions', function () {
     Event::fake();
 
@@ -87,6 +98,27 @@ test('it can disable editing of comments', function () {
     expect($comment->canEdit())->toBeFalse();
 });
 
+test('it allows comment author to edit by default', function () {
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = $post->comment('This is a test comment', $author);
+
+    Config::resolveAuthenticatedUserUsing(fn () => $author);
+
+    expect($comment->canEdit())->toBeTrue();
+});
+
+test('it does not allow non-authors to edit by default', function () {
+    $user = User::factory()->create();
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = $post->comment('This is a test comment', $author);
+
+    Config::resolveAuthenticatedUserUsing(fn () => $user);
+
+    expect($comment->canEdit())->toBeFalse();
+});
+
 test('it can disable deletion of comments', function () {
     $user = User::factory()->create();
     $post = Post::factory()->create();
@@ -100,6 +132,27 @@ test('it can disable deletion of comments', function () {
 
     // Disable deletes
     config(['commentions.allow_deletes' => false]);
+    expect($comment->canDelete())->toBeFalse();
+});
+
+test('it allows comment author to delete by default', function () {
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = $post->comment('This is a test comment', $author);
+
+    Config::resolveAuthenticatedUserUsing(fn () => $author);
+
+    expect($comment->canDelete())->toBeTrue();
+});
+
+test('it does not allow non-authors to delete by default', function () {
+    $user = User::factory()->create();
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = $post->comment('This is a test comment', $author);
+
+    Config::resolveAuthenticatedUserUsing(fn () => $user);
+
     expect($comment->canDelete())->toBeFalse();
 });
 

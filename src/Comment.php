@@ -153,12 +153,12 @@ class Comment extends Model implements RenderableComment
 
     public function canEdit(): bool
     {
-        return Config::allowEdits() && $this->isAuthor(Config::resolveAuthenticatedUser());
+        return Config::resolveAuthenticatedUser()->can('update', $this);
     }
 
     public function canDelete(): bool
     {
-        return Config::allowDeletes() && $this->isAuthor(Config::resolveAuthenticatedUser());
+        return Config::resolveAuthenticatedUser()->can('delete', $this);
     }
 
     public function getLabel(): ?string

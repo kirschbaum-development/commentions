@@ -18,4 +18,6 @@ return [
      */
     'allow_edits' => true,
     'allow_deletes' => true,
+
+    'policy' => \Kirschbaum\Commentions\Policies\CommentPolicy::class,
 ];

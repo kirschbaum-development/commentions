@@ -5,6 +5,8 @@ namespace Kirschbaum\Commentions;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Gate;
+use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Livewire\Comment;
 use Kirschbaum\Commentions\Livewire\CommentList;
 use Kirschbaum\Commentions\Livewire\Comments;
@@ -50,5 +52,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
             ],
             'kirschbaum-development/' . static::$name
         );
+
+        Gate::policy(CommentModel::class, config('commentions.policy'));
     }
 }
