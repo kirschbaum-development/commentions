@@ -47,9 +47,16 @@ class TestCase extends Orchestra
     {
         Schema::dropAllTables();
 
-        $migration = include __DIR__ . '/../database/migrations/create_commentions_tables.php.stub';
+        $migrations = [
+            __DIR__ . '/../database/migrations/create_commentions_tables.php.stub',
+            __DIR__ . '/../database/migrations/create_commentions_reactions_table.php.stub',
+        ];
 
-        $migration->up();
+        foreach ($migrations as $migration) {
+            $migration = include $migration;
+
+            $migration->up();
+        }
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();

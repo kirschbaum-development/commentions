@@ -80,6 +80,13 @@
             </div>
         @else
             <div class="mt-1 space-y-6 text-sm text-gray-800 dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
+
+            @if ($comment->isComment())
+                <livewire:commentions::reactions
+                    :comment="$comment"
+                    :wire:key="'reaction-manager-' . $comment->getId()"
+                />
+            @endif
         @endif
     </div>
 

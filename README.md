@@ -181,6 +181,13 @@ class User extends Model implements Commenter
 }
 ```
 
+### Events
+
+Two events are dispatched when a comment is created or reacted to:
+
+- `Kirschbaum\Commentions\Events\UserWasMentionedEvent`
+- `Kirschbaum\Commentions\Events\CommentWasReactedEvent`
+
 ### Sending notifications when a user is mentioned
 
 Every time a user is mentioned, the `Kirschbaum\Commentions\Events\UserWasMentionedEvent` is dispatched. You can listen to this event and send notifications to the mentioned user.

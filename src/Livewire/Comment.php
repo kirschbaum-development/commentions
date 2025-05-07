@@ -3,13 +3,17 @@
 namespace Kirschbaum\Commentions\Livewire;
 
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Illuminate\Contracts\View\View;
 
 class Comment extends Component
 {
@@ -26,6 +30,16 @@ class Comment extends Component
     protected $rules = [
         'commentBody' => 'required|string',
     ];
+
+    #[On('comment:reaction:toggled')]
+    public function handleReactionToggledEvent(string $reaction, int $commentId): void
+    {
+        if ($this->comment->getId() !== $commentId) {
+            return;
+        }
+
+        $this->toggleReaction($reaction);
+    }
 
     #[Renderless]
     public function delete()
@@ -45,7 +59,7 @@ class Comment extends Component
             ->send();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('commentions::comment');
     }
@@ -94,5 +108,17 @@ class Comment extends Component
     {
         $this->editing = false;
         $this->commentBody = '';
+    }
+
+    #[Renderless]
+    public function toggleReaction(string $reaction): void
+    {
+        if (! $this->comment instanceof CommentModel) {
+            return;
+        }
+
+        $this->comment->toggleReaction($reaction);
+
+        $this->dispatch('comment:reaction:saved');
     }
 }

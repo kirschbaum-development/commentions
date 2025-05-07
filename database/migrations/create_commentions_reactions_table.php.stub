@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create(config('commentions.tables.comment_reactions', 'comment_reactions'), function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('comment_id')->constrained(config('commentions.table_name'))->cascadeOnDelete();
+            $table->morphs('reactor');
+            $table->string('reaction', 50);
+            $table->timestamps();
+
+            $table->unique(['comment_id', 'reactor_id', 'reactor_type', 'reaction'], 'comment_reactor_reaction_unique');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists(config('commentions.tables.comment_reactions', 'comment_reactions'));
+    }
+};

@@ -2,3 +2,5 @@ vendor
 composer.lock
 node_modules
 .pint.cache
+.repomix/output
+.cursor/rules/local.mdc

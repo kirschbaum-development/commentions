@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions;
 
 use Closure;
+use InvalidArgumentException;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
 class Config
@@ -16,15 +17,25 @@ class Config
         static::$resolveAuthenticatedUser = $callback;
     }
 
-    public static function resolveAuthenticatedUser(): Commenter
+    public static function resolveAuthenticatedUser(): ?Commenter
     {
-        return static::$resolveAuthenticatedUser
-            ? call_user_func(static::$resolveAuthenticatedUser)
-            : auth()->guard(static::$guard)->user();
+        $resolver = static::$resolveAuthenticatedUser;
+        $user = $resolver ? call_user_func($resolver) : auth()->guard(static::$guard)->user();
+
+        if ($user !== null && ! ($user instanceof Commenter)) {
+            throw new InvalidArgumentException('Resolved user must implement ' . Commenter::class);
+        }
+
+        return $user;
     }
 
     public static function getCommenterModel(): string
     {
         return config('commentions.commenter.model');
+    }
+
+    public static function getAllowedReactions(): array
+    {
+        return config('commentions.reactions.allowed', ['👍']);
     }
 }
