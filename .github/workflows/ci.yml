@@ -31,7 +31,7 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache/files
+          path: ~/.cache/composer/files
           key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
 
@@ -75,7 +75,7 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache/files
+          path: ~/.cache/composer/files
           key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-
 
@@ -122,7 +122,7 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache/files
+          path: ~/.cache/composer/files
           key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-
 
@@ -177,7 +177,7 @@ jobs:
         id: cache
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache/files
+          path: ~/.cache/composer/files
           key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
           restore-keys: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
 
