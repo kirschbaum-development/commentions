@@ -49,14 +49,14 @@ class Project extends Model implements Commentable
 
 ### Usage with Filament
 
-You can register the plugin in your Panel(s) and configure editing and deleting permissions:
+You can register the plugin in your Panel(s) like so:
 
 ```php
 use Kirschbaum\Commentions\CommentionsPlugin;
 
 return $panel
     ->plugins([
-        CommentionsPlugin::make()
+        CommentionsPlugin::make(),
     ])
 ```
 
