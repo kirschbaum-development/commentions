@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
-          key: dependencies-pw-v2-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -56,43 +56,43 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
 
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [ 8.4 ]
-        laravel: [ 12.* ]
-        include:
-          - laravel: 12.*
-            testbench: 10.*
-            larastan: 3.*
-            pint: 1.*
+    needs: [build]
 
-    name: Lint - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+    env:
+      php: 8.4
+      laravel: 12.*
+      testbench: 10.*
+      larastan: 3.*
+      pint: 1.*
+
+    name: Lint
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
-          key: dependencies-pw-v2-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          php-version: ${{ env.php }}
+          extensions: curl, mbstring, zip, pcntl, iconv
           coverage: none
           tools: composer:v2
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           composer --version
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer require "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
-          composer require "larastan/larastan:${{ matrix.larastan }}" --no-interaction --no-update --dev
-          composer require "laravel/pint:${{ matrix.pint }}" --no-interaction --no-update --dev
+          composer require "laravel/framework:${{ env.laravel }}" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ env.testbench }}" --no-interaction --no-update --dev
+          composer require "larastan/larastan:${{ env.larastan }}" --no-interaction --no-update --dev
+          composer require "laravel/pint:${{ env.pint }}" --no-interaction --no-update --dev
           composer update --prefer-dist --no-interaction --no-suggest --dev
           composer dump
 
@@ -103,43 +103,43 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
 
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [ 8.4 ]
-        laravel: [ 12.* ]
-        include:
-          - laravel: 12.*
-            testbench: 10.*
-            larastan: 3.*
-            pint: 1.*
+    needs: [build]
 
-    name: Static Analysis - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+    env:
+      php: 8.4
+      laravel: 12.*
+      testbench: 10.*
+      larastan: 3.*
+      pint: 1.*
+
+    name: Static Analysis
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
-          key: dependencies-pw-v2-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          php-version: ${{ env.php }}
+          extensions: curl, mbstring, zip, pcntl, iconv
           coverage: none
           tools: composer:v2
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           composer --version
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer require "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
-          composer require "larastan/larastan:${{ matrix.larastan }}" --no-interaction --no-update --dev
-          composer require "laravel/pint:${{ matrix.pint }}" --no-interaction --no-update --dev
+          composer require "laravel/framework:${{ env.laravel }}" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ env.testbench }}" --no-interaction --no-update --dev
+          composer require "larastan/larastan:${{ env.larastan }}" --no-interaction --no-update --dev
+          composer require "laravel/pint:${{ env.pint }}" --no-interaction --no-update --dev
           composer update --prefer-dist --no-interaction --no-suggest --dev
           composer dump
 
@@ -173,10 +173,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache/files
-          key: dependencies-pw-v2-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -187,6 +188,7 @@ jobs:
           tools: composer:v2
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           composer --version
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
