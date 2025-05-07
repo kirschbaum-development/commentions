@@ -103,6 +103,16 @@ test('it does not allow non-authors to edit by default', function () {
     expect($comment->canEdit())->toBeFalse();
 });
 
+test('it does not allow guests to edit', function () {
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = $post->comment('This is a test comment', $author);
+
+    Config::resolveAuthenticatedUserUsing(fn () => null);
+
+    expect($comment->canEdit())->toBeFalse();
+});
+
 test('it allows comment author to delete by default', function () {
     $author = User::factory()->create();
     $post = Post::factory()->create();
@@ -120,6 +130,16 @@ test('it does not allow non-authors to delete by default', function () {
     $comment = $post->comment('This is a test comment', $author);
 
     Config::resolveAuthenticatedUserUsing(fn () => $user);
+
+    expect($comment->canDelete())->toBeFalse();
+});
+
+test('it does not allow guests to delete', function () {
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = $post->comment('This is a test comment', $author);
+
+    Config::resolveAuthenticatedUserUsing(fn () => null);
 
     expect($comment->canDelete())->toBeFalse();
 });
