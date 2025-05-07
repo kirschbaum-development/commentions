@@ -3,7 +3,6 @@
 namespace Kirschbaum\Commentions\Policies;
 
 use Kirschbaum\Commentions\Comment;
-use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
 class CommentPolicy
@@ -15,11 +14,11 @@ class CommentPolicy
 
     public function update($user, Comment $comment): bool
     {
-        return Config::allowEdits() && $comment->isAuthor($user);
+        return $comment->isAuthor($user);
     }
 
     public function delete($user, Comment $comment): bool
     {
-        return Config::allowDeletes() && $comment->isAuthor($user);
+        return $comment->isAuthor($user);
     }
 }

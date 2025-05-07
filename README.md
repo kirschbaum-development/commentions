@@ -57,8 +57,6 @@ use Kirschbaum\Commentions\CommentionsPlugin;
 return $panel
     ->plugins([
         CommentionsPlugin::make()
-            ->disallowEdits()    // Prevent users from editing their comments
-            ->disallowDeletes()  // Prevent users from deleting their comments
     ])
 ```
 
@@ -110,36 +108,51 @@ If your `User` model lives in a different namespace than `App\Models\User`, you 
     ],
 ```
 
-### Disabling comment editing and deletion
+### Configuring the Comment model and permissions
 
-By default, users can edit and delete their own comments. You can disable this functionality in two ways:
+By default, users can create comments, as well as edit and delete their own comments. You can adjust these permissions by implementing your own policy:
 
-#### 1. Using the plugin configuration
-
-```php
-use Kirschbaum\Commentions\CommentionsPlugin;
-
-return $panel
-    ->plugins([
-        CommentionsPlugin::make()
-            ->disallowEdits()    // Prevent users from editing their comments
-            ->disallowDeletes()  // Prevent users from deleting their comments
-    ])
-```
-
-#### 2. Using the configuration file
-
-Set the `allow_edits` and `allow_deletes` options in your `config/commentions.php` file:
+#### 1) Create a custom policy
 
 ```php
-    /**
-     * Comment editing/deleting options.
-     */
-    'allow_edits' => false,
-    'allow_deletes' => false,
+<?php
+
+namespace App\Policies;
+
+use Kirschbaum\Commentions\Comment;
+use Kirschbaum\Commentions\Contracts\Commenter;
+use Kirschbaum\Commentions\Policies\CommentPolicy;
+
+class CommentPolicy extends CommentPolicy
+{
+    public function create(Commenter $user): bool
+    {
+        // TODO: Implement custom permission logic.
+    }
+
+    public function update($user, Comment $comment): bool
+    {
+        // TODO: Implement custom permission logic.
+    }
+
+    public function delete($user, Comment $comment): bool
+    {
+        // TODO: Implement custom permission logic.
+    }
+}
 ```
 
-> **Note:** The plugin configuration takes precedence over the config file settings.
+#### 2) Register your policy in the configuration file
+
+Update the `comment.policy` option in your `config/commentions.php` file:
+
+```php
+    'comment' => [
+        'policy' => App\Policies\CommentPolicy::class,
+    ],
+```
+
+### Configuring the Commenter name
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
 

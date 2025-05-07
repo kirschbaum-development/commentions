@@ -82,22 +82,6 @@ test('it can get mentioned user ids from comment', function () {
         ->toContain($mentionedUser2);
 });
 
-test('it can disable editing of comments', function () {
-    $user = User::factory()->create();
-    $post = Post::factory()->create();
-    $comment = $post->comment('This is a test comment', $user);
-
-    // Set authenticated user to the comment author
-    Config::resolveAuthenticatedUserUsing(fn () => $user);
-
-    // Should be able to edit by default
-    expect($comment->canEdit())->toBeTrue();
-
-    // Disable edits
-    config(['commentions.allow_edits' => false]);
-    expect($comment->canEdit())->toBeFalse();
-});
-
 test('it allows comment author to edit by default', function () {
     $author = User::factory()->create();
     $post = Post::factory()->create();
@@ -119,22 +103,6 @@ test('it does not allow non-authors to edit by default', function () {
     expect($comment->canEdit())->toBeFalse();
 });
 
-test('it can disable deletion of comments', function () {
-    $user = User::factory()->create();
-    $post = Post::factory()->create();
-    $comment = $post->comment('This is a test comment', $user);
-
-    // Set authenticated user to the comment author
-    Config::resolveAuthenticatedUserUsing(fn () => $user);
-
-    // Should be able to delete by default
-    expect($comment->canDelete())->toBeTrue();
-
-    // Disable deletes
-    config(['commentions.allow_deletes' => false]);
-    expect($comment->canDelete())->toBeFalse();
-});
-
 test('it allows comment author to delete by default', function () {
     $author = User::factory()->create();
     $post = Post::factory()->create();
@@ -153,53 +121,5 @@ test('it does not allow non-authors to delete by default', function () {
 
     Config::resolveAuthenticatedUserUsing(fn () => $user);
 
-    expect($comment->canDelete())->toBeFalse();
-});
-
-test('plugin can disallow edits and deletes', function () {
-    $user = User::factory()->create();
-    $post = Post::factory()->create();
-    $comment = $post->comment('This is a test comment', $user);
-
-    // Set authenticated user to the comment author
-    Config::resolveAuthenticatedUserUsing(fn () => $user);
-
-    // Reset to default values
-    Config::allowEdits(true);
-    Config::allowDeletes(true);
-
-    // Should be able to edit and delete by default
-    expect($comment->canEdit())->toBeTrue();
-    expect($comment->canDelete())->toBeTrue();
-
-    // Create a plugin instance and disallow edits
-    $plugin = new CommentionsPlugin();
-    $plugin->disallowEdits();
-    $panel = new \Filament\Panel();
-    $plugin->register($panel);
-
-    expect($comment->canEdit())->toBeFalse();
-    expect($comment->canDelete())->toBeTrue();
-
-    // Reset and test disallowing deletes
-    Config::allowEdits(true);
-    Config::allowDeletes(true);
-
-    $plugin = new CommentionsPlugin();
-    $plugin->disallowDeletes();
-    $plugin->register($panel);
-
-    expect($comment->canEdit())->toBeTrue();
-    expect($comment->canDelete())->toBeFalse();
-
-    // Test disallowing both
-    Config::allowEdits(true);
-    Config::allowDeletes(true);
-
-    $plugin = new CommentionsPlugin();
-    $plugin->disallowEdits()->disallowDeletes();
-    $plugin->register($panel);
-
-    expect($comment->canEdit())->toBeFalse();
     expect($comment->canDelete())->toBeFalse();
 });

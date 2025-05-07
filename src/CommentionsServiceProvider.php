@@ -53,6 +53,6 @@ class CommentionsServiceProvider extends PackageServiceProvider
             'kirschbaum-development/' . static::$name
         );
 
-        Gate::policy(CommentModel::class, config('commentions.policy'));
+        Gate::policy(CommentModel::class, config('commentions.comment.policy'));
     }
 }

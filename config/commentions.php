@@ -14,10 +14,9 @@ return [
     ],
 
     /**
-     * Comment editing/deleting options.
+     * The comment config.
      */
-    'allow_edits' => true,
-    'allow_deletes' => true,
-
-    'policy' => \Kirschbaum\Commentions\Policies\CommentPolicy::class,
+    'comment' => [
+        'policy' => \Kirschbaum\Commentions\Policies\CommentPolicy::class,
+    ],
 ];
