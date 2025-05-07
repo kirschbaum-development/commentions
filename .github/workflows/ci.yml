@@ -33,6 +33,7 @@ jobs:
         with:
           path: ~/.composer/cache/files
           key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -76,6 +77,7 @@ jobs:
         with:
           path: ~/.composer/cache/files
           key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -123,6 +125,7 @@ jobs:
         with:
           path: ~/.composer/cache/files
           key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -178,6 +181,7 @@ jobs:
         with:
           path: ~/.composer/cache/files
           key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
