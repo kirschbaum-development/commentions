@@ -2,9 +2,9 @@
 
 namespace Kirschbaum\Commentions\Actions;
 
-use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\CommentReaction;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\Events\CommentWasReactedEvent;
 

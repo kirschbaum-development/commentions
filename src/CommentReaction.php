@@ -3,9 +3,9 @@
 namespace Kirschbaum\Commentions;
 
 use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\Commentions\Contracts\Commenter;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Kirschbaum\Commentions\Contracts\Commenter;
 
 /**
  * @property-read Comment $comment
