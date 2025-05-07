@@ -9,7 +9,7 @@ parameters:
         - tests/
 
     # Level 10 is the highest level
-    level: 0
+    level: 1
 
     ignoreErrors:
         -
@@ -47,3 +47,15 @@ parameters:
             identifier: variable.undefined
             count: 3
             path: tests/Pest.php
+
+        -
+            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+            identifier: method.notFound
+            count: 2
+            path: tests/Livewire/CommentReactionTest.php
+
+        -
+            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseMissing\(\)\.$#'
+            identifier: method.notFound
+            count: 3
+            path: tests/Livewire/CommentReactionTest.php

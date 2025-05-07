@@ -2,7 +2,9 @@
 
 namespace Kirschbaum\Commentions;
 
+use Carbon\Carbon;
 use Closure;
+use DateTime;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -25,8 +27,11 @@ use Spatie\Color\Rgb;
  * @property string $body
  * @property string $body_markdown
  * @property string $body_parsed
+ * @property int $author_id
  * @property Model|Commenter $author
  * @property Commentable $commentable
+ * @property-read DateTime|Carbon $created_at
+ * @property-read DateTime|Carbon $updated_at
  */
 class Comment extends Model implements RenderableComment
 {
@@ -143,12 +148,12 @@ class Comment extends Model implements RenderableComment
         return $this->body_parsed;
     }
 
-    public function getCreatedAt(): \DateTime|\Carbon\Carbon
+    public function getCreatedAt(): DateTime|Carbon
     {
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): \DateTime|\Carbon\Carbon
+    public function getUpdatedAt(): DateTime|Carbon
     {
         return $this->updated_at;
     }
