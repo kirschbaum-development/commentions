@@ -12,6 +12,7 @@ class HtmlToMarkdown
         $converter = new HtmlConverter();
         $markdown = $converter->convert($html);
         $markdown = $this->transformMentionsToMarkdown($markdown, $mentionedCallback);
+
         return $markdown;
     }
 
