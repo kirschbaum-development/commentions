@@ -4,60 +4,9 @@ on:
   push:
 
 jobs:
-  build:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [8.3, 8.4]
-        laravel: [11, 12]
-        include:
-          - laravel: 11
-            testbench: 9
-            larastan: 3
-            pint: 1
-          - laravel: 12
-            testbench: 10
-            larastan: 3
-            pint: 1
-
-    name: Build - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/composer/files
-          key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
-          restore-keys: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
-          coverage: none
-          tools: composer:v2
-
-      - name: Install dependencies
-        run: |
-          composer --version
-          composer require "laravel/framework:${{ matrix.laravel }}.*" --no-interaction --no-update
-          composer require "orchestra/testbench:${{ matrix.testbench }}.*" --no-interaction --no-update --dev
-          composer require "larastan/larastan:${{ matrix.larastan }}.*" --no-interaction --no-update --dev
-          composer require "laravel/pint:${{ matrix.pint }}.*" --no-interaction --no-update --dev
-          composer update --prefer-dist --no-interaction
-          composer dump
-
   lint:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-
-    needs: [build]
 
     env:
       php: 8.4
@@ -104,8 +53,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
 
-    needs: [build]
-
     env:
       php: 8.4
       laravel: 12
@@ -151,7 +98,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
 
-    needs: [build]
+    needs: [lint, static-analysis]
 
     strategy:
       fail-fast: true
