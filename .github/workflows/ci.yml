@@ -1,0 +1,155 @@
+name: ci
+
+on:
+  push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    env:
+      php: 8.4
+      laravel: 12
+      testbench: 10
+      larastan: 3
+      pint: 1
+
+    name: Lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php }}
+          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer --version
+          composer require "laravel/framework:${{ env.laravel }}.*" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ env.testbench }}.*" --no-interaction --no-update --dev
+          composer require "larastan/larastan:${{ env.larastan }}.*" --no-interaction --no-update --dev
+          composer require "laravel/pint:${{ env.pint }}.*" --no-interaction --no-update --dev
+          composer update --prefer-dist --no-interaction
+          composer dump
+
+      - name: Pint (check styles)
+        run: composer check-style
+
+  static-analysis:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    env:
+      php: 8.4
+      laravel: 12
+      testbench: 10
+      larastan: 3
+      pint: 1
+
+    name: Static Analysis
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ env.laravel }}-php-${{ env.php }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php }}
+          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer --version
+          composer require "laravel/framework:${{ env.laravel }}.*" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ env.testbench }}.*" --no-interaction --no-update --dev
+          composer require "larastan/larastan:${{ env.larastan }}.*" --no-interaction --no-update --dev
+          composer require "laravel/pint:${{ env.pint }}.*" --no-interaction --no-update --dev
+          composer update --prefer-dist --no-interaction --no-suggest --dev
+          composer dump
+
+      - name: Run Larastan
+        run: composer static-analysis
+
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    needs: [lint, static-analysis]
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.3, 8.4]
+        laravel: [11, 12]
+        include:
+          - laravel: 11
+            testbench: 9
+            larastan: 3
+            pint: 1
+          - laravel: 12
+            testbench: 10
+            larastan: 3
+            pint: 1
+
+    name: Tests - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+          restore-keys: dependencies-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          coverage: none
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          composer --version
+          composer require "laravel/framework:${{ matrix.laravel }}.*" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ matrix.testbench }}.*" --no-interaction --no-update --dev
+          composer require "larastan/larastan:${{ matrix.larastan }}.*" --no-interaction --no-update --dev
+          composer require "laravel/pint:${{ matrix.pint }}.*" --no-interaction --no-update --dev
+          composer update --prefer-dist --no-interaction --no-suggest --dev
+          composer dump
+
+      - name: Setup SQLite Database
+        run: php vendor/bin/testbench package:create-sqlite-db
+
+      - name: Execute tests
+        run: vendor/bin/pest
+        env:
+          DB_CONNECTION: sqlite
