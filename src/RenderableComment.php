@@ -27,10 +27,6 @@ class RenderableComment implements RenderableCommentContract, Wireable
 
     protected DateTime|Carbon $updatedAt;
 
-    protected bool $canEdit;
-
-    protected bool $canDelete;
-
     public function __construct(
         string|int $id,
         ?string $authorName,
@@ -38,8 +34,6 @@ class RenderableComment implements RenderableCommentContract, Wireable
         ?string $authorAvatar = null,
         DateTime|Carbon $createdAt = new Carbon(),
         DateTime|Carbon $updatedAt = new Carbon(),
-        bool $canEdit = false,
-        bool $canDelete = false,
         bool $isComment = false,
         ?string $parsedBody = null,
         ?string $label = null,
@@ -52,8 +46,6 @@ class RenderableComment implements RenderableCommentContract, Wireable
         $this->parsedBody = $parsedBody;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
-        $this->canEdit = $canEdit;
-        $this->canDelete = $canDelete;
         $this->label = $label;
     }
 
@@ -102,16 +94,6 @@ class RenderableComment implements RenderableCommentContract, Wireable
         return $this->label;
     }
 
-    public function canEdit(): bool
-    {
-        return $this->canEdit;
-    }
-
-    public function canDelete(): bool
-    {
-        return $this->canDelete;
-    }
-
     public function toLivewire()
     {
         return [
@@ -123,8 +105,6 @@ class RenderableComment implements RenderableCommentContract, Wireable
             'parsedBody' => $this->parsedBody,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
-            'canEdit' => $this->canEdit,
-            'canDelete' => $this->canDelete,
             'label' => $this->label,
         ];
     }
@@ -140,8 +120,6 @@ class RenderableComment implements RenderableCommentContract, Wireable
             parsedBody: $value['parsedBody'],
             createdAt: new Carbon($value['createdAt']),
             updatedAt: new Carbon($value['updatedAt']),
-            canEdit: $value['canEdit'],
-            canDelete: $value['canDelete'],
             label: $value['label'],
         );
     }
