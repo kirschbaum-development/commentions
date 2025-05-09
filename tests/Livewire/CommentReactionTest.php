@@ -32,7 +32,7 @@ test('user can add configured reactions to a comment', function (string $reactio
     livewire(CommentComponent::class, ['comment' => $comment])
         ->call('toggleReaction', $reactionEmoji);
 
-    Event::assertDispatched(CommentWasReactedEvent::class, function (CommentWasReactedEvent $event) use ($comment, $user, $reactionEmoji) {
+    Event::assertDispatched(CommentWasReactedEvent::class, function (CommentWasReactedEvent $event) use ($comment, $reactionEmoji) {
         return $event->comment->is($comment)
             && $event->reaction !== null
             && $event->reaction->reaction === $reactionEmoji;
@@ -137,9 +137,9 @@ test('reaction summary handles multiple different reactions', function () {
 
     // Check Blade rendering simulation (simplified)
     $component
-        ->assertSeeHtml('wire:key="inline-reaction-button-👍-'.$comment->getId().'"') // Count exists for 👍
+        ->assertSeeHtml('wire:key="inline-reaction-button-👍-' . $comment->getId() . '"') // Count exists for 👍
         ->assertSeeHtml('>2</span>') // Correct count for 👍
-        ->assertSeeHtml('wire:key="inline-reaction-button-❤️-'.$comment->getId().'"') // Count exists for ❤️
+        ->assertSeeHtml('wire:key="inline-reaction-button-❤️-' . $comment->getId() . '"') // Count exists for ❤️
         ->assertSeeHtml('>1</span>'); // Correct count for ❤️
 });
 

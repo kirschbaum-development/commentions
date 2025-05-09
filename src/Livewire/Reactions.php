@@ -2,13 +2,13 @@
 
 namespace Kirschbaum\Commentions\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Computed;
-use Kirschbaum\Commentions\Config;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Reactions extends Component
 {

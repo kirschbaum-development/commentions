@@ -3,16 +3,13 @@
 namespace Kirschbaum\Commentions\Livewire;
 
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
-use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
-use Livewire\Attributes\Locked;
 use Livewire\Component;
-use Illuminate\Contracts\View\View;
 
 class Comment extends Component
 {

@@ -51,7 +51,7 @@ class RenderableComment implements RenderableCommentContract, Wireable
         $this->body = $body;
         $this->parsedBody = $parsedBody;
         $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt ?? $createdAt;
+        $this->updatedAt = $updatedAt;
         $this->canEdit = $canEdit;
         $this->canDelete = $canDelete;
         $this->label = $label;

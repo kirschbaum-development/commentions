@@ -2,17 +2,17 @@
 
 namespace Kirschbaum\Commentions;
 
-use Livewire\Livewire;
-use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Css;
-use Spatie\LaravelPackageTools\Package;
+use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Gate;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Livewire\Comment;
-use Kirschbaum\Commentions\Livewire\Reactions;
-use Kirschbaum\Commentions\Livewire\Comments;
 use Kirschbaum\Commentions\Livewire\CommentList;
+use Kirschbaum\Commentions\Livewire\Comments;
+use Kirschbaum\Commentions\Livewire\Reactions;
+use Livewire\Livewire;
+use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class CommentionsServiceProvider extends PackageServiceProvider
