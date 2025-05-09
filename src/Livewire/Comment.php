@@ -40,7 +40,7 @@ class Comment extends Component
     #[Renderless]
     public function delete()
     {
-        if (! $this->comment->canDelete()) {
+        if (! auth()->user()?->can('delete', $this->comment)) {
             return;
         }
 
@@ -77,7 +77,7 @@ class Comment extends Component
 
     public function edit(): void
     {
-        if (! $this->comment->canEdit()) {
+        if (! auth()->user()?->can('update', $this->comment)) {
             return;
         }
 
@@ -89,7 +89,7 @@ class Comment extends Component
 
     public function updateComment()
     {
-        if (! $this->comment->canEdit()) {
+        if (! auth()->user()?->can('update', $this->comment)) {
             return;
         }
 

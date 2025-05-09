@@ -163,20 +163,6 @@ class Comment extends Model implements RenderableComment
         return $this->hasMany(CommentReaction::class);
     }
 
-    public function canEdit(): bool
-    {
-        $user = Config::resolveAuthenticatedUser();
-
-        return $user && $user->can('update', $this);
-    }
-
-    public function canDelete(): bool
-    {
-        $user = Config::resolveAuthenticatedUser();
-
-        return $user && $user->can('delete', $this);
-    }
-
     public function toggleReaction(string $reaction): void
     {
         ToggleCommentReaction::run($this, $reaction, Config::resolveAuthenticatedUser());

@@ -32,7 +32,7 @@
                 @endif
             </div>
 
-            @if ($comment->isComment() && $comment->canEdit())
+            @if ($comment->isComment() && auth()->user()?->can('update', $comment))
                 <div class="flex gap-x-1">
                     <x-filament::icon-button
                         icon="heroicon-s-pencil-square"
@@ -41,7 +41,7 @@
                         color="gray"
                     />
 
-                    @if ($comment->canDelete())
+                    @can('delete', $comment)
                         <x-filament::icon-button
                             icon="heroicon-s-trash"
                             wire:click="$dispatch('open-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
@@ -90,7 +90,7 @@
         @endif
     </div>
 
-    @if ($comment->isComment() && $comment->canDelete())
+    @if ($comment->isComment() && auth()->user()?->can('delete', $comment))
         <x-filament::modal
             id="delete-comment-modal-{{ $comment->getId() }}"
             wire:model="showDeleteModal"
