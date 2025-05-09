@@ -29,6 +29,11 @@ class Config
         return $user;
     }
 
+    public static function getCommentModel(): string
+    {
+        return config('commentions.comment.model');
+    }
+
     public static function getCommenterModel(): string
     {
         return config('commentions.commenter.model');

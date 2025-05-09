@@ -26,6 +26,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'comment' => [
+        'model' => \Kirschbaum\Commentions\Comment::class,
         'policy' => \Kirschbaum\Commentions\Policies\CommentPolicy::class,
     ],
 

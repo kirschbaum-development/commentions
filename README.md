@@ -148,7 +148,8 @@ Update the `comment.policy` option in your `config/commentions.php` file:
 
 ```php
     'comment' => [
-        'policy' => App\Policies\CommentPolicy::class,
+        'model' => \Kirschbaum\Commentions\Comment::class,
+        'policy' => \App\Policies\CommentPolicy::class,
     ],
 ```
 

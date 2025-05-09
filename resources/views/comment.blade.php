@@ -32,14 +32,16 @@
                 @endif
             </div>
 
-            @if ($comment->isComment() && auth()->user()?->can('update', $comment))
+            @if ($comment->isComment())
                 <div class="flex gap-x-1">
-                    <x-filament::icon-button
-                        icon="heroicon-s-pencil-square"
-                        wire:click="edit"
-                        size="xs"
-                        color="gray"
-                    />
+                    @can('update', $comment)
+                        <x-filament::icon-button
+                            icon="heroicon-s-pencil-square"
+                            wire:click="edit"
+                            size="xs"
+                            color="gray"
+                        />
+                    @endcan
 
                     @can('delete', $comment)
                         <x-filament::icon-button
@@ -48,7 +50,7 @@
                             size="xs"
                             color="gray"
                         />
-                    @endif
+                    @endcan
                 </div>
             @endif
         </div>
