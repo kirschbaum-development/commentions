@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\Comment;
-use Kirschbaum\Commentions\CommentionsPlugin;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 use Tests\Models\Post;

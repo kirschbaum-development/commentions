@@ -16,20 +16,6 @@ class CommentionsPlugin implements Plugin
 
     public function boot(Panel $panel): void {}
 
-    public function disallowEdits(): static
-    {
-        Config::allowEdits(false);
-
-        return $this;
-    }
-
-    public function disallowDeletes(): static
-    {
-        Config::allowDeletes(false);
-
-        return $this;
-    }
-
     public static function make(): static
     {
         return app(static::class);
