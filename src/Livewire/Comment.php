@@ -5,6 +5,7 @@ namespace Kirschbaum\Commentions\Livewire;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Livewire\Attributes\On;
@@ -77,7 +78,7 @@ class Comment extends Component
 
     public function edit(): void
     {
-        if (! auth()->user()?->can('update', $this->comment)) {
+        if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 
@@ -89,7 +90,7 @@ class Comment extends Component
 
     public function updateComment()
     {
-        if (! auth()->user()?->can('update', $this->comment)) {
+        if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 

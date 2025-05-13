@@ -1,5 +1,7 @@
+@use('\Kirschbaum\Commentions\Config')
+
 <div class="space-y-2" x-data="{ wasFocused: false }">
-    @can('create', \Kirschbaum\Commentions\Config::getCommentModel())
+    @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
         <form wire:submit.prevent="save" x-cloak>
             {{-- tiptap editor --}}
             <div class="relative tip-tap-container mb-2" x-on:click="wasFocused = true" wire:ignore>
@@ -26,7 +28,7 @@
                 </div>
             </template>
         </form>
-    @endcan
+    @endif
 
     <livewire:commentions::comment-list
         :record="$record"
