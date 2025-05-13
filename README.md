@@ -108,7 +108,18 @@ If your `User` model lives in a different namespace than `App\Models\User`, you 
     ],
 ```
 
-### Configuring the Comment model and permissions
+### Configuring the Comment model
+
+If you need to customize the Comment model, you can extend the `\Kirschbaum\Commentions\Comment` class and then update the `comment.model` option in your `config/commentions.php` file:
+
+```php
+    'comment' => [
+        'model' => \App\Models\Comment::class,
+        // ...
+    ],
+```
+
+### Configuring Comment permissions
 
 By default, users can create comments, as well as edit and delete their own comments. You can adjust these permissions by implementing your own policy:
 
@@ -148,7 +159,7 @@ Update the `comment.policy` option in your `config/commentions.php` file:
 
 ```php
     'comment' => [
-        'model' => \Kirschbaum\Commentions\Comment::class,
+        // ...
         'policy' => \App\Policies\CommentPolicy::class,
     ],
 ```

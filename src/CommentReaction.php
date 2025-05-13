@@ -23,7 +23,7 @@ class CommentReaction extends Model
     /** @return BelongsTo<Comment> */
     public function comment(): BelongsTo
     {
-        return $this->belongsTo(Comment::class);
+        return $this->belongsTo(Config::getCommentModel());
     }
 
     /** @return MorphTo<Commenter> */
