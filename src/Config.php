@@ -31,7 +31,7 @@ class Config
 
     public static function getCommentModel(): string
     {
-        return config('commentions.comment.model');
+        return config('commentions.comment.model', Comment::class);
     }
 
     public static function getCommenterModel(): string
