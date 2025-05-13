@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
@@ -30,7 +31,7 @@ test('it cannot save a comment when the policy denies it', function () {
     \Gate::policy(Comment::class, \Tests\Policies\BlockedCommentPolicy::class);
 
     expect(fn () => $post->comment('This is a test comment', $user))
-        ->toThrow(\Exception::class)
+        ->toThrow(AuthorizationException::class)
         ->and($post->comments)->toHaveCount(0);
 });
 

@@ -2,6 +2,7 @@
 
 namespace Kirschbaum\Commentions\Actions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Config;
@@ -11,12 +12,12 @@ use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 class SaveComment
 {
     /**
-     * @throws \Exception
+     * @throws AuthorizationException
      */
     public function __invoke(Model $commentable, Commenter $author, string $body): Comment
     {
         if ($author->cannot('create', Config::getCommentModel())) {
-            throw new \Exception('Cannot create comment');
+            throw new AuthorizationException('Cannot create comment');
         }
 
         $comment = $commentable->comments()->create([
