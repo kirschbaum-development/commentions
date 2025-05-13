@@ -34,7 +34,7 @@
                 @endif
             </div>
 
-            @if ($comment->isComment())
+            @if ($comment->isComment() && Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment))
                 <div class="flex gap-x-1">
                     @if (Config::resolveAuthenticatedUser()?->can('update', $comment))
                         <x-filament::icon-button
