@@ -47,9 +47,20 @@ class Project extends Model implements Commentable
 }
 ```
 
-### Usage with Filament
+4. Configure the Commentions paths in your Tailwind config:
 
-You can register the plugin in your Panel(s) and configure editing and deleting permissions:
+```js
+export default {
+    content: [
+        '...',
+        './vendor/kirschbaum-development/commentions/resources/**/*.js',
+        './vendor/kirschbaum-development/commentions/resources/views/**/*.blade.php',
+    ],
+    // ...
+}
+```
+
+5. Register the Commentions plugin:
 
 ```php
 use Kirschbaum\Commentions\CommentionsPlugin;

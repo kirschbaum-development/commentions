@@ -3,13 +3,12 @@
   "scripts": {
     "dev:scripts": "node bin/build.js --dev",
     "build:scripts": "node bin/build.js",
-    "dev:styles": "npx @tailwindcss/cli -i ./resources/css/commentions.css -o ./resources/dist/commentions.css --watch",
-    "build:styles": "npx @tailwindcss/cli -i ./resources/css/commentions.css -o ./resources/dist/commentions.css --minify",
+    "dev:styles": "npx csso ./resources/css/commentions.css -o ./resources/dist/commentions.css",
+    "build:styles": "npx csso ./resources/css/commentions.css -o ./resources/dist/commentions.css",
     "dev": "npm-run-all --parallel dev:*",
     "build": "npm-run-all build:*"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.6",
     "@tiptap/core": "^2.11.2",
     "@tiptap/extension-mention": "^2.11.2",
     "@tiptap/extension-placeholder": "^2.11.2",
@@ -20,5 +19,8 @@
     "esbuild": "^0.24.2",
     "npm-run-all": "^4.1.5",
     "tippy.js": "^6.3.7"
+  },
+  "devDependencies": {
+    "csso-cli": "^4.0.2"
   }
 }

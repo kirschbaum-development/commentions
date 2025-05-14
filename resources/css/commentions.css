@@ -1,9 +1,3 @@
-@import "tailwindcss" source(none);
-@source "../views/";
-@source "../../src";
-
-@custom-variant dark (&:where(.dark, .dark *));
-
 [x-cloak] {
     display: none;
 }
