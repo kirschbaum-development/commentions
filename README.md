@@ -18,13 +18,13 @@ composer require kirschbaum-development/commentions
 
 ## Usage
 
-1. Publish the migrations
+**1. Publish the migrations**
 
 ```bash
 php artisan vendor:publish --tag="commentions-migrations"
 ```
 
-2. In your `User` model implement the `Commenter` interface.
+**2. In your `User` model implement the `Commenter` interface.**
 
 ```php
 use Kirschbaum\Commentions\Contracts\Commenter;
@@ -35,7 +35,7 @@ class User extends Model implements Commenter
 }
 ```
 
-3. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
+**3. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.**
 
 ```php
 use Kirschbaum\Commentions\HasComments;
@@ -47,7 +47,9 @@ class Project extends Model implements Commentable
 }
 ```
 
-4. Configure the Commentions paths in your Tailwind config:
+**4. Configure the Commentions paths in your Tailwind config:**
+
+If you don't have a [custom theme](https://filamentphp.com/docs/3.x/panels/themes#creating-a-custom-theme), you will have to configure. This is Filament's [recommendation](https://filamentphp.com/docs/3.x/support/assets#using-tailwind-css-in-plugins) if you are using Plugins.
 
 ```js
 export default {
@@ -60,22 +62,22 @@ export default {
 }
 ```
 
-5. Register the Commentions plugin:
+**5. Register the Commentions plugin:**
+
+You can register the plugin in your Panel(s) like so:
 
 ```php
 use Kirschbaum\Commentions\CommentionsPlugin;
 
 return $panel
     ->plugins([
-        CommentionsPlugin::make()
-            ->disallowEdits()    // Prevent users from editing their comments
-            ->disallowDeletes()  // Prevent users from deleting their comments
+        CommentionsPlugin::make(),
     ])
 ```
 
-There are a couple of ways to use Commentions with Filament.
+**6. Use the component**
 
-1. Register the component in your Filament Infolists:
+Infolists:
 
 ```php
 Infolists\Components\Section::make('Comments')
@@ -85,7 +87,7 @@ Infolists\Components\Section::make('Comments')
     ]),
 ```
 
-2. Or in your table actions:
+Table actions:
 
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsTableAction;
@@ -96,7 +98,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsTableAction;
 ])
 ```
 
-3. Or as a header action:
+Or header actions:
 
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
@@ -121,36 +123,61 @@ If your `User` model lives in a different namespace than `App\Models\User`, you 
     ],
 ```
 
-### Disabling comment editing and deletion
+### Configuring the Comment model
 
-By default, users can edit and delete their own comments. You can disable this functionality in two ways:
-
-#### 1. Using the plugin configuration
+If you need to customize the Comment model, you can extend the `\Kirschbaum\Commentions\Comment` class and then update the `comment.model` option in your `config/commentions.php` file:
 
 ```php
-use Kirschbaum\Commentions\CommentionsPlugin;
-
-return $panel
-    ->plugins([
-        CommentionsPlugin::make()
-            ->disallowEdits()    // Prevent users from editing their comments
-            ->disallowDeletes()  // Prevent users from deleting their comments
-    ])
+    'comment' => [
+        'model' => \App\Models\Comment::class,
+        // ...
+    ],
 ```
 
-#### 2. Using the configuration file
+### Configuring Comment permissions
 
-Set the `allow_edits` and `allow_deletes` options in your `config/commentions.php` file:
+By default, users can create comments, as well as edit and delete their own comments. You can adjust these permissions by implementing your own policy:
+
+#### 1) Create a custom policy
 
 ```php
-    /**
-     * Comment editing/deleting options.
-     */
-    'allow_edits' => false,
-    'allow_deletes' => false,
+namespace App\Policies;
+
+use Kirschbaum\Commentions\Comment;
+use Kirschbaum\Commentions\Contracts\Commenter;
+use Kirschbaum\Commentions\Policies\CommentPolicy;
+
+class CommentPolicy extends CommentPolicy
+{
+    public function create(Commenter $user): bool
+    {
+        // TODO: Implement custom permission logic.
+    }
+
+    public function update($user, Comment $comment): bool
+    {
+        // TODO: Implement custom permission logic.
+    }
+
+    public function delete($user, Comment $comment): bool
+    {
+        // TODO: Implement custom permission logic.
+    }
+}
 ```
 
-> **Note:** The plugin configuration takes precedence over the config file settings.
+#### 2) Register your policy in the configuration file
+
+Update the `comment.policy` option in your `config/commentions.php` file:
+
+```php
+    'comment' => [
+        // ...
+        'policy' => \App\Policies\CommentPolicy::class,
+    ],
+```
+
+### Configuring the Commenter name
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
 
@@ -278,6 +305,7 @@ If you discover any security related issues, please email security@kirschbaumdev
 ## Credits
 
 - [Luis Dalmolin](https://github.com/luisdalmolin)
+- [All contributors](https://github.com/kirschbaum-development/commentions/graphs/contributors)
 
 ## Sponsorship
 

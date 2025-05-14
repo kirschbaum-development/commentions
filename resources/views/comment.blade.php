@@ -1,3 +1,5 @@
+@use('\Kirschbaum\Commentions\Config')
+
 <div class="flex items-start gap-x-4 border p-4 rounded-lg shadow-sm mb-2" id="filament-comment-{{ $comment->getId() }}">
     @if ($avatar = $comment->getAuthorAvatar())
         <img
@@ -32,16 +34,18 @@
                 @endif
             </div>
 
-            @if ($comment->isComment() && $comment->canEdit())
+            @if ($comment->isComment() && Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment))
                 <div class="flex gap-x-1">
-                    <x-filament::icon-button
-                        icon="heroicon-s-pencil-square"
-                        wire:click="edit"
-                        size="xs"
-                        color="gray"
-                    />
+                    @if (Config::resolveAuthenticatedUser()?->can('update', $comment))
+                        <x-filament::icon-button
+                            icon="heroicon-s-pencil-square"
+                            wire:click="edit"
+                            size="xs"
+                            color="gray"
+                        />
+                    @endif
 
-                    @if ($comment->canDelete())
+                    @if (Config::resolveAuthenticatedUser()?->can('delete', $comment))
                         <x-filament::icon-button
                             icon="heroicon-s-trash"
                             wire:click="$dispatch('open-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
@@ -90,7 +94,7 @@
         @endif
     </div>
 
-    @if ($comment->isComment() && $comment->canDelete())
+    @if ($comment->isComment() && \Kirschbaum\Commentions\Config::resolveAuthenticatedUser()?->can('delete', $comment))
         <x-filament::modal
             id="delete-comment-modal-{{ $comment->getId() }}"
             wire:model="showDeleteModal"

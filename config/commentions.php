@@ -22,11 +22,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Comment Moderation
+    | Comment model configuration
     |--------------------------------------------------------------------------
     */
-    'allow_edits' => true,
-    'allow_deletes' => true,
+    'comment' => [
+        'model' => \Kirschbaum\Commentions\Comment::class,
+        'policy' => \Kirschbaum\Commentions\Policies\CommentPolicy::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -11,7 +11,7 @@ trait HasComments
 {
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(Config::getCommentModel(), 'commentable');
     }
 
     public function comment(string $body, ?Commenter $author): Comment

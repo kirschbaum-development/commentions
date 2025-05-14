@@ -20,9 +20,5 @@ interface RenderableComment
 
     public function getUpdatedAt(): \DateTime|\Carbon\Carbon;
 
-    public function canEdit(): bool;
-
-    public function canDelete(): bool;
-
     public function getLabel(): ?string;
 }
