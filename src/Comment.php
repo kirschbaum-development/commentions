@@ -173,6 +173,14 @@ class Comment extends Model implements RenderableComment
         return null;
     }
 
+    public function getContentHash(): string
+    {
+        return md5(json_encode([
+            'body' => $this->body,
+            'reactions' => $this->reactions->pluck('id'),
+        ]));
+    }
+
     protected static function newFactory()
     {
         return CommentFactory::new();

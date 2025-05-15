@@ -94,6 +94,11 @@ class RenderableComment implements RenderableCommentContract, Wireable
         return $this->label;
     }
 
+    public function getContentHash(): string
+    {
+        return "comment-$this->id";
+    }
+
     public function toLivewire()
     {
         return [

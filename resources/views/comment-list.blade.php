@@ -16,7 +16,7 @@
 
     @foreach ($this->comments as $comment)
         <livewire:commentions::comment
-            :key="'comment-' . $comment->getId()"
+            :key="$comment->getContentHash()"
             :comment="$comment"
             :mentionables="$mentionables"
         />

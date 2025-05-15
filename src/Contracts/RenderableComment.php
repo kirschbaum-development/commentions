@@ -21,4 +21,6 @@ interface RenderableComment
     public function getUpdatedAt(): \DateTime|\Carbon\Carbon;
 
     public function getLabel(): ?string;
+
+    public function getContentHash(): string;
 }
