@@ -6,7 +6,7 @@
                 x-cloak
                 wire:click="handleReactionToggle('{{ $reactionData['reaction'] }}')"
                 type="button"
-                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:px-2 comm:h-8 comm:text-sm comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
+                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:px-2 comm:h-8 comm:text-xs comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
                     {{ $reactionData['reacted_by_current_user']
                         ? 'comm:bg-gray-50 comm:dark:bg-gray-800 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-200 comm:dark:hover:bg-gray-600'
                         : 'comm:bg-white comm:dark:bg-gray-900 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-600' }}"
@@ -25,7 +25,7 @@
             x-on:click="open = !open"
             type="button"
             @disabled(! auth()->check())
-            class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-white comm:dark:bg-gray-900 comm:w-8 comm:h-8 comm:text-sm comm:font-medium comm:text-gray-700 comm:dark:text-gray-200 comm:transition comm:hover:bg-gray-100 comm:dark:hover:bg-gray-700 comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed"
+            class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-white comm:dark:bg-gray-900 comm:w-8 comm:h-8 comm:text-xs comm:font-medium comm:text-gray-700 comm:dark:text-gray-200 comm:transition comm:hover:bg-gray-100 comm:dark:hover:bg-gray-700 comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed"
             title="Add Reaction"
             wire:key="add-reaction-button-{{ $comment->getId() }}"
         >
@@ -52,7 +52,7 @@
                     x-on:click="open = false"
                     type="button"
                     @disabled(! auth()->check())
-                    class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:w-8 comm:h-8 comm:text-sm comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
+                    class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:w-8 comm:h-8 comm:text-xs comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
                            {{ $reactionData['reacted_by_current_user']
                                ? 'comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-200 comm:dark:hover:bg-gray-600'
                                : 'comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-600' }}"
@@ -70,7 +70,7 @@
         @if (! in_array($reactionEmoji, $allowedReactions) && $data['count'] > 0)
             <span
                 wire:key="reaction-extra-{{ $reactionEmoji }}-{{ $comment->getId() }}"
-                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-gray-100 comm:dark:bg-gray-800 comm:px-2 comm:h-8 comm:text-sm comm:font-medium comm:text-gray-600 comm:dark:text-gray-300"
+                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-gray-100 comm:dark:bg-gray-800 comm:px-2 comm:h-8 comm:text-xs comm:font-medium comm:text-gray-600 comm:dark:text-gray-300"
                 title="{{ $reactionEmoji }}"
             >
                 <span>{{ $reactionEmoji }}</span>
