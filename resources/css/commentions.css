@@ -1,4 +1,4 @@
-@import url("tailwindcss") prefix(comm) important;
+@import "tailwindcss" source(none) prefix(comm) important;
 
 @source "../views/";
 @source "../../src";
@@ -7,6 +7,10 @@
 
 [x-cloak] {
     display: none;
+}
+
+.tiptap {
+    @apply comm:text-sm comm:leading-normal;
 }
 
 .tiptap p.is-editor-empty::before {
