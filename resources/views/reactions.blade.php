@@ -1,4 +1,4 @@
-<div class="relative mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex items-center gap-x-1 flex-wrap">
+<div class="comm:relative comm:mt-2 comm:pt-2 comm:border-t comm:border-gray-200 comm:dark:border-gray-700 comm:flex comm:items-center comm:gap-x-1 comm:flex-wrap">
     {{-- Inline buttons for existing reactions --}}
     @foreach ($this->reactionSummary as $reactionData)
         <span wire:key="inline-reaction-button-{{ $reactionData['reaction'] }}-{{ $comment->getId() }}">
@@ -6,10 +6,10 @@
                 x-cloak
                 wire:click="handleReactionToggle('{{ $reactionData['reaction'] }}')"
                 type="button"
-                class="inline-flex items-center justify-center gap-1 rounded-full border px-2 h-8 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed
+                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:px-2 comm:h-8 comm:text-sm comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
                     {{ $reactionData['reacted_by_current_user']
-                        ? 'bg-primary-100 dark:bg-primary-800 border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-200 hover:bg-primary-200 dark:hover:bg-primary-600'
-                        : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600' }}"
+                        ? 'comm:bg-gray-50 comm:dark:bg-gray-800 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-200 comm:dark:hover:bg-gray-600'
+                        : 'comm:bg-white comm:dark:bg-gray-900 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-600' }}"
                 title="{{ $reactionData['reaction'] }}"
 
             >
@@ -20,16 +20,16 @@
     @endforeach
 
     {{-- Add Reaction Button --}}
-    <div class="relative" x-data="{ open: false }" wire:ignore.self>
+    <div class="comm:relative" x-data="{ open: false }" wire:ignore.self>
         <button
             x-on:click="open = !open"
             type="button"
             @disabled(! auth()->check())
-            class="inline-flex items-center justify-center gap-1 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 w-8 h-8 text-sm font-medium text-gray-700 dark:text-gray-200 transition hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-white comm:dark:bg-gray-900 comm:w-8 comm:h-8 comm:text-sm comm:font-medium comm:text-gray-700 comm:dark:text-gray-200 comm:transition comm:hover:bg-gray-100 comm:dark:hover:bg-gray-700 comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed"
             title="Add Reaction"
             wire:key="add-reaction-button-{{ $comment->getId() }}"
         >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="comm:h-4 comm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
         </button>
@@ -39,7 +39,8 @@
             x-show="open"
             x-cloak
             x-on:click.away="open = false"
-            class="absolute bottom-full mb-2 z-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-2 flex flex-wrap gap-1 w-max max-w-xs"
+            class="comm:absolute comm:bottom-full comm:mb-2 comm:z-10 comm:bg-white comm:dark:bg-gray-800 comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:rounded-lg comm:shadow-lg comm:p-2 comm:flex-wrap comm:gap-1 comm:w-max comm:max-w-xs"
+            :class="{ 'comm:hidden': ! open, 'comm:flex': open }"
         >
             @foreach ($allowedReactions as $reactionEmoji)
                 @php
@@ -51,10 +52,10 @@
                     x-on:click="open = false"
                     type="button"
                     @disabled(! auth()->check())
-                    class="inline-flex items-center justify-center gap-1 rounded-full border w-8 h-8 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed
+                    class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:w-8 comm:h-8 comm:text-sm comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
                            {{ $reactionData['reacted_by_current_user']
-                               ? 'bg-primary-100 dark:bg-primary-800 border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-200 hover:bg-primary-200 dark:hover:bg-primary-600'
-                               : 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600' }}"
+                               ? 'comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-200 comm:dark:hover:bg-gray-600'
+                               : 'comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-600' }}"
                     title="{{ $reactionEmoji }}"
                     wire:key="popup-reaction-button-{{ $reactionEmoji }}-{{ $comment->getId() }}"
                 >
@@ -69,7 +70,7 @@
         @if (! in_array($reactionEmoji, $allowedReactions) && $data['count'] > 0)
             <span
                 wire:key="reaction-extra-{{ $reactionEmoji }}-{{ $comment->getId() }}"
-                class="inline-flex items-center justify-center gap-1 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 px-2 h-8 text-sm font-medium text-gray-600 dark:text-gray-300"
+                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-gray-100 comm:dark:bg-gray-800 comm:px-2 comm:h-8 comm:text-sm comm:font-medium comm:text-gray-600 comm:dark:text-gray-300"
                 title="{{ $reactionEmoji }}"
             >
                 <span>{{ $reactionEmoji }}</span>

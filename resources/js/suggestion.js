@@ -100,7 +100,7 @@ const renderSuggestionsComponent = (items) => {
                                         class="mention-item"
                                         x-text="item.name"
                                         @click="add(item)"
-                                        :class="{ 'bg-gray-100': $store.filamentCommentsMentionsFiltered.selectedIndex === index }"
+                                        :class="{ 'comm:bg-gray-100': $store.filamentCommentsMentionsFiltered.selectedIndex === index }"
                                     ></div>
                                 </template>
                             `;

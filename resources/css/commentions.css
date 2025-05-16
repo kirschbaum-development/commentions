@@ -1,4 +1,5 @@
-@import "tailwindcss" source(none);
+@import "tailwindcss" prefix(comm) important;
+
 @source "../views/";
 @source "../../src";
 
@@ -17,11 +18,7 @@
 }
 
 .tiptap .mention {
-    background-color: #e5e7eb;
-    border-radius: 4px;
-    padding: 2px 4px;
-    font-weight: bold;
-    color: #3b82f6;
+    @apply comm:bg-gray-200 comm:rounded comm:px-1 comm:py-0.5 comm:font-bold comm:text-blue-500;
 }
 
 .mention-suggestion {
@@ -40,5 +37,5 @@
 }
 
 .mention-item:hover {
-    background: #f3f4f6;
+    @apply comm:bg-gray-100;
 }
