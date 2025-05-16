@@ -8,7 +8,7 @@
 
 Commentions is a drop-in package for Filament that allows you to add comments to your resources. You can configure it so your users are mentionable in the comments, and it dispatches events so you can handle mentions in your own application however you like.
 
-![](screenshots/comments.png)
+![](screenshots/comments-demo.png)
 
 ## Installation
 

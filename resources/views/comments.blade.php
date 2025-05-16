@@ -1,10 +1,10 @@
 @use('\Kirschbaum\Commentions\Config')
 
-<div class="space-y-2" x-data="{ wasFocused: false }">
+<div class="comm:space-y-2" x-data="{ wasFocused: false }">
     @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
         <form wire:submit.prevent="save" x-cloak>
             {{-- tiptap editor --}}
-            <div class="relative tip-tap-container mb-2" x-on:click="wasFocused = true" wire:ignore>
+            <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
                 <div
                     x-data="editor(@js($commentBody), @js($this->mentions), 'comments')"
                 >

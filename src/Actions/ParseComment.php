@@ -25,7 +25,7 @@ class ParseComment
                 // if "text-xs" is not already present.
                 $updatedTag = preg_replace_callback(
                     '/class="([^"]*)"/i',
-                    fn () => 'class="p-1 bg-blue-100 text-gray-600 rounded-lg text-xs"',
+                    fn () => 'class="comm:p-1 comm:bg-blue-100 comm:text-gray-600 comm:rounded-lg comm:text-xs"',
                     $originalTag,
                     1,
                 );

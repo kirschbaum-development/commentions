@@ -1,5 +1,6 @@
 {
   "name": "commentions",
+  "type": "module",
   "scripts": {
     "dev:scripts": "node bin/build.js --dev",
     "build:scripts": "node bin/build.js",
