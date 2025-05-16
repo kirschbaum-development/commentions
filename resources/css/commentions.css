@@ -1,4 +1,4 @@
-@import "tailwindcss" prefix(comm) important;
+@import url("tailwindcss") prefix(comm) important;
 
 @source "../views/";
 @source "../../src";
