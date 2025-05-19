@@ -191,6 +191,22 @@ class User extends Model implements Commenter
 }
 ```
 
+### Configuring the Commenter avatar
+
+To configure the avatar, make sure your User model implements Filament's `HasAvatar` interface.
+
+```php
+use Filament\Models\Contracts\HasAvatar;
+
+class User extends Authenticatable implements Commenter, HasName, HasAvatar
+{
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
+    }
+}
+```
+
 ### Events
 
 Two events are dispatched when a comment is created or reacted to:

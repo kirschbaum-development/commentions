@@ -17,7 +17,7 @@
                     <x-filament::button
                         wire:click="save"
                         size="sm"
-                    >Save</x-filament::button>
+                    >Comment</x-filament::button>
 
                     <x-filament::button
                         x-on:click="wasFocused = false"
