@@ -2,19 +2,21 @@
 
 namespace Kirschbaum\Commentions\Filament\Concerns;
 
+use Closure;
+
 trait HasPolling
 {
-    protected ?int $pollingInterval = null;
+    protected string | Closure | null $pollingInterval = null;
 
-    public function pollingInterval(int $interval = 60): static
+    public function poll(string | Closure | null $interval = '10s'): static
     {
         $this->pollingInterval = $interval;
 
         return $this;
     }
 
-    public function getPollingInterval(): ?int
+    public function getPollingInterval(): ?string
     {
-        return $this->pollingInterval;
+        return $this->evaluate($this->pollingInterval);
     }
 }
