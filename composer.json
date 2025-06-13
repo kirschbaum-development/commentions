@@ -26,9 +26,9 @@
         "illuminate/support": "^11.0|^12.0",
         "illuminate/database": "^11.0|^12.0",
         "livewire/livewire": "^3.5",
-        "filament/support": "^3.2",
-        "filament/notifications": "^3.2",
-        "filament/filament": "^3.2"
+        "filament/support": "^3.2|^4.0",
+        "filament/notifications": "^3.2|^4.0",
+        "filament/filament": "^3.2|^4.0"
     },
     "extra": {
         "laravel": {
@@ -55,5 +55,6 @@
         "fix-style": "./vendor/bin/pint --config pint.json",
         "check-style": "./vendor/bin/pint --config pint.json --test",
         "static-analysis": "./vendor/bin/phpstan analyse -c phpstan.neon"
-    }
+    },
+    "minimum-stability": "beta"
 }
