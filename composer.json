@@ -26,9 +26,9 @@
         "illuminate/support": "^11.0|^12.0",
         "illuminate/database": "^11.0|^12.0",
         "livewire/livewire": "^3.5",
-        "filament/support": "^3.2|^4.0",
-        "filament/notifications": "^3.2|^4.0",
-        "filament/filament": "^3.2|^4.0"
+        "filament/support": "^4.0",
+        "filament/notifications": "^4.0",
+        "filament/filament": "^4.0"
     },
     "extra": {
         "laravel": {
