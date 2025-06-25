@@ -4,5 +4,5 @@ namespace Kirschbaum\Commentions\Livewire\Concerns;
 
 trait HasPolling
 {
-    public ?int $pollingInterval = null;
+    public ?string $pollingInterval = null;
 }

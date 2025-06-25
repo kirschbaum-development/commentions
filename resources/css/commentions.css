@@ -1,5 +1,6 @@
 @import "tailwindcss" source(none) prefix(comm) important;
 
+@source "../js/";
 @source "../views/";
 @source "../../src";
 

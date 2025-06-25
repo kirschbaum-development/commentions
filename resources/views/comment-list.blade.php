@@ -1,4 +1,4 @@
-<div @if ($pollingInterval) wire:poll.{{ $pollingInterval }}s @endif>
+<div @if ($pollingInterval) wire:poll.{{ $pollingInterval }} @endif>
     @if ($this->comments->isEmpty())
         <div class="comm:flex comm:items-center comm:justify-center comm:p-6 comm:text-center comm:rounded-lg comm:border comm:border-dashed comm:border-gray-300 comm:dark:border-gray-700">
             <div class="comm:flex comm:flex-col comm:items-center comm:gap-y-2">
