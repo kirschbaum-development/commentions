@@ -2,13 +2,11 @@
 
 namespace Kirschbaum\Commentions\Livewire;
 
-use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
-use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
