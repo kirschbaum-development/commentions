@@ -46,12 +46,44 @@
                     @endif
 
                     @if (Config::resolveAuthenticatedUser()?->can('delete', $comment))
-                        <x-filament::icon-button
-                            icon="heroicon-s-trash"
-                            wire:click="$dispatch('open-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
-                            size="xs"
-                            color="gray"
-                        />
+                        <x-filament::modal
+                            id="delete-comment-modal-{{ $comment->getId() }}"
+                            width="sm"
+                        >
+                            <x-slot name="trigger">
+                                <x-filament::icon-button
+                                    icon="heroicon-s-trash"
+                                    size="xs"
+                                    color="gray"
+                                />
+                            </x-slot>
+
+                            <x-slot name="heading">
+                                Delete Comment
+                            </x-slot>
+
+                            <div class="comm:py-4">
+                                Are you sure you want to delete this comment? This action cannot be undone.
+                            </div>
+
+                            <x-slot name="footer">
+                                <div class="comm:flex comm:justify-end comm:gap-x-4">
+                                    <x-filament::button
+                                        wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
+                                        color="gray"
+                                    >
+                                        Cancel
+                                    </x-filament::button>
+
+                                    <x-filament::button
+                                        wire:click="delete"
+                                        color="danger"
+                                    >
+                                        Delete
+                                    </x-filament::button>
+                                </div>
+                            </x-slot>
+                        </x-filament::modal>
                     @endif
                 </div>
             @endif
@@ -93,38 +125,4 @@
             @endif
         @endif
     </div>
-
-    @if ($comment->isComment() && \Kirschbaum\Commentions\Config::resolveAuthenticatedUser()?->can('delete', $comment))
-        <x-filament::modal
-            id="delete-comment-modal-{{ $comment->getId() }}"
-            wire:model="showDeleteModal"
-            width="sm"
-        >
-            <x-slot name="heading">
-                Delete Comment
-            </x-slot>
-
-            <div class="comm:py-4">
-                Are you sure you want to delete this comment? This action cannot be undone.
-            </div>
-
-            <x-slot name="footer">
-                <div class="comm:flex comm:justify-end comm:gap-x-4">
-                    <x-filament::button
-                        wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
-                        color="gray"
-                    >
-                        Cancel
-                    </x-filament::button>
-
-                    <x-filament::button
-                        wire:click="delete"
-                        color="danger"
-                    >
-                        Delete
-                    </x-filament::button>
-                </div>
-            </x-slot>
-        </x-filament::modal>
-    @endif
 </div>
