@@ -50,20 +50,11 @@ class Project extends Model implements Commentable
 
 ### Usage with Filament
 
-You can register the plugin in your Panel(s) like so:
-
-```php
-use Kirschbaum\Commentions\CommentionsPlugin;
-
-return $panel
-    ->plugins([
-        CommentionsPlugin::make(),
-    ])
-```
-
 There are a couple of ways to use Commentions with Filament.
 
 1. Register the component in your Filament Infolists:
+
+> This works for Filament 3 and 4.
 
 ```php
 Infolists\Components\Section::make('Comments')
@@ -75,6 +66,8 @@ Infolists\Components\Section::make('Comments')
 
 2. Or in your table actions:
 
+If you are using Filament 3, you must use `CommentsTableAction` in your table's `actions` array:
+
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsTableAction;
 
@@ -84,7 +77,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsTableAction;
 ])
 ```
 
-If you are using Filament 4.0, you should use `CommentsAction` in `recordActions` instead:
+If you are using Filament 4, you should use `CommentsAction` in `recordActions` instead:
 
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
@@ -96,6 +89,8 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 ````
 
 3. Or as a header action:
+
+> This works for Filament 3 and 4.
 
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
