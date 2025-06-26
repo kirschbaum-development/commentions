@@ -25,6 +25,8 @@ class CommentsTableAction extends Action
             ]))
             ->modalWidth('xl')
             ->label('Comments')
+            ->modalSubmitAction(false)
+            ->modalCancelAction(false)
             ->modalAutofocus(false);
     }
 
