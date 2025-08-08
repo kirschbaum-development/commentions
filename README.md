@@ -57,10 +57,27 @@ There are a couple of ways to use Commentions with Filament.
 > This works for Filament 3 and 4.
 
 ```php
-Infolists\Components\Section::make('Comments')
+    CommentsEntry::make('comments')
+        ->mentionables(fn (Model $record) => User::all()),
+```
+
+If you wish to make the comments more distinct from the rest of the page, we recommend wrapping them in a `Section`.
+
+For Filament 3:
+
+```php
+\Filament\Infolists\Components\Section::make('Comments')
     ->schema([
-        CommentsEntry::make('comments')
-            ->mentionables(fn (Model $record) => User::all()),
+        CommentsEntry::make('comments'),
+    ]),
+```
+
+For Filament 4:
+
+```php
+\Filament\Schemas\Components\Section::make('Comments')
+    ->components([
+        CommentsEntry::make('comments'),
     ]),
 ```
 
