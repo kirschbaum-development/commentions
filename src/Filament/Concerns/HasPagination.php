@@ -12,7 +12,7 @@ trait HasPagination
 
     protected string|Closure $loadMoreLabel = 'Show more';
 
-    protected int|Closure $perPageIncrement = 5;
+    protected int|Closure|null $perPageIncrement = null;
 
     public function paginate(bool|Closure $enabled = true): static
     {
@@ -64,6 +64,7 @@ trait HasPagination
 
     public function getPerPageIncrement(): int
     {
-        return (int) $this->evaluate($this->perPageIncrement);
+        $value = $this->evaluate($this->perPageIncrement);
+        return (int) ($value ?? $this->getPerPage());
     }
 }
