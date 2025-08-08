@@ -4,7 +4,7 @@
     @if ($avatar = $comment->getAuthorAvatar())
         <img
             src="{{ $comment->getAuthorAvatar() }}"
-            alt="User Avatar"
+            alt="{{ __('commentions::comments.user_avatar_alt') }}"
             class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center"
         />
     @else
@@ -17,14 +17,14 @@
                 {{ $comment->getAuthorName() }}
                 <span
                     class="comm:text-xs comm:text-gray-500 comm:dark:text-gray-300"
-                    title="Commented at {{ $comment->getCreatedAt()->format('Y-m-d H:i:s') }}"
+                    title="{{ __('commentions::comments.commented_at', ['datetime' => $comment->getCreatedAt()->format('Y-m-d H:i:s')]) }}"
                 >{{ $comment->getCreatedAt()->diffForHumans() }}</span>
 
                 @if ($comment->getUpdatedAt()->gt($comment->getCreatedAt()))
                     <span
                         class="comm:text-xs comm:text-gray-300 comm:ml-1"
-                        title="Edited at {{ $comment->getUpdatedAt()->format('Y-m-d H:i:s') }}"
-                    >(edited)</span>
+                        title="{{ __('commentions::comments.edited_at', ['datetime' => $comment->getUpdatedAt()->format('Y-m-d H:i:s')]) }}"
+                    >({{ __('commentions::comments.edited') }})</span>
                 @endif
 
                 @if ($comment->getLabel())
@@ -59,11 +59,11 @@
                             </x-slot>
 
                             <x-slot name="heading">
-                                Delete Comment
+                                {{ __('commentions::comments.delete_comment_heading') }}
                             </x-slot>
 
                             <div class="comm:py-4">
-                                Are you sure you want to delete this comment? This action cannot be undone.
+                                {{ __('commentions::comments.delete_comment_body') }}
                             </div>
 
                             <x-slot name="footer">
@@ -72,14 +72,14 @@
                                         wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
                                         color="gray"
                                     >
-                                        Cancel
+                                        {{ __('commentions::comments.cancel') }}
                                     </x-filament::button>
 
                                     <x-filament::button
                                         wire:click="delete"
                                         color="danger"
                                     >
-                                        Delete
+                                        {{ __('commentions::comments.delete') }}
                                     </x-filament::button>
                                 </div>
                             </x-slot>
@@ -102,7 +102,7 @@
                         wire:click="updateComment({{ $comment->getId() }})"
                         size="sm"
                     >
-                        Save
+                        {{ __('commentions::comments.save') }}
                     </x-filament::button>
 
                     <x-filament::button
@@ -110,7 +110,7 @@
                         size="sm"
                         color="gray"
                     >
-                        Cancel
+                        {{ __('commentions::comments.cancel') }}
                     </x-filament::button>
                 </div>
             </div>
