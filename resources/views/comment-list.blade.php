@@ -21,4 +21,16 @@
             :mentionables="$mentionables"
         />
     @endforeach
+
+    @if ($this->hasMore)
+        <div class="comm:mt-2">
+            <x-filament::button
+                color="gray"
+                size="sm"
+                wire:click="loadMore"
+                wire:target="loadMore"
+                wire:loading.attr="disabled"
+            >{{ $loadMoreLabel }}</x-filament::button>
+        </div>
+    @endif
 </div>

@@ -14,6 +14,13 @@ trait HasComments
         return $this->morphMany(Config::getCommentModel(), 'commentable');
     }
 
+    public function commentsQuery(): MorphMany
+    {
+        return $this->comments()
+            ->latest()
+            ->with(['author', 'reactions.reactor']);
+    }
+
     public function comment(string $body, ?Commenter $author): Comment
     {
         return SaveComment::run($this, $author, $body);
@@ -21,9 +28,6 @@ trait HasComments
 
     public function getComments(): Collection
     {
-        return $this->comments()
-            ->latest()
-            ->with(['author', 'reactions.reactor'])
-            ->get();
+        return $this->commentsQuery()->get();
     }
 }

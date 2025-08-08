@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Actions\SaveComment;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
@@ -14,6 +15,7 @@ use Livewire\Component;
 class Comments extends Component
 {
     use HasMentions;
+    use HasPagination;
     use HasPolling;
 
     public Model $record;

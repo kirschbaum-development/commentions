@@ -1,0 +1,69 @@
+<?php
+
+namespace Kirschbaum\Commentions\Filament\Concerns;
+
+use Closure;
+
+trait HasPagination
+{
+    protected bool|Closure $paginate = true;
+
+    protected int|Closure $perPage = 5;
+
+    protected string|Closure $loadMoreLabel = 'Show more';
+
+    protected int|Closure $perPageIncrement = 5;
+
+    public function paginate(bool|Closure $enabled = true): static
+    {
+        $this->paginate = $enabled;
+
+        return $this;
+    }
+
+    public function disablePagination(): static
+    {
+        return $this->paginate(false);
+    }
+
+    public function perPage(int|Closure $perPage): static
+    {
+        $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    public function loadMoreLabel(string|Closure $label): static
+    {
+        $this->loadMoreLabel = $label;
+
+        return $this;
+    }
+
+    public function loadMoreIncrementsBy(int|Closure $increment): static
+    {
+        $this->perPageIncrement = $increment;
+
+        return $this;
+    }
+
+    public function isPaginated(): bool
+    {
+        return (bool) $this->evaluate($this->paginate);
+    }
+
+    public function getPerPage(): int
+    {
+        return (int) $this->evaluate($this->perPage);
+    }
+
+    public function getLoadMoreLabel(): string
+    {
+        return (string) $this->evaluate($this->loadMoreLabel);
+    }
+
+    public function getPerPageIncrement(): int
+    {
+        return (int) $this->evaluate($this->perPageIncrement);
+    }
+}

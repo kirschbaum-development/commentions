@@ -113,6 +113,59 @@ You can publish the configuration file to make changes.
 php artisan vendor:publish --tag="commentions-config"
 ```
 
+#### Pagination (Filament)
+
+Commentions supports built-in pagination for the embedded list of comments and it is enabled by default. You can disable it or control the number of comments shown per page and per click.
+
+- Enabled by default
+- Disable via `disablePagination()`
+- Configure page size
+- Customize the load more label
+- Control how many comments are appended per click (defaults to the page size)
+
+Examples:
+
+Default Usage:
+
+```php
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
+
+->recordActions([
+    CommentsAction::make()
+        ->mentionables(User::all())
+        ->perPage(10)
+        
+])
+```
+Without Pagination:
+
+```php
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
+
+->recordActions([
+    CommentsAction::make()
+        ->mentionables(User::all())
+        ->disablePagination();
+        
+])
+```
+Advanced Usage:
+
+```php
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+
+Infolists\Components\Section::make('Comments')
+    ->schema([
+        CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all())
+            ->perPage(8)
+            ->loadMoreIncrementsBy(8)
+            ->loadMoreLabel('Show older'),
+    ])
+```
+
+When pagination is enabled, a "Show more" button is displayed to load additional comments incrementally.
+
 #### Configuring the User model and the mentionables
 
 If your `User` model lives in a different namespace than `App\Models\User`, you can configure it in `config/commentions.php`:
