@@ -19,5 +19,3 @@ return [
     'comment' => 'Comment',
     'add_reaction' => 'Add Reaction',
 ];
-
-
