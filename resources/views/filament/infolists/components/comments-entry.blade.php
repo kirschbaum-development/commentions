@@ -1,4 +1,4 @@
-<x-dynamic-component :component="$getEntryWrapperView()">
+<x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
     <livewire:commentions::comments
         :record="$getRecord()"
         :mentionables="$getMentionables()"
