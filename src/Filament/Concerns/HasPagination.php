@@ -65,6 +65,7 @@ trait HasPagination
     public function getPerPageIncrement(): int
     {
         $value = $this->evaluate($this->perPageIncrement);
+
         return (int) ($value ?? $this->getPerPage());
     }
 }
