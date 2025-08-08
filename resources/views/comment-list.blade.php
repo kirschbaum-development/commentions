@@ -8,7 +8,7 @@
                 />
 
                 <span class="comm:text-sm comm:font-medium comm:text-gray-500 comm:dark:text-gray-400">
-                    No comments yet.
+                    {{ __('commentions::comments.no_comments_yet') }}
                 </span>
             </div>
         </div>

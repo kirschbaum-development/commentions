@@ -30,7 +30,7 @@ class CommentsAction extends Action
                 'perPageIncrement' => $this->getPerPageIncrement() ?: $this->getPerPage(),
             ]))
             ->modalWidth('xl')
-            ->label('Comments')
+            ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
             ->modalAutofocus(false);

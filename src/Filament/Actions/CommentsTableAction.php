@@ -24,7 +24,7 @@ class CommentsTableAction extends Action
                 'pollingInterval' => $this->getPollingInterval(),
             ]))
             ->modalWidth('xl')
-            ->label('Comments')
+            ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
             ->modalAutofocus(false);

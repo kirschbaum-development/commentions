@@ -29,6 +29,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
         $package
             ->name(static::$name)
             ->hasConfigFile()
+            ->hasTranslations()
             ->hasViews()
             ->hasMigrations([
                 'create_commentions_tables',
@@ -58,5 +59,10 @@ class CommentionsServiceProvider extends PackageServiceProvider
         );
 
         Gate::policy(CommentModel::class, config('commentions.comment.policy'));
+
+        // Allow publishing of translation files with a custom tag
+        $this->publishes([
+            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/commentions'),
+        ], 'commentions-lang');
     }
 }

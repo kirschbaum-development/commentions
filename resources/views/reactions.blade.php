@@ -26,7 +26,7 @@
             type="button"
             @disabled(! auth()->check())
             class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:border-gray-300 comm:dark:border-gray-600 comm:bg-white comm:dark:bg-gray-900 comm:w-8 comm:h-8 comm:text-xs comm:font-medium comm:text-gray-700 comm:dark:text-gray-200 comm:transition comm:hover:bg-gray-100 comm:dark:hover:bg-gray-700 comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed"
-            title="Add Reaction"
+            title="{{ __('commentions::comments.add_reaction') }}"
             wire:key="add-reaction-button-{{ $comment->getId() }}"
         >
             <svg xmlns="http://www.w3.org/2000/svg" class="comm:h-4 comm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

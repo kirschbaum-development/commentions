@@ -292,6 +292,42 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
 }
 ```
 
+### Translations
+
+You can publish the package translation files and override any strings used by the UI.
+
+Publish the language files into your application:
+
+```bash
+php artisan vendor:publish --tag="commentions-lang"
+``
+
+This will copy the language files to:
+
+- `lang/vendor/commentions/{locale}/comments.php`
+
+Override only the keys you need. Example (English):
+
+```php
+<?php
+
+// lang/vendor/commentions/en/comments.php
+return [
+    'label' => 'Notes',
+    'no_comments_yet' => 'No notes yet.',
+    'add_reaction' => 'Add a reaction',
+    'cancel' => 'Close',
+    'delete' => 'Remove',
+    'save' => 'Update',
+];
+```
+
+If changes don’t appear immediately, clear your caches:
+
+```bash
+php artisan cache:clear
+```
+
 ### Events
 
 Two events are dispatched when a comment is created or reacted to:
