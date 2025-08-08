@@ -73,7 +73,7 @@ test('guests cannot create comments', function () {
         ])
             ->set('commentBody', 'This is a test comment')
             ->call('save');
-    })->toThrow(ErrorException::class);
+    })->toThrow(TypeError::class);
 
     $this->assertDatabaseMissing('comments', [
         'body' => 'This is a test comment',
