@@ -302,7 +302,7 @@ Two events are dispatched when a comment is created or reacted to:
 
 ### Sending notifications when a user is mentioned
 
-Every time a user is mentioned, the `Kirschbaum\Commentions\Events\UserWasMentionedEvent` is dispatched. You can listen to this event and send notifications to the mentioned user.
+Every time a user is mentioned, the `Kirschbaum\Commentions\Events\UserWasMentionedEvent` is dispatched. Commentions ships an optional, opt-in notification you can enable via configuration, or you can listen to the event and handle it yourself.
 
 Example usage:
 
@@ -328,6 +328,30 @@ class SendUserMentionedNotification implements ShouldQueue
 ```
 
 If you have [event auto-discovery](https://laravel.com/docs/11.x/events#registering-events-and-listeners), this should be enough. Otherwise, make sure to register your listener on the `EventServiceProvider`.
+
+#### Built-in opt-in notifications
+
+Enable notifications for mentions in your `config/commentions.php`:
+
+```php
+    'notifications' => [
+        'mentions' => [
+            'enabled' => true,
+            'channels' => ['mail', 'database'],
+        ],
+    ],
+```
+
+Optionally, provide a URL resolver so emails/links point users to the right place:
+
+```php
+use Kirschbaum\Commentions\Config;
+
+Config::resolveCommentUrlUsing(function (\Kirschbaum\Commentions\Comment $comment) {
+    // Return a URL to view the record and scroll to the comment
+    return route('projects.show', $comment->commentable) . '#comment-' . $comment->getId();
+});
+```
 
 ### Resolving the authenticated user
 

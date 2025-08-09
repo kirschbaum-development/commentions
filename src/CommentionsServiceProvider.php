@@ -5,8 +5,11 @@ namespace Kirschbaum\Commentions;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Kirschbaum\Commentions\Comment as CommentModel;
+use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
+use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
 use Kirschbaum\Commentions\Livewire\Comment;
 use Kirschbaum\Commentions\Livewire\CommentList;
 use Kirschbaum\Commentions\Livewire\Comments;
@@ -58,5 +61,10 @@ class CommentionsServiceProvider extends PackageServiceProvider
         );
 
         Gate::policy(CommentModel::class, config('commentions.comment.policy'));
+
+        if (config('commentions.notifications.mentions.enabled', false)) {
+            $listenerClass = (string) config('commentions.notifications.mentions.listener', SendUserMentionedNotification::class);
+            Event::listen(UserWasMentionedEvent::class, $listenerClass);
+        }
     }
 }

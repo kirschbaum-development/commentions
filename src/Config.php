@@ -12,6 +12,8 @@ class Config
 
     protected static ?Closure $resolveAuthenticatedUser = null;
 
+    protected static ?Closure $resolveCommentUrl = null;
+
     public static function resolveAuthenticatedUserUsing(Closure $callback): void
     {
         static::$resolveAuthenticatedUser = $callback;
@@ -27,6 +29,24 @@ class Config
         }
 
         return $user;
+    }
+
+    public static function resolveCommentUrlUsing(Closure $callback): void
+    {
+        static::$resolveCommentUrl = $callback;
+    }
+
+    public static function resolveCommentUrl(?Comment $comment): ?string
+    {
+        if ($comment === null) {
+            return null;
+        }
+
+        if (static::$resolveCommentUrl instanceof Closure) {
+            return call_user_func(static::$resolveCommentUrl, $comment);
+        }
+
+        return null;
     }
 
     public static function getCommentModel(): string
