@@ -309,8 +309,6 @@ This will copy the language files to:
 Override only the keys you need. Example (English):
 
 ```php
-<?php
-
 // lang/vendor/commentions/en/comments.php
 return [
     'label' => 'Notes',
@@ -320,12 +318,6 @@ return [
     'delete' => 'Remove',
     'save' => 'Update',
 ];
-```
-
-If changes don’t appear immediately, clear your caches:
-
-```bash
-php artisan cache:clear
 ```
 
 ### Events
