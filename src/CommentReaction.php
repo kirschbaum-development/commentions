@@ -20,6 +20,11 @@ class CommentReaction extends Model
         'reaction',
     ];
 
+    public function getTable()
+    {
+        return Config::getCommentReactionTable();
+    }
+
     /** @return BelongsTo<Comment> */
     public function comment(): BelongsTo
     {

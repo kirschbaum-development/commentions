@@ -41,6 +41,11 @@ class Comment extends Model implements RenderableComment
         'author_id',
     ];
 
+    public function getTable()
+    {
+        return Config::getCommentTable();
+    }
+
     public function author(): MorphTo
     {
         return $this->morphTo();
