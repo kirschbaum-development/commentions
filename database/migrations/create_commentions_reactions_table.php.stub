@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create(config('commentions.tables.comment_reactions', 'comment_reactions'), function (Blueprint $table) {
             $table->id();
-            $table->foreignId('comment_id')->constrained(config('commentions.table_name'))->cascadeOnDelete();
+            $table->foreignId('comment_id')->constrained(config('commentions.tables.comments'))->cascadeOnDelete();
             $table->morphs('reactor');
 
             if (config('database.default') === 'mysql') {

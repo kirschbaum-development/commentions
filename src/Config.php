@@ -29,6 +29,16 @@ class Config
         return $user;
     }
 
+    public static function getCommentTable(): string
+    {
+        return config('commentions.tables.comments', 'comments');
+    }
+
+    public static function getCommentReactionTable(): string
+    {
+        return config('commentions.tables.comment_reactions', 'comment_reactions');
+    }
+
     public static function getCommentModel(): string
     {
         return config('commentions.comment.model', Comment::class);
