@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
+use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -17,6 +18,7 @@ class Comments extends Component
     use HasMentions;
     use HasPagination;
     use HasPolling;
+    use HasSidebar;
 
     public Model $record;
 

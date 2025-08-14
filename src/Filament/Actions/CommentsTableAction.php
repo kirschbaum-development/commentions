@@ -6,11 +6,13 @@ use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
+use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 
 class CommentsTableAction extends Action
 {
     use HasMentionables;
     use HasPolling;
+    use HasSidebar;
 
     protected function setUp(): void
     {
@@ -22,8 +24,10 @@ class CommentsTableAction extends Action
                 'record' => $record,
                 'mentionables' => $this->getMentionables(),
                 'pollingInterval' => $this->getPollingInterval(),
+                'sidebarEnabled' => $this->isSidebarEnabled(),
+                'showSubscribers' => $this->showSubscribers(),
             ]))
-            ->modalWidth('xl')
+            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)

@@ -8,5 +8,7 @@
         :per-page="$perPage ?? 5"
         :load-more-label="$loadMoreLabel ?? 'Show more'"
         :per-page-increment="$perPageIncrement ?? null"
+        :sidebar-enabled="$sidebarEnabled ?? true"
+        :show-subscribers="$showSubscribers ?? true"
     />
 </div>

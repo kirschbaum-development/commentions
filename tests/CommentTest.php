@@ -5,6 +5,7 @@ namespace Tests;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\Comment;
+use Kirschbaum\Commentions\Events\UserIsSubscribedToCommentableEvent;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 use Tests\Models\Post;
 use Tests\Models\User;
@@ -57,6 +58,46 @@ test('it dispatches events for mentions', function () {
 
     Event::assertDispatched(UserWasMentionedEvent::class, function ($event) use ($anotherUser) {
         return $event->user->is($anotherUser);
+    });
+});
+
+test('it dispatches events for subscribers (distinct event)', function () {
+    Event::fake();
+
+    config()->set('commentions.subscriptions.dispatch_as_mention', false);
+
+    $author = User::factory()->create();
+    $subscriber = User::factory()->create();
+    $post = Post::factory()->create();
+
+    $post->subscribe($subscriber);
+
+    $comment = $post->comment('A new comment for subscribers only', $author);
+
+    Event::assertDispatched(UserIsSubscribedToCommentableEvent::class, function ($event) use ($subscriber, $comment) {
+        return $event->user->is($subscriber) && $event->comment->is($comment);
+    });
+
+    Event::assertNotDispatched(UserIsSubscribedToCommentableEvent::class, function ($event) use ($author) {
+        return $event->user->is($author);
+    });
+});
+
+test('it dispatches mention event for subscribers when configured', function () {
+    Event::fake();
+
+    config()->set('commentions.subscriptions.dispatch_as_mention', true);
+
+    $author = User::factory()->create();
+    $subscriber = User::factory()->create();
+    $post = Post::factory()->create();
+
+    $post->subscribe($subscriber);
+
+    $comment = $post->comment('A new comment for subscribers as mentions', $author);
+
+    Event::assertDispatched(UserWasMentionedEvent::class, function ($event) use ($subscriber, $comment) {
+        return $event->user->is($subscriber) && $event->comment->is($comment);
     });
 });
 
