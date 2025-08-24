@@ -109,7 +109,7 @@ const renderSuggestionsComponent = (items) => {
                         showOnCreate: true,
                         interactive: true,
                         trigger: 'manual',
-                        placement: 'bottom-start',
+                        placement: document.dir === 'rtl' ? 'bottom-end' : 'bottom-start',
                         theme: 'light',
                         arrow: true,
                     });
