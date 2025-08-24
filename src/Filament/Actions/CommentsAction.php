@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPagination;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
+use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 
 class CommentsAction extends Action
 {
     use HasMentionables;
     use HasPagination;
     use HasPolling;
+    use HasSidebar;
 
     protected function setUp(): void
     {
@@ -28,8 +30,10 @@ class CommentsAction extends Action
                 'perPage' => $this->getPerPage(),
                 'loadMoreLabel' => $this->getLoadMoreLabel(),
                 'perPageIncrement' => $this->getPerPageIncrement() ?: $this->getPerPage(),
+                'sidebarEnabled' => $this->isSidebarEnabled(),
+                'showSubscribers' => $this->showSubscribers(),
             ]))
-            ->modalWidth('xl')
+            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
