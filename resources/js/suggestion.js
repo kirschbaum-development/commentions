@@ -1,7 +1,5 @@
 import tippy from "tippy.js";
 
-// Removed insertMention function - using inline approach in command instead
-
 const renderSuggestionsComponent = (items) => {
     let filteredItems = [];
 
