@@ -1,42 +1,26 @@
 import tippy from "tippy.js";
 
-const insertMention = (editor, range, props) => {
-    // delete the existing text before insertion
-    editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .insertContentAt(range, [
-            {
-                type: 'mention',
-                attrs: props,
-            },
-            {
-                type: 'text',
-                text: ' ',
-            },
-        ])
-        .run()
-
-    // get reference to `window` object from editor element, to support cross-frame JS usage
-    editor.view.dom.ownerDocument.defaultView?.getSelection()?.collapseToEnd();
-};
+// Removed insertMention function - using inline approach in command instead
 
 const renderSuggestionsComponent = (items) => {
     let filteredItems = [];
 
+    // Initialize the store
     Alpine.store('filamentCommentsMentionsFiltered', {
         items: [],
         selectedIndex: 0,
     });
 
+    // Ensure items is always an array
+    const safeItems = Array.isArray(items) ? items : [];
+
     return {
         items: ({ query }) => {
-            filteredItems = items
-                .filter(item => item.name.toLowerCase().startsWith(query.toLowerCase()))
+            filteredItems = safeItems
+                .filter(item => {
+                    return item.name.toLowerCase().startsWith(query.toLowerCase());
+                })
                 .slice(0, 5);
-
-            console.log('filteredItems', items, filteredItems, query);
 
             Alpine.store('filamentCommentsMentionsFiltered').items = filteredItems;
             Alpine.store('filamentCommentsMentionsFiltered').selectedIndex = 0;
@@ -45,31 +29,22 @@ const renderSuggestionsComponent = (items) => {
         },
 
         command: ({ editor, range, props }) => {
-            // increase range.to by one when the next node is of type "text"
-            // and starts with a space character
-            const nodeAfter = editor.view.state.selection.$to.nodeAfter
-            const overrideSpace = nodeAfter?.text?.startsWith(' ')
+            try {
+                const attrs = {
+                    id: props.id ?? props.label ?? props.name,
+                    label: props.label ?? props.name ?? String(props.id ?? ''),
+                };
 
-            if (editor.view.state.mention$.text.length > 1) {
-                range.to = range.from + (editor.view.state.mention$.text.length - 1);
-            }
-
-            if (overrideSpace) {
-                range.to += 1
-            }
-
-            let attempts = 3;
-            let success = false;
-
-            while (attempts > 0 && !success) {
-                try {
-                    insertMention(editor, range, props);
-                    success = true;
-                } catch (error) {
-                    attempts--;
-                    range.to -= 1;
-                }
-            }
+                // Replace the trigger + query with the mention node and a trailing space
+                editor
+                    .chain()
+                    .focus()
+                    .insertContentAt({ from: range.from, to: range.to }, [
+                        { type: 'mention', attrs },
+                        { type: 'text', text: ' ' },
+                    ])
+                    .run();
+            } catch (error) {}
         },
 
         render: () => {
@@ -80,47 +55,99 @@ const renderSuggestionsComponent = (items) => {
             return {
                 onStart: (props) => {
                     command = props.command;
-                    popup = tippy('body', {
-                        getReferenceClientRect: props.clientRect,
-                        content: (() => {
-                            component = Alpine.data('filamentCommentsMentions', () => ({
-                                add(item) {
-                                    props.command({
-                                        id: item.id,
-                                        label: item.name
-                                    });
-                                },
-                            }));
 
-                            const container = document.createElement('div');
-                            container.setAttribute('x-data', 'filamentCommentsMentions');
-                            container.innerHTML = `
-                                <template x-for='(item, index) in $store.filamentCommentsMentionsFiltered.items' :key='item.id'>
-                                    <div
-                                        class="mention-item"
-                                        x-text="item.name"
-                                        @click="add(item)"
-                                        :class="{ 'comm:bg-gray-100': $store.filamentCommentsMentionsFiltered.selectedIndex === index }"
-                                    ></div>
-                                </template>
-                            `;
-                            return container;
-                        })(),
-                        showOnCreate: true,
-                        interactive: true,
-                        trigger: 'manual',
-                        placement: document.dir === 'rtl' ? 'bottom-end' : 'bottom-start',
-                        theme: 'light',
-                        arrow: true,
-                    });
+                    // Create a simple positioned div instead of using Tippy/Popper
+
+                    // Register the Alpine component
+                    Alpine.data('filamentCommentsMentions', () => ({
+                        add(item) {
+                            props.command({
+                                id: item.id,
+                                label: item.name
+                            });
+                        },
+                    }));
+
+                    const container = document.createElement('div');
+                    container.setAttribute('x-data', 'filamentCommentsMentions');
+                    container.className = 'mention-popup-container';
+                    container.style.cssText = `
+                        position: fixed;
+                        z-index: 9999;
+                        background: white;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                        padding: 8px;
+                        max-height: 128px;
+                        overflow-y: auto;
+                        min-width: 200px;
+                        max-width: 300px;
+                    `;
+
+                    container.innerHTML = `
+                        <template x-for='(item, index) in $store.filamentCommentsMentionsFiltered.items' :key='item.id'>
+                            <div
+                                class="mention-item"
+                                style="padding: 4px 8px; cursor: pointer; border-radius: 4px; font-size: 14px;"
+                                x-text="item.name"
+                                @click="add(item)"
+                                :style="{ backgroundColor: $store.filamentCommentsMentionsFiltered.selectedIndex === index ? '#f3f4f6' : 'transparent' }"
+                            ></div>
+                        </template>
+                        <div x-show="$store.filamentCommentsMentionsFiltered.items.length === 0" style="color: #6b7280; font-size: 14px; padding: 4px 8px;">
+                            No matches found
+                        </div>
+                    `;
+
+                    // Position the container
+                    try {
+                        const rect = props.clientRect();
+                        const isRTL = document.dir === 'rtl';
+                        
+                        if (isRTL) {
+                            // For RTL, position from the right edge
+                            container.style.right = `${window.innerWidth - rect.right}px`;
+                            container.style.left = 'auto';
+                        } else {
+                            // For LTR, position from the left edge
+                            container.style.left = `${rect.left}px`;
+                            container.style.right = 'auto';
+                        }
+                        container.style.top = `${rect.bottom + 4}px`;
+                    } catch (error) {
+                        container.style.left = '100px';
+                        container.style.top = '100px';
+                    }
+
+                    // Add to document
+                    document.body.appendChild(container);
+                    popup = { element: container };
+
+                    // Initialize Alpine on the container
+                    setTimeout(() => {
+                        Alpine.initTree(container);
+                    }, 0);
                 },
                 onUpdate: (props) => {
-                    if (!props.clientRect) {
+                    if (!props.clientRect || !popup || !popup.element) {
                         return
                     }
-                    popup[0].setProps({
-                        getReferenceClientRect: props.clientRect,
-                    });
+                    try {
+                        const rect = props.clientRect();
+                        const isRTL = document.dir === 'rtl';
+                        
+                        if (isRTL) {
+                            // For RTL, position from the right edge
+                            popup.element.style.right = `${window.innerWidth - rect.right}px`;
+                            popup.element.style.left = 'auto';
+                        } else {
+                            // For LTR, position from the left edge
+                            popup.element.style.left = `${rect.left}px`;
+                            popup.element.style.right = 'auto';
+                        }
+                        popup.element.style.top = `${rect.bottom + 4}px`;
+                    } catch (error) {}
                 },
                 onKeyDown: (props) => {
                     const items = Alpine.store('filamentCommentsMentionsFiltered').items;
@@ -150,7 +177,9 @@ const renderSuggestionsComponent = (items) => {
                     }
 
                     if (props.event.key === 'Escape') {
-                        popup[0].hide();
+                        if (popup && popup.element && popup.element.parentNode) {
+                            popup.element.parentNode.removeChild(popup.element);
+                        }
                         return true;
                     }
 
@@ -158,7 +187,9 @@ const renderSuggestionsComponent = (items) => {
                 },
 
                 onExit: () => {
-                    popup[0].hide();
+                    if (popup && popup.element && popup.element.parentNode) {
+                        popup.element.parentNode.removeChild(popup.element);
+                    }
                 },
             };
         },

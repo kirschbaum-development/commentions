@@ -17,7 +17,11 @@ trait HasMentions
     #[Computed]
     public function mentions()
     {
-        return collect($this->mentionables)
+        if (empty($this->mentionables)) {
+            return collect([]);
+        }
+
+        $result = collect($this->mentionables)
             ->map(function ($mentionable) {
                 return is_array($mentionable) ?
                     [
@@ -29,5 +33,7 @@ trait HasMentions
                         'name' => Manager::getName($mentionable),
                     ];
             });
+
+        return $result;
     }
 }

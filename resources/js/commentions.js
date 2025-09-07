@@ -14,16 +14,38 @@ document.addEventListener('alpine:init', () => {
             init() {
                 const _this = this
 
+                const safeContentRaw = typeof content === 'string' || content == null ? (content ?? '') : content
+                let safeContent
+                if (typeof safeContentRaw === 'string') {
+                    if (safeContentRaw.trim() === '') {
+                        safeContent = { type: 'doc', content: [{ type: 'paragraph' }] }
+                    } else {
+                        // Fallback: strip HTML and initialize as plain text to avoid DOM parsing of HTML
+                        const div = document.createElement('div')
+                        div.innerHTML = safeContentRaw
+                        const text = div.textContent || ''
+                        safeContent = { type: 'doc', content: [{ type: 'paragraph', content: text ? [{ type: 'text', text }] : [] }] }
+                    }
+                } else {
+                    safeContent = safeContentRaw
+                }
+
+                // Ensure mentions is always an array to prevent forEach errors
+                const safeMentions = Array.isArray(mentions) ? mentions : []
+
+                const mentionExtension = Mention.configure({
+                    HTMLAttributes: {
+                        class: 'mention',
+                    },
+                    suggestion: suggestion(safeMentions),
+                    char: '@',
+                });
+
                 editor = new Editor({
                     element: this.$refs.element,
                     extensions: [
                         StarterKit,
-                        Mention.configure({
-                            HTMLAttributes: {
-                                class: 'mention',
-                            },
-                            suggestion: suggestion(mentions),
-                        }),
+                        mentionExtension,
                         Placeholder.configure({
                             placeholder: 'Type your comment…',
                         }),
@@ -34,7 +56,7 @@ document.addEventListener('alpine:init', () => {
                         },
                     },
                     placeholder: 'Type something...',
-                    content: content,
+                    content: safeContent,
 
                     onCreate({ editor }) {
                         _this.updatedAt = Date.now()
