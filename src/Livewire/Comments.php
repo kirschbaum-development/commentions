@@ -9,6 +9,7 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
+use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -19,6 +20,7 @@ class Comments extends Component
     use HasPagination;
     use HasPolling;
     use HasSidebar;
+    use IsReadonly;
 
     public Model $record;
 
@@ -31,6 +33,10 @@ class Comments extends Component
     #[Renderless]
     public function save()
     {
+        if ($this->isReadonly()) {
+            return;
+        }
+
         $this->validate();
 
         SaveComment::run(

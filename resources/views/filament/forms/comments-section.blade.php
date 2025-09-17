@@ -4,7 +4,8 @@
     @if($record ?? null)
         @livewire('commentions::comments', [
             'record' => $record,
-            'mentionables' => config('commentions.mentionables.default', \App\Models\User::all())
+            'mentionables' => config('commentions.mentionables.default', \App\Models\User::all()),
+            'readonly' => $readonly ?? false
         ])
     @else
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('commentions::comments.save_record_first', ['default' => 'Save the record first to enable comments.']) }}</p>

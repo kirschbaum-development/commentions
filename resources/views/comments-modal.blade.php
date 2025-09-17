@@ -10,5 +10,6 @@
         :per-page-increment="$perPageIncrement ?? null"
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"
+        :readonly="$readonly ?? false"
     />
 </div>

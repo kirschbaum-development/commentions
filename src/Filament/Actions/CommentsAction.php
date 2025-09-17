@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPagination;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
+use Kirschbaum\Commentions\Filament\Concerns\IsReadonly;
 
 class CommentsAction extends Action
 {
@@ -15,6 +16,7 @@ class CommentsAction extends Action
     use HasPagination;
     use HasPolling;
     use HasSidebar;
+    use IsReadonly;
 
     protected function setUp(): void
     {
@@ -32,6 +34,7 @@ class CommentsAction extends Action
                 'perPageIncrement' => $this->getPerPageIncrement() ?: $this->getPerPage(),
                 'sidebarEnabled' => $this->isSidebarEnabled(),
                 'showSubscribers' => $this->showSubscribers(),
+                'readonly' => $this->readonly,
             ]))
             ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
