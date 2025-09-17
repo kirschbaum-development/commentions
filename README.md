@@ -122,8 +122,6 @@ protected function getHeaderActions(): array
 
 4. Or directly in form schemas (Filament 4):
 
-> This works for Filament 4 with the new Schema system.
-
 ```php
 use Filament\Forms\Components\ViewField;
 
