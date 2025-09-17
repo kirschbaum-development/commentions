@@ -120,6 +120,94 @@ protected function getHeaderActions(): array
 }
 ```
 
+4. Or directly in form schemas for Edit pages (Filament 4):
+
+```php
+use Filament\Forms\Components\ViewField;
+
+public static function configure(Schema $schema): Schema
+{
+    return $schema
+        ->components([
+            // Your other form fields...
+            
+            ViewField::make('comments_section')
+                ->view('commentions::filament.forms.comments-section')
+                ->viewData(fn ($livewire) => [
+                    'record' => $livewire->record ?? null
+                ])
+                ->columnSpanFull()
+                ->hiddenLabel(),
+        ]);
+}
+```
+
+To make the form comments readonly, pass the `readonly` flag in the viewData:
+
+```php
+ViewField::make('comments_section')
+    ->view('commentions::filament.forms.comments-section')
+    ->viewData(fn ($livewire) => [
+        'record' => $livewire->record ?? null,
+        'readonly' => true, // Enable readonly mode
+    ])
+    ->columnSpanFull()
+    ->hiddenLabel(),
+```
+
+**Note:** For View pages, continue using the infolist approach (option 1) as it works perfectly in that context.
+
+### Readonly Mode
+
+You can make comments readonly by chaining the `readonly()` method on the action. In readonly mode:
+- Users cannot add new comments
+- Users cannot edit existing comments
+- Users cannot delete comments
+- Users cannot react to comments (reactions are displayed but not interactive)
+
+```php
+// Make comments readonly for all actions
+CommentsAction::make()
+    ->readonly()
+    ->mentionables(User::all())
+
+CommentsTableAction::make()
+    ->readonly()
+    ->mentionables(User::all())
+
+// You can also conditionally enable readonly mode
+CommentsAction::make()
+    ->readonly(auth()->user()->cannot('create', Comment::class))
+    ->mentionables(User::all())
+```
+
+This is useful for scenarios like:
+- Archived or closed records where no further comments should be allowed
+- View-only access for certain user roles
+- Historical comment viewing
+- Audit trails where comments should be preserved but not modified
+
+#### Testing Readonly Functionality
+
+The package includes comprehensive tests for readonly functionality designed for Filament 4. To run the readonly-specific tests:
+
+```bash
+# Run all readonly tests
+./vendor/bin/pest tests/Livewire/Readonly* tests/Filament/ReadonlyActionsTest.php tests/Concerns/ReadonlyTraitsTest.php tests/Integration/ReadonlyIntegrationTest.php
+
+# Run specific test categories
+./vendor/bin/pest tests/Livewire/ReadonlyCommentsTest.php     # Comments component tests
+./vendor/bin/pest tests/Livewire/ReadonlyCommentTest.php      # Individual comment tests
+./vendor/bin/pest tests/Livewire/ReadonlyReactionsTest.php    # Reactions tests
+./vendor/bin/pest tests/Filament/ReadonlyActionsTest.php      # Filament 4 action tests
+./vendor/bin/pest tests/Integration/ReadonlyIntegrationTest.php # Integration tests
+
+# Run trait tests
+./vendor/bin/pest tests/Concerns/ReadonlyTraitsTest.php       # IsReadonly trait tests
+```
+
+**Note**: These tests are specifically designed for Filament 4 and may not be compatible with Filament 3.
+
 ### Subscription Management
 
 Commentions includes a subscription system that allows users to subscribe to receive notifications when new comments are added to a commentable resource.

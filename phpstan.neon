@@ -47,12 +47,6 @@ parameters:
             path: src/RenderableComment.php
 
         -
-            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase::[a-zA-Z0-9_]+\(\)\.$#'
-            identifier: method.notFound
-            count: 3
-            path: tests/**/*.php
-
-        -
             message: '#^Undefined variable\: \$this$#'
             identifier: variable.undefined
             count: 3

@@ -3,6 +3,7 @@
 return [
     'label' => 'Comments',
     'no_comments_yet' => 'No comments yet.',
+    'save_record_first' => 'Save the record first to enable comments.',
 
     'user_avatar_alt' => 'User Avatar',
 
