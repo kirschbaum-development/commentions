@@ -123,15 +123,15 @@ test('non-readonly reactions component allows reaction toggling via Comment comp
     ]);
 
     expect($reactionsComponent->instance()->isReadonly())->toBeFalse();
-    
+
     // Verify that the handleReactionToggle method executes without readonly restrictions
     // We test this by ensuring the method doesn't return early due to readonly check
     $reactionsComponent->call('handleReactionToggle', '👍');
-    
+
     // The actual reaction creation happens in the Comment component via the dispatched event
     // So we test the reaction creation through the Comment component integration
     $comment->toggleReaction('👍');
-    
+
     $this->assertDatabaseHas('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,

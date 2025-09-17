@@ -54,7 +54,7 @@ test('readonly comment list properly passes readonly state to child comments', f
 
     // Check that the view contains readonly true for child components
     $component->assertSee('Test comment');
-    
+
     // Verify the component correctly identifies as readonly
     expect($component->instance()->isReadonly())->toBeTrue();
 });
@@ -75,7 +75,7 @@ test('non-readonly comment list allows interaction', function () {
 
     // Check that the view contains the comment
     $component->assertSee('Test comment');
-    
+
     // Verify the component correctly identifies as not readonly
     expect($component->instance()->isReadonly())->toBeFalse();
 });

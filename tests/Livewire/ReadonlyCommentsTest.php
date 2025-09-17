@@ -106,14 +106,14 @@ test('readonly comments component works with Filament 4 view field integration',
     ]);
 
     expect($component->instance()->isReadonly())->toBeTrue();
-    
+
     // Should not allow saving even when trying to bypass readonly
     $component
         ->set('commentBody', 'Attempt to bypass readonly')
         ->call('save');
 
     expect($component->get('commentBody'))->toBe('Attempt to bypass readonly');
-    
+
     $this->assertDatabaseMissing('comments', [
         'body' => 'Attempt to bypass readonly',
     ]);

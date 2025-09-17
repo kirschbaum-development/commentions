@@ -14,7 +14,7 @@ use Livewire\Component;
 class Reactions extends Component
 {
     use IsReadonly;
-    
+
     public RenderableComment $comment;
 
     public function handleReactionToggle(string $reaction): void

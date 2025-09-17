@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Auth;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
-use Kirschbaum\Commentions\Livewire\Comments;
 use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
 use Kirschbaum\Commentions\Livewire\CommentList;
+use Kirschbaum\Commentions\Livewire\Comments;
 use Kirschbaum\Commentions\Livewire\Reactions;
 use Tests\Models\Post;
 use Tests\Models\User;
