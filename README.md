@@ -120,7 +120,7 @@ protected function getHeaderActions(): array
 }
 ```
 
-4. Or directly in form schemas (Filament 4):
+4. Or directly in form schemas for Edit pages (Filament 4):
 
 ```php
 use Filament\Forms\Components\ViewField;
@@ -139,6 +139,8 @@ public static function configure(Schema $schema): Schema
         ]);
 }
 ```
+
+**Note:** For View pages, continue using the infolist approach (option 1) as it works perfectly in that context.
 
 ### Subscription Management
 
