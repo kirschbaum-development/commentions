@@ -120,6 +120,28 @@ protected function getHeaderActions(): array
 }
 ```
 
+4. Or directly in form schemas (Filament 4):
+
+> This works for Filament 4 with the new Schema system.
+
+```php
+use Filament\Forms\Components\ViewField;
+
+public static function configure(Schema $schema): Schema
+{
+    return $schema
+        ->components([
+            // Your other form fields...
+            
+            ViewField::make('comments_section')
+                ->view('commentions::filament.forms.comments-section')
+                ->viewData(fn ($livewire) => ['record' => $livewire->record ?? null])
+                ->columnSpanFull()
+                ->hiddenLabel(),
+        ]);
+}
+```
+
 ### Subscription Management
 
 Commentions includes a subscription system that allows users to subscribe to receive notifications when new comments are added to a commentable resource.
