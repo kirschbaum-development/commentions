@@ -8,6 +8,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
@@ -30,7 +32,7 @@ test('readonly reactions component prevents adding reactions', function () {
         ->call('handleReactionToggle', '👍');
 
     // No reaction should be created
-    $this->assertDatabaseMissing('comment_reactions', [
+    assertDatabaseMissing('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),
@@ -54,7 +56,7 @@ test('readonly reactions component prevents removing reactions', function () {
     ]);
 
     // Verify reaction exists
-    $this->assertDatabaseHas('comment_reactions', [
+    assertDatabaseHas('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),
@@ -69,7 +71,7 @@ test('readonly reactions component prevents removing reactions', function () {
         ->call('handleReactionToggle', '👍');
 
     // Reaction should still exist
-    $this->assertDatabaseHas('comment_reactions', [
+    assertDatabaseHas('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),
@@ -132,7 +134,7 @@ test('non-readonly reactions component allows reaction toggling via Comment comp
     // So we test the reaction creation through the Comment component integration
     $comment->toggleReaction('👍');
 
-    $this->assertDatabaseHas('comment_reactions', [
+    assertDatabaseHas('comment_reactions', [
         'comment_id' => $comment->id,
         'reactor_id' => $user->id,
         'reactor_type' => $user->getMorphClass(),

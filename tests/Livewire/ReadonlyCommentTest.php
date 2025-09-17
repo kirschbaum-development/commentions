@@ -6,6 +6,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 test('readonly comment component hides edit and delete buttons', function () {
@@ -64,7 +66,7 @@ test('readonly comment component prevents deleting', function () {
         ->call('delete');
 
     // Comment should still exist in database
-    $this->assertDatabaseHas('comments', [
+    assertDatabaseHas('comments', [
         'id' => $comment->id,
         'body' => 'Comment to be protected',
     ]);
@@ -88,12 +90,12 @@ test('readonly comment component prevents updating', function () {
         ->call('updateComment');
 
     // Comment should remain unchanged in database
-    $this->assertDatabaseHas('comments', [
+    assertDatabaseHas('comments', [
         'id' => $comment->id,
         'body' => 'Original comment body',
     ]);
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'id' => $comment->id,
         'body' => 'Modified comment body',
     ]);

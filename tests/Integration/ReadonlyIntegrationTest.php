@@ -11,6 +11,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
@@ -46,7 +48,7 @@ test('full readonly flow prevents all interactions', function () {
         ->call('save')
         ->assertSet('commentBody', 'New comment attempt'); // Should not be cleared
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'body' => 'New comment attempt',
     ]);
 
@@ -63,7 +65,7 @@ test('full readonly flow prevents all interactions', function () {
 
     // Should not allow deleting
     $commentComponent->call('delete');
-    $this->assertDatabaseHas('comments', [
+    assertDatabaseHas('comments', [
         'id' => $existingComment->id,
         'body' => 'Existing comment',
     ]);
@@ -76,14 +78,14 @@ test('full readonly flow prevents all interactions', function () {
 
     // Should not allow adding new reactions
     $reactionsComponent->call('handleReactionToggle', '❤️');
-    $this->assertDatabaseMissing('comment_reactions', [
+    assertDatabaseMissing('comment_reactions', [
         'comment_id' => $existingComment->id,
         'reaction' => '❤️',
     ]);
 
     // Should not allow removing existing reactions
     $reactionsComponent->call('handleReactionToggle', '👍');
-    $this->assertDatabaseHas('comment_reactions', [
+    assertDatabaseHas('comment_reactions', [
         'comment_id' => $existingComment->id,
         'reaction' => '👍',
     ]);

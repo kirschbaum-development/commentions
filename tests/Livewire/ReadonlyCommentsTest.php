@@ -7,6 +7,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 test('readonly comments component prevents creating new comments', function () {
@@ -27,7 +29,7 @@ test('readonly comments component prevents creating new comments', function () {
         ->assertHasNoErrors()
         ->assertSet('commentBody', 'This should not be saved'); // Body should not be cleared since save was prevented
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'body' => 'This should not be saved',
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,
@@ -82,7 +84,7 @@ test('non-readonly comments component allows creating comments', function () {
         ->assertHasNoErrors()
         ->assertSet('commentBody', ''); // Body should be cleared after successful save
 
-    $this->assertDatabaseHas('comments', [
+    assertDatabaseHas('comments', [
         'body' => 'This should be saved',
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,
@@ -114,7 +116,7 @@ test('readonly comments component works with Filament 4 view field integration',
 
     expect($component->get('commentBody'))->toBe('Attempt to bypass readonly');
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'body' => 'Attempt to bypass readonly',
     ]);
 });
