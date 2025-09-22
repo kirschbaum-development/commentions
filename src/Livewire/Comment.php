@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -15,6 +16,7 @@ use Livewire\Component;
 class Comment extends Component
 {
     use HasMentions;
+    use IsReadonly;
 
     public CommentModel|RenderableComment $comment;
 
@@ -39,7 +41,7 @@ class Comment extends Component
     #[Renderless]
     public function delete()
     {
-        if (! auth()->user()?->can('delete', $this->comment)) {
+        if ($this->isReadonly() || ! auth()->user()?->can('delete', $this->comment)) {
             return;
         }
 
@@ -75,7 +77,7 @@ class Comment extends Component
 
     public function edit(): void
     {
-        if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
+        if ($this->isReadonly() || ! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 
@@ -87,7 +89,7 @@ class Comment extends Component
 
     public function updateComment()
     {
-        if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
+        if ($this->isReadonly() || ! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 
