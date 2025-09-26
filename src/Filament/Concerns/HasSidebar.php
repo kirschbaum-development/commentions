@@ -112,14 +112,14 @@ trait HasSidebar
         $user = $this->resolveCurrentUser();
 
         if (! $user) {
-            return $this->evaluateSubscriptionOverride($this->subscribeLabelOverride, $record) ?? 'Subscribe';
+            return $this->evaluateSubscriptionOverride($this->subscribeLabelOverride, $record) ?? __('commentions::comments.subscribe');
         }
 
         if ($record->isSubscribed($user)) {
-            return $this->evaluateSubscriptionOverride($this->unsubscribeLabelOverride, $record) ?? 'Unsubscribe';
+            return $this->evaluateSubscriptionOverride($this->unsubscribeLabelOverride, $record) ?? __('commentions::comments.unsubscribe');
         }
 
-        return $this->evaluateSubscriptionOverride($this->subscribeLabelOverride, $record) ?? 'Subscribe';
+        return $this->evaluateSubscriptionOverride($this->subscribeLabelOverride, $record) ?? __('commentions::comments.subscribe');
     }
 
     protected function computeSubscriptionIcon(Model $record): string
