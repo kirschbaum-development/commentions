@@ -26,7 +26,7 @@ class SubscriptionAction extends Action
                 }
 
                 $this->successNotificationTitle(
-                    $subscribed ? 'Subscribed to notifications' : 'Unsubscribed from notifications'
+                    $subscribed ? __('commentions::comments.subscribed_notification_title') : __('commentions::comments.unsubscribed_notification_title')
                 );
 
                 $this->success();
