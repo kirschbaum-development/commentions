@@ -2,6 +2,7 @@
 
 return [
     'label' => 'Comments',
+    'placeholder' => 'Type your comment…',
     'no_comments_yet' => 'No comments yet.',
 
     'user_avatar_alt' => 'User Avatar',
@@ -18,10 +19,15 @@ return [
     'save' => 'Save',
     'comment' => 'Comment',
     'add_reaction' => 'Add Reaction',
+    'show_more' => 'Show More',
 
     'notifications' => 'Notifications',
     'unsubscribe' => 'Unsubscribe',
     'subscribe' => 'Subscribe',
     'subscribers' => 'Subscribers',
-    'more' => 'more',
+    'more' => 'more|more',
+
+    'notification_subscribed' => 'Subscribed to notifications',
+    'notification_unsubscribed' => 'Unsubscribed from notifications',
+    'notification_comment_deleted' => 'Comment deleted',
 ];

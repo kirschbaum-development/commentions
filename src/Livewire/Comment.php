@@ -48,7 +48,7 @@ class Comment extends Component
         $this->dispatch('comment:deleted');
 
         Notification::make()
-            ->title('Comment deleted')
+            ->title(__('commentions::comments.notification_comment_deleted'))
             ->success()
             ->send();
     }

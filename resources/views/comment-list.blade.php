@@ -30,7 +30,7 @@
                 wire:click="loadMore"
                 wire:target="loadMore"
                 wire:loading.attr="disabled"
-            >{{ $loadMoreLabel }}</x-filament::button>
+            >{{ $this->getLoadMoreLabel() }}</x-filament::button>
         </div>
     @endif
 </div>

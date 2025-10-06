@@ -6,7 +6,7 @@
         :polling-interval="$pollingInterval"
         :paginate="$paginate ?? true"
         :per-page="$perPage ?? 5"
-        :load-more-label="$loadMoreLabel ?? 'Show more'"
+        :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
         :per-page-increment="$perPageIncrement ?? null"
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"

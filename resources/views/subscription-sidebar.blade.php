@@ -82,7 +82,7 @@
                         @endforeach
                         @if ($this->subscribers->count() > 5)
                             <div class="comm:text-xs comm:text-gray-500 comm:dark:text-gray-400 comm:pl-6">
-                                +{{ $this->subscribers->count() - 5 }} {{ __('commentions::comments.more') }}
+                                +{{ $this->subscribers->count() - 5 }} {{ trans_choice('commentions::comments.more', $this->subscribers->count() - 5) }}
                             </div>
                         @endif
                     </div>
