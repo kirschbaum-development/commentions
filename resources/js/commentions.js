@@ -5,7 +5,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import suggestion from './suggestion'
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('editor', (content, mentions, component) => {
+    Alpine.data('editor', (content, mentions, component, placeholder) => {
         let editor
 
         return {
@@ -25,7 +25,7 @@ document.addEventListener('alpine:init', () => {
                             suggestion: suggestion(mentions),
                         }),
                         Placeholder.configure({
-                            placeholder: 'Type your comment…',
+                            placeholder: placeholder,
                         }),
                     ],
                     editorProps: {

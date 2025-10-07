@@ -62,4 +62,9 @@ class Comments extends Component
 
         $this->dispatch('comments:content:cleared');
     }
+
+    public function getPlaceholder(): string
+    {
+        return  __('commentions::comments.placeholder');
+    }
 }

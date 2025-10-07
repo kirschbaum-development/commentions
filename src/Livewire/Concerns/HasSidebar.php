@@ -80,14 +80,14 @@ trait HasSidebar
             $this->record->unsubscribe($user);
 
             Notification::make()
-                ->title('Unsubscribed from notifications')
+                ->title(__('commentions::comments.notification_unsubscribed'))
                 ->success()
                 ->send();
         } else {
             $this->record->subscribe($user);
 
             Notification::make()
-                ->title('Subscribed to notifications')
+                ->title(__('commentions::comments.notification_subscribed'))
                 ->success()
                 ->send();
         }
