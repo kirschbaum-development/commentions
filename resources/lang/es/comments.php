@@ -25,10 +25,8 @@ return [
     'unsubscribe' => 'Desabonarse',
     'subscribe' => 'Suscribir',
     'subscribers' => 'Suscriptores',
-    'more' => 'adicional|adicional',
-
+    'more' => 'Más',
     'notification_subscribed' => 'Suscrito a notificaciones',
     'notification_unsubscribed' => 'Darse de baja de las notificaciones',
     'notification_comment_deleted' => 'Comentario eliminado',
-
 ];

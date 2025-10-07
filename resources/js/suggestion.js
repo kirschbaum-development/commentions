@@ -33,7 +33,12 @@ const renderSuggestionsComponent = (items) => {
     return {
         items: ({ query }) => {
             filteredItems = items
-                .filter(item => item.name.toLowerCase().startsWith(query.toLowerCase()))
+                .filter(
+                    item => item.name
+                        .toLowerCase()
+                        .replace(/\s/g, '')
+                        .includes(query.toLowerCase())
+                )
                 .slice(0, 5);
 
             console.log('filteredItems', items, filteredItems, query);
