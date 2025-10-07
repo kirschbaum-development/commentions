@@ -18,4 +18,10 @@ return [
     'save' => 'Guardar',
     'comment' => 'Comentar',
     'add_reaction' => 'Agregar reacción',
+
+    'notifications' => 'Notificaciones',
+    'unsubscribe' => 'Desuscribirse',
+    'subscribe' => 'Suscribirse',
+    'subscribers' => 'Suscriptores',
+    'more' => 'Más',
 ];
