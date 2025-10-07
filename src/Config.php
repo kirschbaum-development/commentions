@@ -41,11 +41,6 @@ class Config
         return config('commentions.tables.comment_reactions', 'comment_reactions');
     }
 
-    public static function getCommentSubscriptionTable(): string
-    {
-        return config('commentions.tables.comment_subscriptions', 'comment_subscriptions');
-    }
-
     public static function resolveCommentUrlUsing(Closure $callback): void
     {
         static::$resolveCommentUrl = $callback;

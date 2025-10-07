@@ -18,11 +18,6 @@ class CommentSubscription extends Model
         'subscriber_type',
     ];
 
-    public function getTable()
-    {
-        return Config::getCommentSubscriptionTable();
-    }
-
     public function subscribable(): MorphTo
     {
         return $this->morphTo();
