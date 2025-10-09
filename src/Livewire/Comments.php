@@ -65,6 +65,6 @@ class Comments extends Component
 
     public function getPlaceholder(): string
     {
-        return  __('commentions::comments.placeholder');
+        return __('commentions::comments.placeholder');
     }
 }

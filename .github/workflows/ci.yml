@@ -48,7 +48,7 @@ jobs:
           composer dump
 
       - name: Pint (check styles)
-        run: composer check-style
+        run: composer lint:check
 
   static-analysis:
     runs-on: ubuntu-24.04

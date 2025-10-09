@@ -53,8 +53,8 @@
     },
     "scripts": {
         "test": "vendor/bin/pest",
-        "fix-style": "./vendor/bin/pint --config pint.json",
-        "check-style": "./vendor/bin/pint --config pint.json --test",
+        "lint": "./vendor/bin/pint --config pint.json",
+        "lint:check": "./vendor/bin/pint --config pint.json --test",
         "static-analysis": "./vendor/bin/phpstan analyse -c phpstan.neon"
     }
 }
