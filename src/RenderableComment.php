@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use DateTime;
 use Kirschbaum\Commentions\Contracts\RenderableComment as RenderableCommentContract;
 use Livewire\Wireable;
@@ -23,9 +24,9 @@ class RenderableComment implements RenderableCommentContract, Wireable
 
     protected ?string $label;
 
-    protected DateTime|Carbon $createdAt;
+    protected DateTime|CarbonInterface $createdAt;
 
-    protected DateTime|Carbon $updatedAt;
+    protected DateTime|CarbonInterface $updatedAt;
 
     public function __construct(
         string|int $id,
@@ -79,12 +80,12 @@ class RenderableComment implements RenderableCommentContract, Wireable
         return $this->parsedBody ?? $this->body;
     }
 
-    public function getCreatedAt(): DateTime|Carbon
+    public function getCreatedAt(): DateTime|CarbonInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime|Carbon
+    public function getUpdatedAt(): DateTime|CarbonInterface
     {
         return $this->updatedAt;
     }

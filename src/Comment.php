@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Closure;
 use DateTime;
 use Filament\Models\Contracts\HasAvatar;
@@ -149,12 +150,12 @@ class Comment extends Model implements RenderableComment
         return $this->body_parsed;
     }
 
-    public function getCreatedAt(): DateTime|Carbon
+    public function getCreatedAt(): DateTime|CarbonInterface
     {
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): DateTime|Carbon
+    public function getUpdatedAt(): DateTime|CarbonInterface
     {
         return $this->updated_at;
     }
