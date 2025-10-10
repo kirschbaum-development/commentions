@@ -3,7 +3,7 @@
 <div class="comm:flex comm:gap-4 comm:h-full" x-data="{ wasFocused: false }">
     {{-- Main Comments Area --}}
     <div class="comm:flex-1 comm:space-y-2">
-        @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
+        @if (!$this->isReadonly() && Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
             <form wire:submit.prevent="save" x-cloak>
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
@@ -40,6 +40,7 @@
             :per-page="$perPage ?? 5"
             :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
             :per-page-increment="$perPageIncrement ?? null"
+            :readonly="$this->isReadonly()"
         />
     </div>
 

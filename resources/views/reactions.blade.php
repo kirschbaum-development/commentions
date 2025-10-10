@@ -2,25 +2,39 @@
     {{-- Inline buttons for existing reactions --}}
     @foreach ($this->reactionSummary as $reactionData)
         <span wire:key="inline-reaction-button-{{ $reactionData['reaction'] }}-{{ $comment->getId() }}">
-            <button
-                x-cloak
-                wire:click="handleReactionToggle('{{ $reactionData['reaction'] }}')"
-                type="button"
-                class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:px-2 comm:h-8 comm:text-xs comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
-                    {{ $reactionData['reacted_by_current_user']
-                        ? 'comm:bg-gray-50 comm:dark:bg-gray-800 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-200 comm:dark:hover:bg-gray-600'
-                        : 'comm:bg-white comm:dark:bg-gray-900 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-600' }}"
-                title="{{ $reactionData['reaction'] }}"
+            @if ($this->isReadonly())
+                <span
+                    class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:px-2 comm:h-8 comm:text-xs comm:font-medium
+                        {{ $reactionData['reacted_by_current_user']
+                            ? 'comm:bg-gray-50 comm:dark:bg-gray-800 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200'
+                            : 'comm:bg-white comm:dark:bg-gray-900 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200' }}"
+                    title="{{ $reactionData['reaction'] }}"
+                >
+                    <span>{{ $reactionData['reaction'] }}</span>
+                    <span wire:key="inline-reaction-count-{{ $reactionData['reaction'] }}-{{ $comment->getId() }}">{{ $reactionData['count'] }}</span>
+                </span>
+            @else
+                <button
+                    x-cloak
+                    wire:click="handleReactionToggle('{{ $reactionData['reaction'] }}')"
+                    type="button"
+                    class="comm:inline-flex comm:items-center comm:justify-center comm:gap-1 comm:rounded-full comm:border comm:px-2 comm:h-8 comm:text-xs comm:font-medium comm:transition comm:focus:outline-none comm:focus:ring-2 comm:focus:ring-offset-2 comm:disabled:opacity-50 comm:disabled:cursor-not-allowed
+                        {{ $reactionData['reacted_by_current_user']
+                            ? 'comm:bg-gray-50 comm:dark:bg-gray-800 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-200 comm:dark:hover:bg-gray-600'
+                            : 'comm:bg-white comm:dark:bg-gray-900 comm:border-gray-300 comm:dark:border-gray-600 comm:text-gray-700 comm:dark:text-gray-200 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-600' }}"
+                    title="{{ $reactionData['reaction'] }}"
 
-            >
-                <span>{{ $reactionData['reaction'] }}</span>
-                <span wire:key="inline-reaction-count-{{ $reactionData['reaction'] }}-{{ $comment->getId() }}">{{ $reactionData['count'] }}</span>
-            </button>
+                >
+                    <span>{{ $reactionData['reaction'] }}</span>
+                    <span wire:key="inline-reaction-count-{{ $reactionData['reaction'] }}-{{ $comment->getId() }}">{{ $reactionData['count'] }}</span>
+                </button>
+            @endif
         </span>
     @endforeach
 
     {{-- Add Reaction Button --}}
-    <div class="comm:relative" x-data="{ open: false }" wire:ignore.self>
+    @if (!$this->isReadonly())
+        <div class="comm:relative" x-data="{ open: false }" wire:ignore.self>
         <button
             x-on:click="open = !open"
             type="button"
@@ -63,7 +77,8 @@
                 </button>
             @endforeach
         </div>
-    </div>
+        </div>
+    @endif
 
     {{-- Display summary of reactions not explicitly in the allowed list --}}
     @foreach ($this->reactionSummary as $reactionEmoji => $data)
