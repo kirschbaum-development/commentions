@@ -34,7 +34,7 @@
                 @endif
             </div>
 
-            @if ($comment->isComment() && Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment))
+            @if (!$this->isReadonly() && $comment->isComment() && Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment))
                 <div class="comm:flex comm:gap-x-1">
                     @if (Config::resolveAuthenticatedUser()?->can('update', $comment))
                         <x-filament::icon-button
@@ -120,6 +120,7 @@
             @if ($comment->isComment())
                 <livewire:commentions::reactions
                     :comment="$comment"
+                    :readonly="$this->isReadonly()"
                     :wire:key="'reaction-manager-' . $comment->getId()"
                 />
             @endif
