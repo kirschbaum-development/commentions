@@ -7,5 +7,6 @@
         :per-page="$getPerPage()"
         :load-more-label="$getLoadMoreLabel()"
         :per-page-increment="$getPerPageIncrement()"
+        :sidebar-enabled="$isSidebarEnabled()"
     />
 </x-dynamic-component>
