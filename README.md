@@ -388,7 +388,7 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
 
 ### Customizing TipTap Editor Styles
 
-You can customize the TipTap editor CSS classes used using the `Config` class:
+You can customize the TipTap editor CSS classes used using the `Config` class.
 
 ```php
 use Kirschbaum\Commentions\Config;
@@ -417,6 +417,8 @@ CommentsAction::make()
     ->mentionables(User::all())
     ->tipTapCssClasses('prose max-w-none focus:outline-none p-4')
 ```
+
+**Important**: Make sure to whitelist the classes in your Tailwind config if you override them.
 
 ### Translations
 
