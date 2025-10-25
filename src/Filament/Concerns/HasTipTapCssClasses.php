@@ -7,9 +7,9 @@ use Kirschbaum\Commentions\Config;
 
 trait HasTipTapCssClasses
 {
-    protected string | Closure | null $tipTapCssClasses = null;
+    protected string|Closure|null $tipTapCssClasses = null;
 
-    public function tipTapCssClasses(string | Closure | null $classes): static
+    public function tipTapCssClasses(string|Closure|null $classes): static
     {
         $this->tipTapCssClasses = $classes;
 
