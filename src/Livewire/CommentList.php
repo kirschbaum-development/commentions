@@ -19,6 +19,8 @@ class CommentList extends Component
 
     public Model $record;
 
+    public ?string $tipTapCssClasses = null;
+
     public function render()
     {
         return view('commentions::comment-list');

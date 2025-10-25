@@ -22,6 +22,8 @@ class Comment extends Component
 
     public bool $editing = false;
 
+    public ?string $tipTapCssClasses = null;
+
     protected $rules = [
         'commentBody' => 'required|string',
     ];
@@ -114,5 +116,10 @@ class Comment extends Component
         $this->comment->toggleReaction($reaction);
 
         $this->dispatch('comment:reaction:saved');
+    }
+
+    public function getTipTapCssClasses(): ?string
+    {
+        return $this->tipTapCssClasses ?? Config::getTipTapCssClasses();
     }
 }
