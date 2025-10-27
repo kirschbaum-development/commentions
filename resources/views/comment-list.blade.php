@@ -19,6 +19,7 @@
             :key="$comment->getContentHash()"
             :comment="$comment"
             :mentionables="$mentionables"
+            :tip-tap-css-classes="$tipTapCssClasses"
         />
     @endforeach
 

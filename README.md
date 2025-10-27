@@ -245,7 +245,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
     CommentsAction::make()
         ->mentionables(User::all())
         ->perPage(10)
-        
+
 ])
 ```
 Without Pagination:
@@ -257,7 +257,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
     CommentsAction::make()
         ->mentionables(User::all())
         ->disablePagination();
-        
+
 ])
 ```
 Advanced Usage:
@@ -385,6 +385,40 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
     }
 }
 ```
+
+### Customizing TipTap Editor Styles
+
+You can customize the TipTap editor CSS classes used using the `Config` class.
+
+```php
+use Kirschbaum\Commentions\Config;
+
+Config::resolveTipTapCssClassesUsing(function () {
+    return 'prose max-w-none focus:outline-none p-4';
+});
+```
+
+And you can also override the classes on a per-component basis using the `tipTapCssClasses()` method:
+
+```php
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+
+CommentsEntry::make('comments')
+    ->mentionables(fn (Model $record) => User::all())
+    ->tipTapCssClasses('prose max-w-none focus:outline-none p-4')
+```
+
+Or with actions:
+
+```php
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
+
+CommentsAction::make()
+    ->mentionables(User::all())
+    ->tipTapCssClasses('prose max-w-none focus:outline-none p-4')
+```
+
+**Important**: Make sure to whitelist the classes in your Tailwind config if you override them.
 
 ### Translations
 
