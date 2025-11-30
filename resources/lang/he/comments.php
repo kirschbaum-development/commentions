@@ -25,9 +25,10 @@ return [
     'unsubscribe' => 'בטל הרשמה',
     'subscribe' => 'הירשם',
     'subscribers' => 'מנויים',
-    'more' => 'עוד|עוד',
+    'more' => 'עוד',
 
     'notification_subscribed' => 'נרשמת לקבלת התראות',
     'notification_unsubscribed' => 'ההרשמה להתראות בוטלה',
     'notification_comment_deleted' => 'התגובה נמחקה',
 ];
+
