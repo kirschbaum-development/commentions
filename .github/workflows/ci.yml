@@ -13,7 +13,9 @@ jobs:
       php: 8.4
       laravel: 12
       testbench: 10
-      filament: 4
+      filament: 5
+      livewire: 4
+      pest: 4
       larastan: 3
       pint: 1
 
@@ -43,6 +45,11 @@ jobs:
           composer --version
           composer require "laravel/framework:${{ env.laravel }}.*" --no-interaction --no-update
           composer require "orchestra/testbench:${{ env.testbench }}.*" --no-interaction --no-update --dev
+          composer require "filament/filament:${{ env.filament }}.*" --no-interaction --no-update
+          composer require "livewire/livewire:${{ env.livewire }}.*" --no-interaction --no-update
+          composer require "pestphp/pest:${{ env.pest }}.*" --no-interaction --no-update --dev
+          composer require "pestphp/pest-plugin-laravel:${{ env.pest }}.*" --no-interaction --no-update --dev
+          composer require "pestphp/pest-plugin-livewire:${{ env.pest }}.*" --no-interaction --no-update --dev
           composer require "larastan/larastan:${{ env.larastan }}.*" --no-interaction --no-update --dev
           composer require "laravel/pint:${{ env.pint }}.*" --no-interaction --no-update --dev
           composer update --prefer-dist --no-interaction
@@ -59,7 +66,9 @@ jobs:
       php: 8.4
       laravel: 12
       testbench: 10
-      filament: 4
+      filament: 5
+      livewire: 4
+      pest: 4
       larastan: 3
       pint: 1
 
@@ -89,6 +98,11 @@ jobs:
           composer --version
           composer require "laravel/framework:${{ env.laravel }}.*" --no-interaction --no-update
           composer require "orchestra/testbench:${{ env.testbench }}.*" --no-interaction --no-update --dev
+          composer require "filament/filament:${{ env.filament }}.*" --no-interaction --no-update
+          composer require "livewire/livewire:${{ env.livewire }}.*" --no-interaction --no-update
+          composer require "pestphp/pest:${{ env.pest }}.*" --no-interaction --no-update --dev
+          composer require "pestphp/pest-plugin-laravel:${{ env.pest }}.*" --no-interaction --no-update --dev
+          composer require "pestphp/pest-plugin-livewire:${{ env.pest }}.*" --no-interaction --no-update --dev
           composer require "larastan/larastan:${{ env.larastan }}.*" --no-interaction --no-update --dev
           composer require "laravel/pint:${{ env.pint }}.*" --no-interaction --no-update --dev
           composer update --prefer-dist --no-interaction --no-suggest --dev
@@ -108,19 +122,27 @@ jobs:
       matrix:
         php: [8.3, 8.4]
         laravel: [11, 12]
+        filament: [4, 5]
+        exclude:
+          - laravel: 11
+            filament: 5
         include:
           - laravel: 11
             testbench: 9
-            filament: 4
             larastan: 3
             pint: 1
           - laravel: 12
             testbench: 10
-            filament: 4
             larastan: 3
             pint: 1
+          - filament: 4
+            livewire: 3
+            pest: 3
+          - filament: 5
+            livewire: 4
+            pest: 4
 
-    name: Tests - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+    name: Tests - PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - Filament ${{ matrix.filament }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -146,6 +168,11 @@ jobs:
           composer --version
           composer require "laravel/framework:${{ matrix.laravel }}.*" --no-interaction --no-update
           composer require "orchestra/testbench:${{ matrix.testbench }}.*" --no-interaction --no-update --dev
+          composer require "filament/filament:${{ matrix.filament }}.*" --no-interaction --no-update
+          composer require "livewire/livewire:${{ matrix.livewire }}.*" --no-interaction --no-update
+          composer require "pestphp/pest:${{ matrix.pest }}.*" --no-interaction --no-update --dev
+          composer require "pestphp/pest-plugin-laravel:${{ matrix.pest }}.*" --no-interaction --no-update --dev
+          composer require "pestphp/pest-plugin-livewire:${{ matrix.pest }}.*" --no-interaction --no-update --dev
           composer require "larastan/larastan:${{ matrix.larastan }}.*" --no-interaction --no-update --dev
           composer require "laravel/pint:${{ matrix.pint }}.*" --no-interaction --no-update --dev
           composer update --prefer-dist --no-interaction --no-suggest --dev
