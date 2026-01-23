@@ -2,12 +2,12 @@
 
 namespace Kirschbaum\Commentions;
 
+use Composer\InstalledVersions;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
-use Composer\InstalledVersions;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
