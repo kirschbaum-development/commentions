@@ -45,7 +45,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        if ($this->isLivewireV4()) {
+        if ($this->isLivewireV4() && method_exists(Livewire::class, 'addNamespace')) {
             Livewire::addNamespace('commentions', classNamespace: __NAMESPACE__ . '\\Livewire');
         } else {
             Livewire::component('commentions::comment', Comment::class);
