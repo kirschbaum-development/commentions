@@ -1,5 +1,6 @@
 <div>
-    <livewire:commentions::comments
+    <livewire:dynamic-component
+        :component="$commentionsComponentPrefix . 'comments'"
         :key="'comments-modal'"
         :record="$record"
         :mentionables="$mentionables"

@@ -2,12 +2,12 @@
 
 namespace Kirschbaum\Commentions;
 
-use Composer\InstalledVersions;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
@@ -45,15 +45,16 @@ class CommentionsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        if ($this->isLivewireV4() && method_exists(Livewire::class, 'addNamespace')) {
-            Livewire::addNamespace('commentions', classNamespace: __NAMESPACE__ . '\\Livewire');
-        } else {
-            Livewire::component('commentions::comment', Comment::class);
-            Livewire::component('commentions::comment-list', CommentList::class);
-            Livewire::component('commentions::comments', Comments::class);
-            Livewire::component('commentions::reactions', Reactions::class);
-            Livewire::component('commentions::subscription-sidebar', SubscriptionSidebar::class);
-        }
+        $prefix = Config::getComponentPrefix();
+
+        Livewire::component($prefix . 'comment', Comment::class);
+        Livewire::component($prefix . 'comment-list', CommentList::class);
+        Livewire::component($prefix . 'comments', Comments::class);
+        Livewire::component($prefix . 'reactions', Reactions::class);
+        Livewire::component($prefix . 'subscription-sidebar', SubscriptionSidebar::class);
+
+        // Share component prefix with views for dynamic component names
+        View::share('commentionsComponentPrefix', $prefix);
 
         FilamentAsset::register(
             [
@@ -80,14 +81,5 @@ class CommentionsServiceProvider extends PackageServiceProvider
             $listenerClass = (string) config('commentions.notifications.mentions.listener', SendUserMentionedNotification::class);
             Event::listen(UserWasMentionedEvent::class, $listenerClass);
         }
-    }
-
-    protected function isLivewireV4(): bool
-    {
-        return version_compare(
-            InstalledVersions::getVersion('livewire/livewire') ?? '0.0',
-            '4.0',
-            '>='
-        );
     }
 }

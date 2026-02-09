@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions;
 
 use Closure;
+use Composer\InstalledVersions;
 use InvalidArgumentException;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
@@ -93,5 +94,19 @@ class Config
         }
 
         return 'comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700';
+    }
+
+    public static function getComponentPrefix(): string
+    {
+        return static::isLivewireV4() ? 'commentions.' : 'commentions::';
+    }
+
+    public static function isLivewireV4(): bool
+    {
+        return version_compare(
+            InstalledVersions::getVersion('livewire/livewire') ?? '0.0',
+            '4.0',
+            '>='
+        );
     }
 }
