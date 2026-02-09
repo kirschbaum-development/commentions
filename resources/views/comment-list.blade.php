@@ -15,7 +15,8 @@
     @endif
 
     @foreach ($this->comments as $comment)
-        <livewire:commentions::comment
+        <livewire:dynamic-component
+            :component="$commentionsComponentPrefix . 'comment'"
             :key="$comment->getContentHash()"
             :comment="$comment"
             :mentionables="$mentionables"
