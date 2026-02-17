@@ -7,6 +7,7 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
@@ -44,11 +45,16 @@ class CommentionsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Livewire::component('commentions::comment', Comment::class);
-        Livewire::component('commentions::comment-list', CommentList::class);
-        Livewire::component('commentions::comments', Comments::class);
-        Livewire::component('commentions::reactions', Reactions::class);
-        Livewire::component('commentions::subscription-sidebar', SubscriptionSidebar::class);
+        $prefix = Config::getComponentPrefix();
+
+        Livewire::component($prefix . 'comment', Comment::class);
+        Livewire::component($prefix . 'comment-list', CommentList::class);
+        Livewire::component($prefix . 'comments', Comments::class);
+        Livewire::component($prefix . 'reactions', Reactions::class);
+        Livewire::component($prefix . 'subscription-sidebar', SubscriptionSidebar::class);
+
+        // Share component prefix with views for dynamic component names
+        View::share('commentionsComponentPrefix', $prefix);
 
         FilamentAsset::register(
             [

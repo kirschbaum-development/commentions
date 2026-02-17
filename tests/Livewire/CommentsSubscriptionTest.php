@@ -24,8 +24,9 @@ test('sidebar visibility can be disabled via parameter', function () {
 
     livewire(Comments::class, [
         'record' => $post,
-        'sidebarEnabled' => false,
-    ])->assertSet('sidebarEnabled', false);
+        // Livewire binds mount* params by name; HasSidebar expects `enableSidebar`.
+        'enableSidebar' => false,
+    ])->assertSet('resolvedSidebarEnabled', false);
 });
 
 test('canSubscribe reflects auth state', function () {

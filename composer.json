@@ -25,10 +25,10 @@
         "league/html-to-markdown": "^5.1",
         "illuminate/support": "^11.0|^12.0",
         "illuminate/database": "^11.0|^12.0",
-        "livewire/livewire": "^3.5",
-        "filament/support": "^3.2|^4.0",
-        "filament/notifications": "^3.2|^4.0",
-        "filament/filament": "^3.2|^4.0"
+        "livewire/livewire": "^3.5|^4.0",
+        "filament/support": "^3.2|^4.0|^5.0",
+        "filament/notifications": "^3.2|^4.0|^5.0",
+        "filament/filament": "^3.2|^4.0|^5.0"
     },
     "extra": {
         "laravel": {
@@ -38,13 +38,14 @@
         }
     },
     "require-dev": {
-        "pestphp/pest": "^3.7",
+        "pestphp/pest": "^3.7|^4.0",
         "illuminate/auth": "^11.0|^12.0",
         "orchestra/testbench": "^9.9|^10.0",
-        "pestphp/pest-plugin-laravel": "^3.1",
-        "pestphp/pest-plugin-livewire": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.1|^4.0",
+        "pestphp/pest-plugin-livewire": "^3.0|^4.0",
         "laravel/pint": "^1.21",
-        "larastan/larastan": "^3.0"
+        "larastan/larastan": "^3.0",
+        "filament/upgrade": "^5.0"
     },
     "config": {
         "allow-plugins": {

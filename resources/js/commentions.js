@@ -4,6 +4,18 @@ import Mention from '@tiptap/extension-mention'
 import Placeholder from '@tiptap/extension-placeholder'
 import suggestion from './suggestion'
 
+const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('editor', (content, mentions, component, placeholder, editorCssClasses) => {
         let editor
@@ -15,6 +27,12 @@ document.addEventListener('alpine:init', () => {
 
             init() {
                 const _this = this
+
+                const debouncedUpdate = debounce((editor) => {
+                    Livewire.dispatchTo(`commentions::${component}`, `body:updated`, {
+                        value: editor.getHTML()
+                    });
+                }, 300);
 
                 editor = new Editor({
                     element: this.$refs.element,
@@ -43,10 +61,7 @@ document.addEventListener('alpine:init', () => {
                     },
 
                     onUpdate({ editor }) {
-                        Livewire.dispatchTo(`commentions::${component}`, `body:updated`, {
-                            value: editor.getHTML()
-                        });
-
+                        debouncedUpdate(editor);
                         _this.updatedAt = Date.now()
                     },
 

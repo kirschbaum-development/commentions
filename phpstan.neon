@@ -55,7 +55,6 @@ parameters:
         -
             message: '#^Undefined variable\: \$this$#'
             identifier: variable.undefined
-            count: 3
             path: tests/Pest.php
 
         -

@@ -1,5 +1,6 @@
 <x-dynamic-component :component="$getEntryWrapperView()" :entry="$entry">
-    <livewire:commentions::comments
+    <livewire:dynamic-component
+        :component="$commentionsComponentPrefix . 'comments'"
         :record="$getRecord()"
         :mentionables="$getMentionables()"
         :polling-interval="$getPollingInterval()"
