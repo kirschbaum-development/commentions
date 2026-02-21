@@ -18,7 +18,6 @@ const defaultOptions = {
         'process.env.NODE_ENV': isDev ? `'development'` : `'production'`,
     },
     bundle: true,
-    format: 'iife',
     mainFields: ['module', 'main'],
     platform: 'neutral',
     sourcemap: isDev ? 'inline' : false,
