@@ -224,6 +224,21 @@ test('custom policy can change who can delete a comment', function () {
     ]);
 });
 
+test('editing comment editor includes prefixed component alias', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->call('edit')
+        ->assertSee('commentions.comment', false);
+});
+
 test('can render a custom renderable comment', function () {
     $comment = new RenderableComment(
         id: 1,

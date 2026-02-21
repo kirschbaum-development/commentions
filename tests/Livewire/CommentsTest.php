@@ -83,3 +83,15 @@ test('guests cannot create comments', function () {
 
     Event::assertNotDispatched(CommentWasCreatedEvent::class);
 });
+
+test('comments editor includes prefixed component alias', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])->assertSee('commentions.comments', false);
+});
