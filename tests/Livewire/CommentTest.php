@@ -2,6 +2,7 @@
 
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Comment as CommentModel;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
 use Kirschbaum\Commentions\RenderableComment;
 use Tests\Models\Post;
@@ -232,11 +233,13 @@ test('editing comment editor includes prefixed component alias', function () {
     $post = Post::factory()->create();
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
+    $componentAlias = Config::getComponentPrefix().'comment';
+
     livewire(CommentComponent::class, [
         'comment' => $comment,
     ])
         ->call('edit')
-        ->assertSee('commentions.comment', false);
+        ->assertSee($componentAlias, false);
 });
 
 test('can render a custom renderable comment', function () {

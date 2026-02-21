@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Events\CommentWasCreatedEvent;
 use Kirschbaum\Commentions\Livewire\Comments;
 use Tests\Models\Post;
@@ -91,7 +92,9 @@ test('comments editor includes prefixed component alias', function () {
 
     $post = Post::factory()->create();
 
+    $componentAlias = Config::getComponentPrefix().'comments';
+
     livewire(Comments::class, [
         'record' => $post,
-    ])->assertSee('commentions.comments', false);
+    ])->assertSee($componentAlias, false);
 });
