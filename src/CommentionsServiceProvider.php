@@ -58,7 +58,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
 
         FilamentAsset::register(
             [
-                Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js'),
+                Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js')->module(),
             ],
             'kirschbaum-development/' . static::$name
         );
