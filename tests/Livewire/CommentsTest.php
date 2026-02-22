@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Events\CommentWasCreatedEvent;
 use Kirschbaum\Commentions\Livewire\Comments;
 use Tests\Models\Post;
@@ -82,4 +83,18 @@ test('guests cannot create comments', function () {
     ]);
 
     Event::assertNotDispatched(CommentWasCreatedEvent::class);
+});
+
+test('comments editor includes prefixed component alias', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    $componentAlias = Config::getComponentPrefix() . 'comments';
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])->assertSee($componentAlias, false);
 });
