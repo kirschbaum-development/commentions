@@ -233,7 +233,7 @@ test('editing comment editor includes prefixed component alias', function () {
     $post = Post::factory()->create();
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
-    $componentAlias = Config::getComponentPrefix().'comment';
+    $componentAlias = Config::getComponentPrefix() . 'comment';
 
     livewire(CommentComponent::class, [
         'comment' => $comment,
