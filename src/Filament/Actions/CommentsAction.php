@@ -24,7 +24,7 @@ class CommentsAction extends Action
 
         $this
             ->icon('heroicon-o-chat-bubble-left-right')
-            ->modalContent(fn (Model $record) => view('commentions::comments-modal', [
+            ->modalContent(fn(Model $record) => view('commentions::comments-modal', [
                 'record' => $record,
                 'mentionables' => $this->getMentionables(),
                 'pollingInterval' => $this->getPollingInterval(),
@@ -36,8 +36,7 @@ class CommentsAction extends Action
                 'showSubscribers' => $this->showSubscribers(),
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
             ]))
-            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
-            ->label(__('commentions::comments.label'))
+            ->modalWidth(fn() => $this->isSidebarEnabled() ? '4xl' : 'xl')->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
             ->modalAutofocus(false);
