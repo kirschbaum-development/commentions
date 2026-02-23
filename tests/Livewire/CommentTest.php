@@ -2,6 +2,7 @@
 
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Comment as CommentModel;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
 use Kirschbaum\Commentions\RenderableComment;
 use Tests\Models\Post;
@@ -222,6 +223,23 @@ test('custom policy can change who can delete a comment', function () {
     test()->assertDatabaseHas('comments', [
         'id' => $comment->id,
     ]);
+});
+
+test('editing comment editor includes prefixed component alias', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    $componentAlias = Config::getComponentPrefix() . 'comment';
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->call('edit')
+        ->assertSee($componentAlias, false);
 });
 
 test('can render a custom renderable comment', function () {

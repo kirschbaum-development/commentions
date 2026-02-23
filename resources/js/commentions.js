@@ -17,7 +17,7 @@ const debounce = (func, wait) => {
 };
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('editor', (content, mentions, component, placeholder, editorCssClasses) => {
+    Alpine.data('editor', (content, mentions, component, placeholder, editorCssClasses, componentAlias = null) => {
         let editor
 
         const defaultEditorCssClasses = `comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700`;
@@ -27,11 +27,10 @@ document.addEventListener('alpine:init', () => {
 
             init() {
                 const _this = this
+                const targetComponent = componentAlias ?? `commentions::${component}`
 
                 const debouncedUpdate = debounce((editor) => {
-                    Livewire.dispatchTo(`commentions::${component}`, `body:updated`, {
-                        value: editor.getHTML()
-                    });
+                    Livewire.dispatchTo(targetComponent, `body:updated`, editor.getHTML());
                 }, 300);
 
                 editor = new Editor({
