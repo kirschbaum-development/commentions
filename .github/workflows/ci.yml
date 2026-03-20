@@ -133,6 +133,8 @@ jobs:
         exclude:
           - laravel: 11
             filament: 5
+          - laravel: 13
+            filament: 4
         include:
           - laravel: 11
             testbench: 9
@@ -140,6 +142,10 @@ jobs:
             pint: 1
           - laravel: 12
             testbench: 10
+            larastan: 3
+            pint: 1
+          - laravel: 13
+            testbench: 11
             larastan: 3
             pint: 1
           - filament: 4
