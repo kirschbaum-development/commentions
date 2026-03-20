@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\User;
+use Kirschbaum\Commentions\Comment;
+use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
+use Kirschbaum\Commentions\Notifications\UserMentionedInComment;
+use Kirschbaum\Commentions\Policies\CommentPolicy;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -18,7 +24,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'commenter' => [
-        'model' => \App\Models\User::class,
+        'model' => User::class,
     ],
 
     /*
@@ -27,8 +33,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'comment' => [
-        'model' => \Kirschbaum\Commentions\Comment::class,
-        'policy' => \Kirschbaum\Commentions\Policies\CommentPolicy::class,
+        'model' => Comment::class,
+        'policy' => CommentPolicy::class,
     ],
 
     /*
@@ -74,8 +80,8 @@ return [
 
             'channels' => explode(',', env('COMMENTIONS_NOTIFICATIONS_MENTIONS_CHANNELS', 'mail')),
 
-            'listener' => \Kirschbaum\Commentions\Listeners\SendUserMentionedNotification::class,
-            'notification' => \Kirschbaum\Commentions\Notifications\UserMentionedInComment::class,
+            'listener' => SendUserMentionedNotification::class,
+            'notification' => UserMentionedInComment::class,
 
             'mail' => [
                 'subject' => env('COMMENTIONS_NOTIFICATIONS_MENTIONS_MAIL_SUBJECT', 'You were mentioned in a comment'),

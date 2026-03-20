@@ -9,6 +9,7 @@ use Kirschbaum\Commentions\Events\UserIsSubscribedToCommentableEvent;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
 use Tests\Models\Post;
 use Tests\Models\User;
+use Tests\Policies\BlockedCommentPolicy;
 
 test('it can save a comment', function () {
     $user = User::factory()->create();
@@ -29,7 +30,7 @@ test('it cannot save a comment when the policy denies it', function () {
     $user = User::factory()->create();
     $post = Post::factory()->create();
 
-    \Gate::policy(Comment::class, \Tests\Policies\BlockedCommentPolicy::class);
+    \Gate::policy(Comment::class, BlockedCommentPolicy::class);
 
     expect(fn () => $post->comment('This is a test comment', $user))
         ->toThrow(AuthorizationException::class)

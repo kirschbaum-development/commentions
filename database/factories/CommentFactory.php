@@ -8,7 +8,7 @@ use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
+ * @extends Factory<\App\Models\Comment>
  */
 class CommentFactory extends Factory
 {

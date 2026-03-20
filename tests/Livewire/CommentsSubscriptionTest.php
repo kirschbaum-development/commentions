@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\CommentSubscription;
@@ -56,7 +57,7 @@ test('isSubscribed and subscribers computed properties reflect DB state', functi
     livewire(Comments::class, [
         'record' => $post,
     ])->assertSet('isSubscribed', false)
-        ->assertSet('subscribers', fn ($subscribers) => $subscribers instanceof \Illuminate\Support\Collection && $subscribers->isEmpty());
+        ->assertSet('subscribers', fn ($subscribers) => $subscribers instanceof Collection && $subscribers->isEmpty());
 
     $post->subscribe($user);
 
