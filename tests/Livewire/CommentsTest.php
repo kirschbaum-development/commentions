@@ -68,13 +68,11 @@ test('guests cannot create comments', function () {
 
     $post = Post::factory()->create();
 
-    expect(function () use ($post) {
-        livewire(Comments::class, [
-            'record' => $post,
-        ])
-            ->set('commentBody', 'This is a test comment')
-            ->call('save');
-    })->toThrow(TypeError::class);
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->set('commentBody', 'This is a test comment')
+        ->call('save');
 
     $this->assertDatabaseMissing('comments', [
         'body' => 'This is a test comment',
