@@ -33,11 +33,17 @@ class Comments extends Component
     #[Renderless]
     public function save()
     {
+        $user = Config::resolveAuthenticatedUser();
+
+        if (! $user) {
+            return;
+        }
+
         $this->validate();
 
         SaveComment::run(
             $this->record,
-            Config::resolveAuthenticatedUser(),
+            $user,
             $this->commentBody
         );
 

@@ -7,6 +7,7 @@ use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
 use Kirschbaum\Commentions\RenderableComment;
 use Tests\Models\Post;
 use Tests\Models\User;
+use Tests\Policies\BlockedCommentPolicy;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
@@ -63,7 +64,7 @@ test('custom policy can change who can see edit and delete buttons', function ()
     $user = User::factory()->create();
     actingAs($user);
 
-    \Gate::policy(Comment::class, \Tests\Policies\BlockedCommentPolicy::class);
+    Gate::policy(Comment::class, BlockedCommentPolicy::class);
 
     $post = Post::factory()->create();
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
@@ -141,7 +142,7 @@ test('custom policy can change who can edit a comment', function () {
     $user = User::factory()->create();
     actingAs($user);
 
-    \Gate::policy(Comment::class, \Tests\Policies\BlockedCommentPolicy::class);
+    Gate::policy(Comment::class, BlockedCommentPolicy::class);
 
     $post = Post::factory()->create();
     $comment = CommentModel::factory()->author($user)->commentable($post)->create([
@@ -211,7 +212,7 @@ test('custom policy can change who can delete a comment', function () {
     $user = User::factory()->create();
     actingAs($user);
 
-    \Gate::policy(Comment::class, \Tests\Policies\BlockedCommentPolicy::class);
+    Gate::policy(Comment::class, BlockedCommentPolicy::class);
 
     $post = Post::factory()->create();
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
