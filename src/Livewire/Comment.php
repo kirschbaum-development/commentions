@@ -24,9 +24,20 @@ class Comment extends Component
 
     public ?string $tipTapCssClasses = null;
 
-    protected $rules = [
-        'commentBody' => 'required|string',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'commentBody' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (trim(strip_tags($value)) === '') {
+                        $fail(__('validation.required', ['attribute' => 'comment body']));
+                    }
+                },
+            ],
+        ];
+    }
 
     #[On('comment:reaction:toggled')]
     public function handleReactionToggledEvent(string $reaction, int $commentId): void
@@ -92,6 +103,8 @@ class Comment extends Component
         if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
+
+        $this->validate();
 
         $this->comment->update([
             'body' => $this->commentBody,

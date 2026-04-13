@@ -63,6 +63,26 @@ test('comment creation requires body', function () {
     ]);
 });
 
+test('comment creation is rejected when body contains only empty html tags', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->set('commentBody', '<p></p>')
+        ->call('save')
+        ->assertHasErrors(['commentBody']);
+
+    $this->assertDatabaseMissing('comments', [
+        'commentable_id' => $post->id,
+        'commentable_type' => Post::class,
+    ]);
+});
+
 test('guests cannot create comments', function () {
     Event::fake();
 

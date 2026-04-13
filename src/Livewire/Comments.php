@@ -26,9 +26,20 @@ class Comments extends Component
 
     public ?string $tipTapCssClasses = null;
 
-    protected $rules = [
-        'commentBody' => 'required|string',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'commentBody' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (trim(strip_tags($value)) === '') {
+                        $fail(__('validation.required', ['attribute' => 'comment body']));
+                    }
+                },
+            ],
+        ];
+    }
 
     #[Renderless]
     public function save()

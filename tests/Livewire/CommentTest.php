@@ -97,6 +97,28 @@ test('author can update a comment by default', function () {
     ]);
 });
 
+test('updating comment is rejected when body contains only empty html tags', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create([
+        'body' => 'Test comment body',
+    ]);
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->set('commentBody', '<p></p>')
+        ->call('updateComment')
+        ->assertHasErrors(['commentBody']);
+
+    test()->assertDatabaseHas('comments', [
+        'id' => $comment->id,
+        'body' => 'Test comment body',
+    ]);
+});
+
 test('other users cannot update a comment by default', function () {
     $user = User::factory()->create();
     actingAs($user);
