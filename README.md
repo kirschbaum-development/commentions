@@ -341,6 +341,16 @@ Update the `comment.policy` option in your `config/commentions.php` file:
     ],
 ```
 
+#### Configuring Reactions
+
+By default, Commentions ships with the following reactions: `['👍', '❤️', '😂', '😮', '😢', '🤔']`. You can customize which reactions are available by updating the `reactions.allowed` option in your `config/commentions.php` file:
+
+```php
+    'reactions' => [
+        'allowed' => ['👍', '❤️', '😂', '🎉', '👀'],
+    ],
+```
+
 ### Configuring the Commenter name
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
