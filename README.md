@@ -396,6 +396,26 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
 }
 ```
 
+### Adjusting the display timezone
+
+Comment timestamps are stored in the app default timezone, but can be displayed in a different one. Set the `timezone` config key for a fixed override, or wire a closure for per-request resolution (e.g. the authenticated user's timezone):
+
+```php
+// config/commentions.php
+return [
+    // ...
+    'timezone' => 'America/Chicago',
+];
+```
+
+```php
+use Kirschbaum\Commentions\Config;
+
+Config::resolveTimezoneUsing(fn () => auth()->user()?->timezone);
+```
+
+The closure takes precedence over the config value. When both are `null`, dates render in the storage timezone.
+
 ### Customizing TipTap Editor Styles
 
 You can customize the TipTap editor CSS classes used using the `Config` class.

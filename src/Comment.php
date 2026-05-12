@@ -152,12 +152,12 @@ class Comment extends Model implements RenderableComment
 
     public function getCreatedAt(): DateTime|CarbonInterface
     {
-        return $this->created_at;
+        return Config::applyTimezone($this->created_at);
     }
 
     public function getUpdatedAt(): DateTime|CarbonInterface
     {
-        return $this->updated_at;
+        return Config::applyTimezone($this->updated_at);
     }
 
     public function reactions(): HasMany

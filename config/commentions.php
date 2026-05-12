@@ -48,6 +48,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Display timezone
+    |--------------------------------------------------------------------------
+    |
+    | Timezone applied when rendering comment created/updated timestamps.
+    | When null, dates are rendered in the storage timezone (typically the
+    | app default). Set to an IANA name like "America/Chicago", or wire a
+    | per-user value via Config::resolveTimezoneUsing(fn () => auth()->user()?->timezone).
+    |
+    */
+    'timezone' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Subscriptions
     |--------------------------------------------------------------------------
     */

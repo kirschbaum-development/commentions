@@ -82,12 +82,12 @@ class RenderableComment implements RenderableCommentContract, Wireable
 
     public function getCreatedAt(): DateTime|CarbonInterface
     {
-        return $this->createdAt;
+        return Config::applyTimezone($this->createdAt);
     }
 
     public function getUpdatedAt(): DateTime|CarbonInterface
     {
-        return $this->updatedAt;
+        return Config::applyTimezone($this->updatedAt);
     }
 
     public function getLabel(): ?string

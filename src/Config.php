@@ -17,6 +17,8 @@ class Config
 
     protected static ?Closure $resolveTipTapCssClasses = null;
 
+    protected static ?Closure $resolveTimezone = null;
+
     public static function resolveAuthenticatedUserUsing(Closure $callback): void
     {
         static::$resolveAuthenticatedUser = $callback;
@@ -99,6 +101,38 @@ class Config
     public static function getComponentPrefix(): string
     {
         return static::isLivewireV4() ? 'commentions.' : 'commentions::';
+    }
+
+    public static function resolveTimezoneUsing(Closure $callback): void
+    {
+        static::$resolveTimezone = $callback;
+    }
+
+    public static function getTimezone(): ?string
+    {
+        if (static::$resolveTimezone instanceof Closure) {
+            return call_user_func(static::$resolveTimezone);
+        }
+
+        return config('commentions.timezone');
+    }
+
+    public static function applyTimezone(\DateTime|\Carbon\CarbonInterface $dt): \DateTime|\Carbon\CarbonInterface
+    {
+        $tz = static::getTimezone();
+
+        if ($tz === null) {
+            return $dt;
+        }
+
+        if ($dt instanceof \Carbon\CarbonInterface) {
+            return $dt->copy()->setTimezone($tz);
+        }
+
+        $cloned = clone $dt;
+        $cloned->setTimezone(new \DateTimeZone($tz));
+
+        return $cloned;
     }
 
     public static function isLivewireV4(): bool
