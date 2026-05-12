@@ -121,14 +121,18 @@ class Comment extends Model implements RenderableComment
 
     public function getAuthorAvatar(): string
     {
-        $avatar = null;
-
         if ($this->author instanceof HasAvatar) {
             $avatar = $this->author->getFilamentAvatarUrl();
+
+            if (! is_null($avatar)) {
+                return $avatar;
+            }
         }
 
-        if (! is_null($avatar)) {
-            return $avatar;
+        $providerAvatar = $this->resolveAvatarFromProvider();
+
+        if (! is_null($providerAvatar)) {
+            return $providerAvatar;
         }
 
         $name = str(Manager::getName($this->author))
@@ -138,6 +142,31 @@ class Comment extends Model implements RenderableComment
             ->join(' ');
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=71717b';
+    }
+
+    protected function resolveAvatarFromProvider(): ?string
+    {
+        $providerClass = Config::getAvatarProvider();
+
+        if ($providerClass === null) {
+            try {
+                if (\Filament\Facades\Filament::getCurrentPanel() !== null) {
+                    $providerClass = \Filament\Facades\Filament::getDefaultAvatarProvider();
+                }
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        if ($providerClass === null) {
+            return null;
+        }
+
+        try {
+            return app($providerClass)->get($this->author);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public function getBody(): string

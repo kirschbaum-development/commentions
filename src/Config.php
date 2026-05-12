@@ -82,6 +82,11 @@ class Config
         return config('commentions.reactions.allowed', ['👍']);
     }
 
+    public static function getAvatarProvider(): ?string
+    {
+        return config('commentions.avatar_provider');
+    }
+
     public static function resolveTipTapCssClassesUsing(Closure $callback): void
     {
         static::$resolveTipTapCssClasses = $callback;

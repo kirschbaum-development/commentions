@@ -396,6 +396,20 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
 }
 ```
 
+If your users do not implement `HasAvatar`, Commentions will consult an avatar provider before falling back to `ui-avatars.com`. By default it uses the current Filament panel's default provider (set via `Panel::defaultAvatarProvider(...)`). To force a specific provider regardless of panel context, set the `avatar_provider` config key:
+
+```php
+// config/commentions.php
+use Filament\AvatarProviders\GravatarProvider;
+
+return [
+    // ...
+    'avatar_provider' => GravatarProvider::class,
+];
+```
+
+Any class exposing a `get(Model|Authenticatable $user): string` method works.
+
 ### Customizing TipTap Editor Styles
 
 You can customize the TipTap editor CSS classes used using the `Config` class.

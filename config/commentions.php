@@ -48,6 +48,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Avatar provider
+    |--------------------------------------------------------------------------
+    |
+    | Class name of a Filament-compatible avatar provider used to resolve a
+    | URL for the comment author when the user does not implement HasAvatar.
+    | Must expose a `get(Model|Authenticatable $user): string` method.
+    | Examples: Filament\AvatarProviders\UiAvatarsProvider,
+    | Filament\AvatarProviders\GravatarProvider.
+    |
+    | When null, Commentions falls back to the active Filament panel's
+    | default avatar provider (if any), and finally to ui-avatars.com.
+    |
+    */
+    'avatar_provider' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Subscriptions
     |--------------------------------------------------------------------------
     */
