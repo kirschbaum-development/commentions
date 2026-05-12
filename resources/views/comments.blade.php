@@ -4,7 +4,7 @@
     {{-- Main Comments Area --}}
     <div class="comm:flex-1 comm:space-y-2">
         @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
-            <form wire:submit.prevent="save" x-cloak>
+            <div x-cloak>
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
                     <div
@@ -29,7 +29,7 @@
                     >{{ __('commentions::comments.cancel') }}</x-filament::button>
                 </div>
             </template>
-        </form>
+        </div>
     @endif
 
         <livewire:dynamic-component
