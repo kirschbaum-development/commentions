@@ -24,5 +24,5 @@ test('uses configured avatar provider when set', function () {
     $comment = CommentModel::factory()->author($user)->commentable($post)->create();
 
     expect($comment->getAuthorAvatar())
-        ->toBe('https://stub.test/avatar/Jane%20Doe');
+        ->toBe('https://stub.test/avatar/Jane+Doe');
 });
