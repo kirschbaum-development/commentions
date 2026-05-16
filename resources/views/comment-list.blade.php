@@ -17,7 +17,7 @@
     @foreach ($this->comments as $comment)
         <livewire:dynamic-component
             :component="$commentionsComponentPrefix . 'comment'"
-            :key="$comment->getId()"
+            :key="$comment::class . ':' . $comment->getId()"
             :comment="$comment"
             :mentionables="$mentionables"
             :tip-tap-css-classes="$tipTapCssClasses"
