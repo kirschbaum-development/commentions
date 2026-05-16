@@ -90,16 +90,19 @@
         </div>
 
         @if ($editing)
-            <div class="comm:mt-2">
+            <div
+                class="comm:mt-2"
+                x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))"
+            >
                 <div class="tip-tap-container comm:mb-2" wire:ignore>
-                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
-                        <div x-ref="element"></div>
-                    </div>
+                    <div x-ref="element"></div>
                 </div>
 
                 <div class="comm:flex comm:gap-x-2">
                     <x-filament::button
                         wire:click="updateComment({{ $comment->getId() }})"
+                        x-bind:disabled="isEmpty"
+                        x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
                         size="sm"
                     >
                         {{ __('commentions::comments.save') }}
