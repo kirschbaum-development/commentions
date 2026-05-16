@@ -94,6 +94,7 @@ test('comments composer does not render a form element', function () {
         'record' => $post,
     ])
         ->assertDontSeeHtml('<form')
+        ->assertSeeHtml('role="form"')
         ->assertSeeHtml('wire:click="save"');
 });
 

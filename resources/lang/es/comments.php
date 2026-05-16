@@ -3,6 +3,7 @@
 return [
     'label' => 'Comentarios',
     'placeholder' => 'Escribe tu comentario...',
+    'add_comment' => 'Añadir un comentario',
     'no_comments_yet' => 'Aún no hay comentarios.',
 
     'user_avatar_alt' => 'Avatar de usuario',
