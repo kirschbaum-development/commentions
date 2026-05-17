@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Event;
 use Kirschbaum\Commentions\CommentSubscription;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Comments;
+use Kirschbaum\Commentions\Livewire\SubscriptionSidebar;
 use Tests\Models\Post;
 use Tests\Models\User;
 
@@ -25,9 +26,45 @@ test('sidebar visibility can be disabled via parameter', function () {
 
     livewire(Comments::class, [
         'record' => $post,
-        // Livewire binds mount* params by name; HasSidebar expects `enableSidebar`.
-        'enableSidebar' => false,
+        // The blade views pass this as `:sidebar-enabled`, so the mount hook
+        // parameter must match the `sidebarEnabled` property name.
+        'sidebarEnabled' => false,
     ])->assertSet('resolvedSidebarEnabled', false);
+});
+
+test('subscriber visibility can be disabled via parameter', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+        'showSubscribers' => false,
+    ])->assertSet('resolvedShowSubscribers', false);
+});
+
+test('the subscription sidebar hides the subscribers list when showSubscribers is false', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    /** @var Post $post */
+    $post = Post::factory()->create();
+
+    $subscriber = User::factory()->create(['name' => 'Subscriber Sam']);
+    $post->subscribe($subscriber);
+
+    livewire(SubscriptionSidebar::class, [
+        'record' => $post,
+        'showSubscribers' => false,
+    ])->assertDontSee('Subscriber Sam');
+
+    livewire(SubscriptionSidebar::class, [
+        'record' => $post,
+        'showSubscribers' => true,
+    ])->assertSee('Subscriber Sam');
 });
 
 test('canSubscribe reflects auth state', function () {
