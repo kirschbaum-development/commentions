@@ -143,3 +143,102 @@ test('deleting a comment deletes its nested replies', function () {
     test()->assertDatabaseMissing('comments', ['id' => $reply->id]);
     test()->assertDatabaseMissing('comments', ['id' => $nested->id]);
 });
+
+test('a top-level comment renders as a bordered card', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = Comment::factory()->author($user)->commentable($post)->create();
+
+    livewire(CommentComponent::class, ['comment' => $comment, 'depth' => 0])
+        ->assertSeeHtml('comm:rounded-lg')
+        ->assertSeeHtml('comm:shadow-sm')
+        ->assertDontSeeHtml('commentions-thread');
+});
+
+test('a reply renders as a flat row with a thread connector', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $parent = Comment::factory()->author($user)->commentable($post)->create();
+    $reply = Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $parent->id]);
+
+    livewire(CommentComponent::class, ['comment' => $reply, 'depth' => 1])
+        ->assertDontSeeHtml('comm:shadow-sm')
+        ->assertSeeHtml('comm:py-2')
+        ->assertSeeHtml('comm:w-7')
+        ->assertSeeHtml('class="commentions-thread"');
+});
+
+test('a comment with replies renders an accessible collapse toggle', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $parent = Comment::factory()->author($user)->commentable($post)->create();
+    Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $parent->id]);
+
+    livewire(CommentComponent::class, ['comment' => $parent, 'depth' => 0])
+        ->assertSeeHtml(':aria-expanded')
+        ->assertSeeHtml('aria-controls="comment-replies-' . $parent->id . '"')
+        ->assertSeeHtml('id="comment-replies-' . $parent->id . '"')
+        ->assertSeeHtml('role="group"');
+});
+
+test('the collapse toggle shows the total descendant reply count', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $parent = Comment::factory()->author($user)->commentable($post)->create();
+    $child = Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $parent->id]);
+    Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $child->id]);
+
+    livewire(CommentComponent::class, ['comment' => $parent, 'depth' => 0])
+        ->assertSee('2 replies');
+});
+
+test('a comment with no replies renders no collapse toggle', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = Comment::factory()->author($user)->commentable($post)->create();
+
+    livewire(CommentComponent::class, ['comment' => $comment, 'depth' => 0])
+        ->assertDontSeeHtml('aria-controls="comment-replies-');
+});
+
+test('replies indent for the first levels then stop', function () {
+    config(['commentions.threading.max_depth' => 5]);
+
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $c0 = Comment::factory()->author($user)->commentable($post)->create();
+    $c1 = Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $c0->id]);
+    Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $c1->id]);
+
+    // A depth-0 wrapper indents the replies it renders.
+    livewire(CommentComponent::class, ['comment' => $c0, 'depth' => 0])
+        ->assertSeeHtml('comm:pl-3');
+
+    // A wrapper at INDENT_CAP_DEPTH stops adding indent.
+    livewire(CommentComponent::class, ['comment' => $c1, 'depth' => CommentComponent::INDENT_CAP_DEPTH])
+        ->assertDontSeeHtml('comm:pl-3');
+});
+
+test('repliesCount counts every descendant comment', function () {
+    $user = User::factory()->create();
+    $post = Post::factory()->create();
+
+    $root = Comment::factory()->author($user)->commentable($post)->create();
+    $a = Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $root->id]);
+    Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $a->id]);
+    Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $root->id]);
+
+    expect($root->fresh()->repliesCount())->toBe(3);
+});

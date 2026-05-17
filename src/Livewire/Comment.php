@@ -17,6 +17,13 @@ class Comment extends Component
 {
     use HasMentions;
 
+    /**
+     * Deepest level that still receives added horizontal indent. Beyond this
+     * the thread line still renders, but no extra padding is added so deep
+     * threads don't compound horizontally on small screens.
+     */
+    public const INDENT_CAP_DEPTH = 2;
+
     public CommentModel|RenderableComment $comment;
 
     public string $commentBody = '';
@@ -187,6 +194,15 @@ class Comment extends Component
             && (bool) config('commentions.threading.enabled', false)
             && $this->depth < $this->maxReplyDepth()
             && (bool) Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel());
+    }
+
+    /**
+     * Whether the replies wrapper rendered by this comment should add
+     * horizontal indent. Past the cap the thread line still renders.
+     */
+    public function shouldIndentReplies(): bool
+    {
+        return $this->depth < self::INDENT_CAP_DEPTH;
     }
 
     protected function maxReplyDepth(): int

@@ -44,3 +44,54 @@
 .mention-item:hover {
     @apply comm:bg-gray-100;
 }
+
+/*
+ * Threaded reply connector — a Facebook-style curved elbow line.
+ * Rendered by the `.commentions-thread` element inside each reply (depth > 0),
+ * which sits absolutely inside the reply row's left padding gutter.
+ */
+.commentions-thread {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 1.5rem;
+    pointer-events: none;
+}
+
+.commentions-thread::before,
+.commentions-thread::after {
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+}
+
+/* Vertical trunk running the full height of the reply row. */
+.commentions-thread::before {
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #d1d5db;
+}
+
+/* Curved elbow branching off the trunk into the reply's avatar. */
+.commentions-thread::after {
+    top: 0;
+    width: 1rem;
+    height: 1.5rem;
+    border-left: 2px solid #d1d5db;
+    border-bottom: 2px solid #d1d5db;
+    border-bottom-left-radius: 0.75rem;
+}
+
+/* The last reply ends the trunk at its own elbow rather than running on. */
+.commentions-replies > :last-child .commentions-thread::before {
+    bottom: auto;
+    height: 1.5rem;
+}
+
+:where(.dark, .dark *) .commentions-thread::before {
+    background-color: #4b5563;
+}
+
+:where(.dark, .dark *) .commentions-thread::after {
+    border-color: #4b5563;
+}

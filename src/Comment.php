@@ -196,6 +196,17 @@ class Comment extends Model implements RenderableComment
         return $depth;
     }
 
+    /**
+     * Total number of descendant comments across all nested reply levels.
+     */
+    public function repliesCount(): int
+    {
+        return $this->replies->reduce(
+            fn (int $carry, self $reply): int => $carry + 1 + $reply->repliesCount(),
+            0,
+        );
+    }
+
     public function toggleReaction(string $reaction): void
     {
         ToggleCommentReaction::run($this, $reaction, Config::resolveAuthenticatedUser());
