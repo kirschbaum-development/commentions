@@ -34,8 +34,17 @@
                 @endif
             </div>
 
-            @if ($comment->isComment() && Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment))
+            @if ($comment->isComment() && ($this->canReply() || Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment)))
                 <div class="comm:flex comm:gap-x-1">
+                    @if ($this->canReply())
+                        <x-filament::icon-button
+                            icon="heroicon-s-arrow-uturn-left"
+                            wire:click="reply"
+                            size="xs"
+                            color="gray"
+                        />
+                    @endif
+
                     @if (Config::resolveAuthenticatedUser()?->can('update', $comment))
                         <x-filament::icon-button
                             icon="heroicon-s-pencil-square"
@@ -123,6 +132,41 @@
                     :comment="$comment"
                     :wire:key="'reaction-manager-' . $comment->getId()"
                 />
+            @endif
+
+            @if ($replying)
+                <div class="comm:mt-3">
+                    <div class="tip-tap-container comm:mb-2" wire:ignore>
+                        <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', @js(__('commentions::comments.placeholder')), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
+                            <div x-ref="element"></div>
+                        </div>
+                    </div>
+
+                    <div class="comm:flex comm:gap-x-2">
+                        <x-filament::button wire:click="saveReply" size="sm">
+                            {{ __('commentions::comments.reply') }}
+                        </x-filament::button>
+
+                        <x-filament::button wire:click="cancelReplying" size="sm" color="gray">
+                            {{ __('commentions::comments.cancel') }}
+                        </x-filament::button>
+                    </div>
+                </div>
+            @endif
+
+            @if ($comment->isComment() && config('commentions.threading.enabled', false) && $comment->replies->isNotEmpty())
+                <div class="commentions-replies comm:mt-3 comm:space-y-2 comm:border-l comm:border-gray-200 comm:dark:border-gray-700 comm:pl-3">
+                    @foreach ($comment->replies as $reply)
+                        <livewire:dynamic-component
+                            :component="$commentionsComponentPrefix . 'comment'"
+                            :key="'reply-' . $reply->getContentHash()"
+                            :comment="$reply"
+                            :depth="$depth + 1"
+                            :mentionables="$mentionables"
+                            :tip-tap-css-classes="$tipTapCssClasses"
+                        />
+                    @endforeach
+                </div>
             @endif
         @endif
     </div>

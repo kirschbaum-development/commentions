@@ -16,17 +16,23 @@ class SaveComment
     /**
      * @throws AuthorizationException
      */
-    public function __invoke(Model $commentable, Commenter $author, string $body): Comment
+    public function __invoke(Model $commentable, Commenter $author, string $body, ?int $parentId = null): Comment
     {
         if ($author->cannot('create', Config::getCommentModel())) {
             throw new AuthorizationException('Cannot create comment');
         }
 
-        $comment = $commentable->comments()->create([
+        $attributes = [
             'body' => $body,
             'author_id' => $author->getKey(),
             'author_type' => $author->getMorphClass(),
-        ]);
+        ];
+
+        if ($parentId !== null) {
+            $attributes['parent_id'] = $parentId;
+        }
+
+        $comment = $commentable->comments()->create($attributes);
 
         $this->dispatchEvents($comment);
 

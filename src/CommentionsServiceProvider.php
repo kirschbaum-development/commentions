@@ -40,6 +40,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
                 'create_commentions_tables',
                 'create_commentions_reactions_table',
                 'create_commentions_subscriptions_table',
+                'add_parent_id_to_commentions_comments_table',
             ]);
     }
 

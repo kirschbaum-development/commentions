@@ -16,6 +16,7 @@ return [
 
     'cancel' => 'إلغاء',
     'delete' => 'حذف',
+    'reply' => 'رد',
     'save' => 'حفظ',
     'comment' => 'تعليق',
     'add_reaction' => 'إضافة رد فعل',

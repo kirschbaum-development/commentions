@@ -48,6 +48,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Threading
+    |--------------------------------------------------------------------------
+    |
+    | Nested (threaded) comment replies. Disabled by default. `max_depth` is
+    | the deepest reply level allowed — top-level comments are depth 0, so a
+    | max_depth of 3 permits replies down to depth 3.
+    |
+    */
+    'threading' => [
+        'enabled' => env('COMMENTIONS_THREADING_ENABLED', false),
+
+        'max_depth' => (int) env('COMMENTIONS_THREADING_MAX_DEPTH', 3),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Subscriptions
     |--------------------------------------------------------------------------
     */
