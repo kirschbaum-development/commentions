@@ -91,6 +91,10 @@
 
         @if ($editing)
             <div class="comm:mt-2">
+                @if ($this->ratingsAreEnabled())
+                    @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                @endif
+
                 <div class="tip-tap-container comm:mb-2" wire:ignore>
                     <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
                         <div x-ref="element"></div>
@@ -116,8 +120,13 @@
             </div>
         @else
             @if ($comment->isComment() && $comment->rating)
-                <div class="comm:mt-1 comm:flex comm:items-center comm:gap-0.5" title="{{ $comment->rating }}/{{ \Kirschbaum\Commentions\Config::getMaxRating() }}">
-                    @for ($ratingStar = 1; $ratingStar <= \Kirschbaum\Commentions\Config::getMaxRating(); $ratingStar++)
+                <div
+                    class="comm:mt-1 comm:flex comm:items-center comm:gap-0.5"
+                    role="img"
+                    title="{{ $comment->rating }}/{{ $this->getMaxRating() }}"
+                    aria-label="{{ __('commentions::comments.rating_display_label', ['rating' => $comment->rating, 'max' => $this->getMaxRating()]) }}"
+                >
+                    @for ($ratingStar = 1; $ratingStar <= $this->getMaxRating(); $ratingStar++)
                         <x-filament::icon
                             icon="heroicon-s-star"
                             @class([

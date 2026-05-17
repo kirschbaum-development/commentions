@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
+use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
@@ -18,6 +19,7 @@ class Comments extends Component
     use HasMentions;
     use HasPagination;
     use HasPolling;
+    use HasRatings;
     use HasSidebar;
 
     public Model $record;
@@ -25,10 +27,6 @@ class Comments extends Component
     public string $commentBody = '';
 
     public ?string $tipTapCssClasses = null;
-
-    public ?bool $ratingsEnabled = null;
-
-    public ?int $maxRating = null;
 
     public ?int $rating = null;
 
@@ -47,7 +45,9 @@ class Comments extends Component
 
         $this->validate();
 
-        if ($this->ratingsAreEnabled()) {
+        $ratingsEnabled = $this->ratingsAreEnabled();
+
+        if ($ratingsEnabled) {
             $this->validate([
                 'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
             ]);
@@ -57,7 +57,7 @@ class Comments extends Component
             $this->record,
             $user,
             $this->commentBody,
-            $this->ratingsAreEnabled() ? $this->rating : null,
+            $ratingsEnabled ? $this->rating : null,
         );
 
         $this->clear();
@@ -83,16 +83,6 @@ class Comments extends Component
         $this->rating = null;
 
         $this->dispatch('comments:content:cleared');
-    }
-
-    public function ratingsAreEnabled(): bool
-    {
-        return $this->ratingsEnabled ?? (bool) config('commentions.ratings.enabled', false);
-    }
-
-    public function getMaxRating(): int
-    {
-        return $this->maxRating ?? (int) config('commentions.ratings.max', 5);
     }
 
     public function getPlaceholder(): string

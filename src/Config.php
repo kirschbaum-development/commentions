@@ -49,6 +49,11 @@ class Config
         return config('commentions.tables.comment_subscriptions', 'comment_subscriptions');
     }
 
+    public static function ratingsAreEnabled(): bool
+    {
+        return (bool) config('commentions.ratings.enabled', false);
+    }
+
     public static function getMaxRating(): int
     {
         return (int) config('commentions.ratings.max', 5);

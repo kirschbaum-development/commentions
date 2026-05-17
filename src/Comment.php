@@ -185,6 +185,7 @@ class Comment extends Model implements RenderableComment
     {
         return md5(json_encode([
             'body' => $this->body,
+            'rating' => $this->rating,
             'reactions' => $this->reactions->pluck('id'),
         ]));
     }

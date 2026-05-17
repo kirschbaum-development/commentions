@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions\Filament\Concerns;
 
 use Closure;
+use Kirschbaum\Commentions\Config;
 
 trait HasRatings
 {
@@ -33,13 +34,11 @@ trait HasRatings
 
     public function ratingsAreEnabled(): bool
     {
-        $value = $this->evaluate($this->ratingsEnabled);
-
-        return $value ?? (bool) config('commentions.ratings.enabled', false);
+        return $this->evaluate($this->ratingsEnabled) ?? Config::ratingsAreEnabled();
     }
 
     public function getMaxRating(): int
     {
-        return (int) ($this->evaluate($this->maxRating) ?? config('commentions.ratings.max', 5));
+        return (int) ($this->evaluate($this->maxRating) ?? Config::getMaxRating());
     }
 }

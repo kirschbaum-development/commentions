@@ -2,7 +2,6 @@
 
 namespace Kirschbaum\Commentions\Filament\Actions;
 
-use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
@@ -10,7 +9,14 @@ use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 
-class CommentsTableAction extends Action
+/**
+ * Table/record action for the comments modal.
+ *
+ * Filament 3 keeps a dedicated table-action class (`Filament\Tables\Actions\Action`);
+ * Filament 4/5 unified actions under `Filament\Actions\Action`. {@see TableAction}
+ * resolves to the correct base class for the installed Filament version.
+ */
+class CommentsTableAction extends TableAction
 {
     use HasMentionables;
     use HasPolling;

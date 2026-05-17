@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -15,12 +16,15 @@ use Livewire\Component;
 class Comment extends Component
 {
     use HasMentions;
+    use HasRatings;
 
     public CommentModel|RenderableComment $comment;
 
     public string $commentBody = '';
 
     public bool $editing = false;
+
+    public ?int $rating = null;
 
     public ?string $tipTapCssClasses = null;
 
@@ -83,6 +87,7 @@ class Comment extends Component
 
         $this->editing = true;
         $this->commentBody = $this->comment->body;
+        $this->rating = $this->comment->rating;
 
         $this->dispatch('comment:updated');
     }
@@ -93,9 +98,17 @@ class Comment extends Component
             return;
         }
 
-        $this->comment->update([
-            'body' => $this->commentBody,
-        ]);
+        $attributes = ['body' => $this->commentBody];
+
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+
+            $attributes['rating'] = $this->rating;
+        }
+
+        $this->comment->update($attributes);
 
         $this->editing = false;
     }
@@ -104,6 +117,7 @@ class Comment extends Component
     {
         $this->editing = false;
         $this->commentBody = '';
+        $this->rating = null;
     }
 
     #[Renderless]

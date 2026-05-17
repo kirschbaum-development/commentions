@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
+use Kirschbaum\Commentions\Filament\Actions\TableAction;
 use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
 use Kirschbaum\Commentions\Livewire\Comment;
 use Kirschbaum\Commentions\Livewire\CommentList;
@@ -42,6 +43,11 @@ class CommentionsServiceProvider extends PackageServiceProvider
                 'create_commentions_subscriptions_table',
                 'add_rating_to_commentions_comments_table',
             ]);
+    }
+
+    public function packageRegistered(): void
+    {
+        $this->aliasTableAction();
     }
 
     public function packageBooted(): void
@@ -81,6 +87,26 @@ class CommentionsServiceProvider extends PackageServiceProvider
         if (config('commentions.notifications.mentions.enabled', false)) {
             $listenerClass = (string) config('commentions.notifications.mentions.listener', SendUserMentionedNotification::class);
             Event::listen(UserWasMentionedEvent::class, $listenerClass);
+        }
+    }
+
+    /**
+     * Bridge the package's {@see TableAction} to the correct Filament base class.
+     *
+     * Filament 4 unified actions under `Filament\Actions\Action`, removing the
+     * `Filament\Tables\Actions\Action` base that table actions extend on
+     * Filament 3. The bundled TableAction class already extends the unified base
+     * (correct for Filament 4/5); on Filament 3 it must instead resolve to the
+     * legacy table-action base, so alias it before CommentsTableAction loads.
+     */
+    protected function aliasTableAction(): void
+    {
+        if (class_exists(TableAction::class, false)) {
+            return;
+        }
+
+        if (class_exists('Filament\Tables\Actions\Action')) {
+            class_alias('Filament\Tables\Actions\Action', TableAction::class);
         }
     }
 }
