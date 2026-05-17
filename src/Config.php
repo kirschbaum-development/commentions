@@ -49,6 +49,11 @@ class Config
         return config('commentions.tables.comment_subscriptions', 'comment_subscriptions');
     }
 
+    public static function getMaxRating(): int
+    {
+        return (int) config('commentions.ratings.max', 5);
+    }
+
     public static function resolveCommentUrlUsing(Closure $callback): void
     {
         static::$resolveCommentUrl = $callback;

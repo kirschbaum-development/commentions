@@ -55,6 +55,7 @@ class TestCase extends Orchestra
             __DIR__ . '/../database/migrations/create_commentions_tables.php.stub',
             __DIR__ . '/../database/migrations/create_commentions_reactions_table.php.stub',
             __DIR__ . '/../database/migrations/create_commentions_subscriptions_table.php.stub',
+            __DIR__ . '/../database/migrations/add_rating_to_commentions_comments_table.php.stub',
         ];
 
         foreach ($migrations as $migration) {

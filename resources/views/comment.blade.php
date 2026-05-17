@@ -115,6 +115,21 @@
                 </div>
             </div>
         @else
+            @if ($comment->isComment() && $comment->rating)
+                <div class="comm:mt-1 comm:flex comm:items-center comm:gap-0.5" title="{{ $comment->rating }}/{{ \Kirschbaum\Commentions\Config::getMaxRating() }}">
+                    @for ($ratingStar = 1; $ratingStar <= \Kirschbaum\Commentions\Config::getMaxRating(); $ratingStar++)
+                        <x-filament::icon
+                            icon="heroicon-s-star"
+                            @class([
+                                'comm:h-4 comm:w-4',
+                                'comm:text-amber-400' => $ratingStar <= $comment->rating,
+                                'comm:text-gray-300 comm:dark:text-gray-600' => $ratingStar > $comment->rating,
+                            ])
+                        />
+                    @endfor
+                </div>
+            @endif
+
             <div class="comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
 
             @if ($comment->isComment())

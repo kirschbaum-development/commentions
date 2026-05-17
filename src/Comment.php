@@ -24,6 +24,7 @@ use Kirschbaum\Commentions\Database\Factories\CommentFactory;
 /**
  * @property int $id
  * @property string $body
+ * @property int|null $rating
  * @property string $body_markdown
  * @property string $body_parsed
  * @property int $author_id
@@ -38,8 +39,13 @@ class Comment extends Model implements RenderableComment
 
     protected $fillable = [
         'body',
+        'rating',
         'author_type',
         'author_id',
+    ];
+
+    protected $casts = [
+        'rating' => 'integer',
     ];
 
     public function getTable()

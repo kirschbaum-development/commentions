@@ -10,5 +10,7 @@
         :per-page-increment="$getPerPageIncrement()"
         :sidebar-enabled="$isSidebarEnabled()"
         :tip-tap-css-classes="$getTipTapCssClasses()"
+        :ratings-enabled="$ratingsAreEnabled()"
+        :max-rating="$getMaxRating()"
     />
 </x-dynamic-component>

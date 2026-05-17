@@ -48,6 +48,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Ratings
+    |--------------------------------------------------------------------------
+    |
+    | Allow a star rating to be attached to a comment. Disabled by default;
+    | enable globally here or per component with
+    | CommentsEntry::make()->enableRatings().
+    |
+    */
+    'ratings' => [
+        'enabled' => env('COMMENTIONS_RATINGS_ENABLED', false),
+
+        'max' => (int) env('COMMENTIONS_RATINGS_MAX', 5),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Subscriptions
     |--------------------------------------------------------------------------
     */

@@ -26,6 +26,12 @@ class Comments extends Component
 
     public ?string $tipTapCssClasses = null;
 
+    public ?bool $ratingsEnabled = null;
+
+    public ?int $maxRating = null;
+
+    public ?int $rating = null;
+
     protected $rules = [
         'commentBody' => 'required|string',
     ];
@@ -41,10 +47,17 @@ class Comments extends Component
 
         $this->validate();
 
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+        }
+
         SaveComment::run(
             $this->record,
             $user,
-            $this->commentBody
+            $this->commentBody,
+            $this->ratingsAreEnabled() ? $this->rating : null,
         );
 
         $this->clear();
@@ -67,8 +80,19 @@ class Comments extends Component
     public function clear(): void
     {
         $this->commentBody = '';
+        $this->rating = null;
 
         $this->dispatch('comments:content:cleared');
+    }
+
+    public function ratingsAreEnabled(): bool
+    {
+        return $this->ratingsEnabled ?? (bool) config('commentions.ratings.enabled', false);
+    }
+
+    public function getMaxRating(): int
+    {
+        return $this->maxRating ?? (int) config('commentions.ratings.max', 5);
     }
 
     public function getPlaceholder(): string

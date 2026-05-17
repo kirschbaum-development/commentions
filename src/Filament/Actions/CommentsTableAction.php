@@ -6,6 +6,7 @@ use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
+use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 
@@ -13,6 +14,7 @@ class CommentsTableAction extends Action
 {
     use HasMentionables;
     use HasPolling;
+    use HasRatings;
     use HasSidebar;
     use HasTipTapCssClasses;
 
@@ -29,6 +31,8 @@ class CommentsTableAction extends Action
                 'sidebarEnabled' => $this->isSidebarEnabled(),
                 'showSubscribers' => $this->showSubscribers(),
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
+                'ratingsEnabled' => $this->ratingsAreEnabled(),
+                'maxRating' => $this->getMaxRating(),
             ]))
             ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
