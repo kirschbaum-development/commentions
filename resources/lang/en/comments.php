@@ -19,6 +19,8 @@ return [
     'save' => 'Save',
     'comment' => 'Comment',
     'add_reaction' => 'Add Reaction',
+    'attach_files' => 'Attach files',
+    'uploading' => 'Uploading…',
     'show_more' => 'Show More',
 
     'notifications' => 'Notifications',

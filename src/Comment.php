@@ -165,6 +165,11 @@ class Comment extends Model implements RenderableComment
         return $this->hasMany(CommentReaction::class);
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(CommentAttachment::class);
+    }
+
     public function toggleReaction(string $reaction): void
     {
         ToggleCommentReaction::run($this, $reaction, Config::resolveAuthenticatedUser());
@@ -181,6 +186,13 @@ class Comment extends Model implements RenderableComment
             'body' => $this->body,
             'reactions' => $this->reactions->pluck('id'),
         ]));
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Comment $comment): void {
+            $comment->attachments()->get()->each->delete();
+        });
     }
 
     protected static function newFactory()

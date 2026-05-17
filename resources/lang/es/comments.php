@@ -19,6 +19,8 @@ return [
     'save' => 'Guardar',
     'comment' => 'Comentar',
     'add_reaction' => 'Agregar reacción',
+    'attach_files' => 'Adjuntar archivos',
+    'uploading' => 'Subiendo…',
     'show_more' => 'Mostrar más',
 
     'notifications' => 'Notificaciones',

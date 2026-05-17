@@ -4,6 +4,7 @@ namespace Kirschbaum\Commentions\Filament\Actions;
 
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
@@ -11,6 +12,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 
 class CommentsTableAction extends Action
 {
+    use HasAttachments;
     use HasMentionables;
     use HasPolling;
     use HasSidebar;
@@ -29,6 +31,7 @@ class CommentsTableAction extends Action
                 'sidebarEnabled' => $this->isSidebarEnabled(),
                 'showSubscribers' => $this->showSubscribers(),
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
+                'attachmentsEnabled' => $this->attachmentsAreEnabled(),
             ]))
             ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))

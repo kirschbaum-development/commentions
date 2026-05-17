@@ -19,6 +19,8 @@ return [
     'save' => 'حفظ',
     'comment' => 'تعليق',
     'add_reaction' => 'إضافة رد فعل',
+    'attach_files' => 'إرفاق ملفات',
+    'uploading' => 'جارٍ الرفع…',
     'show_more' => 'عرض المزيد',
 
     'notifications' => 'الإشعارات',

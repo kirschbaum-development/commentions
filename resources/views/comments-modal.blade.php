@@ -12,5 +12,6 @@
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"
         :tip-tap-css-classes="$tipTapCssClasses ?? null"
+        :attachments-enabled="$attachmentsEnabled ?? null"
     />
 </div>

@@ -10,5 +10,6 @@
         :per-page-increment="$getPerPageIncrement()"
         :sidebar-enabled="$isSidebarEnabled()"
         :tip-tap-css-classes="$getTipTapCssClasses()"
+        :attachments-enabled="$attachmentsAreEnabled()"
     />
 </x-dynamic-component>

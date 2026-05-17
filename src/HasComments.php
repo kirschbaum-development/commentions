@@ -18,7 +18,7 @@ trait HasComments
     {
         return $this->comments()
             ->latest()
-            ->with(['author', 'reactions.reactor']);
+            ->with(['author', 'reactions.reactor', 'attachments']);
     }
 
     public function comment(string $body, ?Commenter $author): Comment

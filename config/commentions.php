@@ -16,6 +16,7 @@ return [
         'comments' => 'comments',
         'comment_reactions' => 'comment_reactions',
         'comment_subscriptions' => 'comment_subscriptions',
+        'comment_attachments' => 'comment_attachments',
     ],
 
     /*
@@ -44,6 +45,33 @@ return [
     */
     'reactions' => [
         'allowed' => ['👍', '❤️', '😂', '😮', '😢', '🤔'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Attachments
+    |--------------------------------------------------------------------------
+    |
+    | File attachments on comments. Disabled by default; enable globally here
+    | or per component with CommentsEntry::make()->enableAttachments(). Files
+    | are stored on the configured filesystem disk.
+    |
+    */
+    'attachments' => [
+        'enabled' => env('COMMENTIONS_ATTACHMENTS_ENABLED', false),
+
+        'disk' => env('COMMENTIONS_ATTACHMENTS_DISK', 'public'),
+
+        'directory' => env('COMMENTIONS_ATTACHMENTS_DIRECTORY', 'commentions-attachments'),
+
+        // Maximum size per file, in kilobytes.
+        'max_size' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_SIZE', 10240),
+
+        // Maximum number of files per comment.
+        'max_files' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_FILES', 5),
+
+        // Accepted MIME types. Leave empty to allow any file type.
+        'accepted_mime_types' => [],
     ],
 
     /*
