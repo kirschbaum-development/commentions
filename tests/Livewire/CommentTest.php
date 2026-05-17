@@ -29,8 +29,8 @@ test('can render a comment', function () {
     ])
         ->assertSee('Test comment body')
         ->assertSee($comment->author->name)
-        ->assertSeeHtml('wire:click="edit"')  // Author should see an edit button
-        ->assertSeeHtml('wire:click="delete"'); // Author should see a delete button
+        ->assertActionVisible('edit')  // Author should see an edit action
+        ->assertActionVisible('delete'); // Author should see a delete action
 });
 
 test('other users cannot see edit and delete buttons by default', function () {
@@ -44,8 +44,8 @@ test('other users cannot see edit and delete buttons by default', function () {
     livewire(CommentComponent::class, [
         'comment' => $comment,
     ])
-        ->assertDontSeeHtml('wire:click="edit"')
-        ->assertDontSeeHtml('wire:click="delete"');
+        ->assertActionHidden('edit')
+        ->assertActionHidden('delete');
 });
 
 test('guests cannot see edit and delete buttons', function () {
@@ -56,8 +56,8 @@ test('guests cannot see edit and delete buttons', function () {
     livewire(CommentComponent::class, [
         'comment' => $comment,
     ])
-        ->assertDontSeeHtml('wire:click="edit"')
-        ->assertDontSeeHtml('wire:click="delete"');
+        ->assertActionHidden('edit')
+        ->assertActionHidden('delete');
 });
 
 test('custom policy can change who can see edit and delete buttons', function () {
@@ -72,8 +72,8 @@ test('custom policy can change who can see edit and delete buttons', function ()
     livewire(CommentComponent::class, [
         'comment' => $comment,
     ])
-        ->assertDontSeeHtml('wire:click="edit"')
-        ->assertDontSeeHtml('wire:click="delete"');
+        ->assertActionHidden('edit')
+        ->assertActionHidden('delete');
 });
 
 test('author can update a comment by default', function () {
@@ -271,6 +271,41 @@ test('can render a custom renderable comment', function () {
     ])
         ->assertSee('System notification')
         ->assertSee('System')
-        ->assertDontSeeHtml('wire:click="edit"')  // Should not show edit button
-        ->assertDontSeeHtml('wire:click="delete"'); // Should not show delete button
+        ->assertActionHidden('edit')  // Should not show edit action
+        ->assertActionHidden('delete'); // Should not show delete action
+});
+
+test('the edit action enters edit mode', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create([
+        'body' => 'Test comment body',
+    ]);
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->assertSet('editing', false)
+        ->callAction('edit')
+        ->assertSet('editing', true);
+});
+
+test('the delete action removes the comment', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->callAction('delete')
+        ->assertDispatched('comment:deleted');
+
+    test()->assertDatabaseMissing('comments', [
+        'id' => $comment->id,
+    ]);
 });

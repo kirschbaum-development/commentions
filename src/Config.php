@@ -4,6 +4,8 @@ namespace Kirschbaum\Commentions;
 
 use Closure;
 use Composer\InstalledVersions;
+use Filament\Actions\Action;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
@@ -16,6 +18,9 @@ class Config
     protected static ?Closure $resolveCommentUrl = null;
 
     protected static ?Closure $resolveTipTapCssClasses = null;
+
+    /** @var array<Closure> */
+    protected static array $commentActions = [];
 
     public static function resolveAuthenticatedUserUsing(Closure $callback): void
     {
@@ -94,6 +99,36 @@ class Config
         }
 
         return 'comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700';
+    }
+
+    /**
+     * Register a callback that returns one or more Filament actions to render
+     * alongside each comment's built-in edit/delete actions. The callback
+     * receives the Comment the actions are being rendered for.
+     *
+     * @param  Closure(Comment): (Action|array<Action>)  $callback
+     */
+    public static function registerCommentActions(Closure $callback): void
+    {
+        static::$commentActions[] = $callback;
+    }
+
+    /**
+     * Resolve the custom actions registered for a given comment.
+     *
+     * @return array<Action>
+     */
+    public static function getCommentActions(Comment $comment): array
+    {
+        return collect(static::$commentActions)
+            ->flatMap(fn (Closure $callback): array => Arr::wrap($callback($comment)))
+            ->values()
+            ->all();
+    }
+
+    public static function flushCommentActions(): void
+    {
+        static::$commentActions = [];
     }
 
     public static function getComponentPrefix(): string
