@@ -414,7 +414,7 @@ use Kirschbaum\Commentions\Config;
 Config::resolveTimezoneUsing(fn () => auth()->user()?->timezone);
 ```
 
-The closure takes precedence over the config value. When both are `null`, dates render in the storage timezone.
+The closure result takes precedence; when it returns `null`, the `timezone` config value is used as a fallback. When neither yields a value, dates render in the storage timezone.
 
 ### Customizing TipTap Editor Styles
 

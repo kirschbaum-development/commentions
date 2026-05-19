@@ -2,8 +2,11 @@
 
 namespace Kirschbaum\Commentions;
 
+use Carbon\CarbonInterface;
 use Closure;
 use Composer\InstalledVersions;
+use DateTime;
+use DateTimeZone;
 use InvalidArgumentException;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
@@ -103,7 +106,7 @@ class Config
         return static::isLivewireV4() ? 'commentions.' : 'commentions::';
     }
 
-    public static function resolveTimezoneUsing(Closure $callback): void
+    public static function resolveTimezoneUsing(?Closure $callback = null): void
     {
         static::$resolveTimezone = $callback;
     }
@@ -111,26 +114,26 @@ class Config
     public static function getTimezone(): ?string
     {
         if (static::$resolveTimezone instanceof Closure) {
-            return call_user_func(static::$resolveTimezone);
+            return call_user_func(static::$resolveTimezone) ?? config('commentions.timezone');
         }
 
         return config('commentions.timezone');
     }
 
-    public static function applyTimezone(\DateTime|\Carbon\CarbonInterface $dt): \DateTime|\Carbon\CarbonInterface
+    public static function applyTimezone(DateTime|CarbonInterface $dt): DateTime|CarbonInterface
     {
         $tz = static::getTimezone();
 
-        if ($tz === null) {
+        if (blank($tz)) {
             return $dt;
         }
 
-        if ($dt instanceof \Carbon\CarbonInterface) {
+        if ($dt instanceof CarbonInterface) {
             return $dt->copy()->setTimezone($tz);
         }
 
         $cloned = clone $dt;
-        $cloned->setTimezone(new \DateTimeZone($tz));
+        $cloned->setTimezone(new DateTimeZone($tz));
 
         return $cloned;
     }

@@ -9,7 +9,7 @@ use Tests\Models\User;
 
 afterEach(function () {
     config()->set('commentions.timezone', null);
-    Config::resolveTimezoneUsing(fn () => config('commentions.timezone'));
+    Config::resolveTimezoneUsing(null);
 });
 
 test('comment dates are returned unmodified when no timezone is configured', function () {
@@ -79,4 +79,28 @@ test('applyTimezone does not mutate the source instance', function () {
 
     expect($source->format('Y-m-d H:i'))->toBe('2026-01-15 12:00')
         ->and($converted->format('Y-m-d H:i'))->toBe('2026-01-15 07:00');
+});
+
+test('an empty-string timezone is treated as no timezone', function () {
+    Config::resolveTimezoneUsing(fn () => '');
+
+    $source = Carbon::parse('2026-01-15 12:00:00', 'UTC');
+
+    expect(Config::applyTimezone($source)->format('Y-m-d H:i'))
+        ->toBe('2026-01-15 12:00');
+});
+
+test('resolveTimezoneUsing falls back to the config value when the closure returns null', function () {
+    config()->set('commentions.timezone', 'America/Chicago');
+    Config::resolveTimezoneUsing(fn () => null);
+
+    $user = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create([
+        'created_at' => Carbon::parse('2026-01-15 12:00:00', 'UTC'),
+        'updated_at' => Carbon::parse('2026-01-15 12:00:00', 'UTC'),
+    ]);
+
+    expect($comment->getCreatedAt()->format('Y-m-d H:i'))
+        ->toBe('2026-01-15 06:00');
 });
