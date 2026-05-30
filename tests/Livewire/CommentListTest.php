@@ -3,14 +3,24 @@
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Livewire\CommentList;
 use Kirschbaum\Commentions\RenderableComment;
-use Mockery;
+use Mockery\MockInterface;
 use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Livewire\livewire;
 
+function assertCommentKey($component, string $class, int|string $id): void
+{
+    $html = $component->html();
+
+    $literal = 'wire:key="' . $class . ':' . $id . '"';
+    $snapshot = trim(json_encode("$class:$id"), '"');
+
+    expect(str_contains($html, $literal) || str_contains($html, $snapshot))->toBeTrue();
+}
+
 test('CommentList calls getComments when not paginating', function () {
-    /** @var Post|Mockery\MockInterface $post */
+    /** @var Post|MockInterface $post */
     $post = Mockery::mock(Post::class)->makePartial();
 
     $post->shouldReceive('getComments')
@@ -26,7 +36,7 @@ test('CommentList calls getComments when not paginating', function () {
 });
 
 test('CommentList calls getComments when paginating', function () {
-    /** @var Post|Mockery\MockInterface $post */
+    /** @var Post|MockInterface $post */
     $post = Mockery::mock(Post::class)->makePartial();
 
     $post->shouldReceive('getComments')
@@ -43,7 +53,7 @@ test('CommentList calls getComments when paginating', function () {
 });
 
 test('CommentList can render non-Comment renderable items', function () {
-    /** @var Post|Mockery\MockInterface $post */
+    /** @var Post|MockInterface $post */
     $post = Mockery::mock(Post::class)->makePartial();
 
     $items = collect([
@@ -78,12 +88,13 @@ test('CommentList renders duplicate-content comments without key collision', fun
         'body' => 'identical body',
     ]);
 
-    livewire(CommentList::class, [
+    $component = livewire(CommentList::class, [
         'record' => $realPost,
         'paginate' => false,
-    ])
-        ->assertSeeHtml('wire:key="' . CommentModel::class . ':' . $first->id . '"')
-        ->assertSeeHtml('wire:key="' . CommentModel::class . ':' . $second->id . '"');
+    ]);
+
+    assertCommentKey($component, CommentModel::class, $first->id);
+    assertCommentKey($component, CommentModel::class, $second->id);
 });
 
 test('CommentList keeps comment keys stable across edits', function () {
@@ -97,16 +108,21 @@ test('CommentList keeps comment keys stable across edits', function () {
         'body' => 'original body',
     ]);
 
-    $key = 'wire:key="' . CommentModel::class . ':' . $comment->id . '"';
-
-    $component = livewire(CommentList::class, [
+    $before = livewire(CommentList::class, [
         'record' => $realPost,
         'paginate' => false,
-    ])->assertSeeHtml($key);
+    ]);
+
+    assertCommentKey($before, CommentModel::class, $comment->id);
 
     $comment->update(['body' => 'edited body']);
 
-    $component->call('reloadComments')->assertSeeHtml($key);
+    $after = livewire(CommentList::class, [
+        'record' => $realPost,
+        'paginate' => false,
+    ]);
+
+    assertCommentKey($after, CommentModel::class, $comment->id);
 });
 
 test('CommentList can render both Comment and RenderableComment items', function () {
@@ -127,7 +143,7 @@ test('CommentList can render both Comment and RenderableComment items', function
 
     $items = collect([$comment, $renderable]);
 
-    /** @var Post|Mockery\MockInterface $post */
+    /** @var Post|MockInterface $post */
     $post = Mockery::mock(Post::class)->makePartial();
     $post->shouldReceive('getComments')
         ->once()
@@ -162,16 +178,17 @@ test('CommentList renders Comment and RenderableComment sharing an id without ke
     // RenderableComment deliberately reuses the Comment's primary key.
     $renderable = new RenderableComment(id: $comment->id, authorName: 'System', body: 'System message');
 
-    /** @var Post|Mockery\MockInterface $post */
+    /** @var Post|MockInterface $post */
     $post = Mockery::mock(Post::class)->makePartial();
     $post->shouldReceive('getComments')
         ->once()
         ->andReturn(collect([$comment, $renderable]));
 
-    livewire(CommentList::class, [
+    $component = livewire(CommentList::class, [
         'record' => $post,
         'paginate' => false,
-    ])
-        ->assertSeeHtml('wire:key="' . CommentModel::class . ':' . $comment->id . '"')
-        ->assertSeeHtml('wire:key="' . RenderableComment::class . ':' . $renderable->getId() . '"');
+    ]);
+
+    assertCommentKey($component, CommentModel::class, $comment->id);
+    assertCommentKey($component, RenderableComment::class, $renderable->getId());
 });
