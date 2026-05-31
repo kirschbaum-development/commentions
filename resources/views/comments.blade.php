@@ -15,7 +15,7 @@
                 </div>
 
             @if ($this->attachmentsAreEnabled())
-                <div class="comm:mb-2 comm:space-y-1">
+                <div class="comm:mb-2 comm:space-y-1" x-show="wasFocused" x-cloak>
                     <label class="comm:inline-flex comm:cursor-pointer comm:items-center comm:gap-1 comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:px-2 comm:py-1 comm:text-xs comm:text-gray-600 comm:dark:text-gray-300 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-800">
                         <input type="file" class="comm:hidden" wire:model="attachments" multiple />
                         <x-filament::icon icon="heroicon-s-paper-clip" class="comm:h-4 comm:w-4" />

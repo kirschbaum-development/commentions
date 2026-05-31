@@ -60,6 +60,16 @@ test('the attach control renders when attachments are enabled', function () {
         ->assertSeeHtml('wire:model="attachments"');
 });
 
+test('the attach control is only shown once the editor is focused', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, ['record' => $post, 'attachmentsEnabled' => true])
+        ->assertSeeHtml('x-show="wasFocused"');
+});
+
 test('deleting a comment removes its attachments and files', function () {
     $user = User::factory()->create();
     actingAs($user);
