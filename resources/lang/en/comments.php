@@ -30,4 +30,22 @@ return [
     'notification_subscribed' => 'Subscribed to notifications',
     'notification_unsubscribed' => 'Unsubscribed from notifications',
     'notification_comment_deleted' => 'Comment deleted',
+
+    'toolbar' => [
+        'aria_label' => 'Text formatting',
+        'bold' => 'Bold',
+        'italic' => 'Italic',
+        'underline' => 'Underline',
+        'strike' => 'Strikethrough',
+        'h1' => 'Heading 1',
+        'h2' => 'Heading 2',
+        'h3' => 'Heading 3',
+        'blockquote' => 'Quote',
+        'bullet_list' => 'Bullet list',
+        'ordered_list' => 'Numbered list',
+        'code' => 'Code',
+        'link' => 'Link',
+        'link_prompt' => 'Enter the URL',
+        'link_invalid' => 'That link uses an unsupported or unsafe URL.',
+    ],
 ];

@@ -12,5 +12,6 @@
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"
         :tip-tap-css-classes="$tipTapCssClasses ?? null"
+        :toolbar-buttons="$toolbarButtons ?? null"
     />
 </div>

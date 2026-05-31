@@ -44,3 +44,39 @@
 .mention-item:hover {
     @apply comm:bg-gray-100;
 }
+
+.tip-tap-container {
+    @apply comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:bg-white comm:dark:bg-gray-900 comm:overflow-hidden comm:focus-within:ring-2 comm:focus-within:ring-blue-500/50 comm:focus-within:border-blue-500;
+}
+
+.commentions-toolbar {
+    @apply comm:flex comm:flex-wrap comm:items-center comm:gap-1 comm:p-1 comm:border-b comm:border-gray-300 comm:dark:border-gray-700 comm:bg-gray-50 comm:dark:bg-gray-800;
+}
+
+.commentions-toolbar-group {
+    @apply comm:flex comm:items-center comm:gap-0.5;
+}
+
+.commentions-toolbar-group:not(:last-child) {
+    @apply comm:pr-1 comm:mr-1 comm:border-r comm:border-gray-300 comm:dark:border-gray-700;
+}
+
+.commentions-toolbar-button {
+    @apply comm:flex comm:items-center comm:justify-center comm:p-1.5 comm:rounded comm:text-gray-600 comm:dark:text-gray-300 comm:cursor-pointer;
+}
+
+.commentions-toolbar-button:hover {
+    @apply comm:bg-gray-200 comm:dark:bg-gray-700;
+}
+
+.commentions-toolbar-button:focus-visible {
+    @apply comm:bg-gray-200 comm:dark:bg-gray-700 comm:outline-none;
+}
+
+.commentions-toolbar-button-active {
+    @apply comm:bg-gray-200 comm:dark:bg-gray-700 comm:text-blue-600 comm:dark:text-blue-400;
+}
+
+.tiptap a.comm-link {
+    @apply comm:text-blue-600 comm:dark:text-blue-400 comm:underline;
+}

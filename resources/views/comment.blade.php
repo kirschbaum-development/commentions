@@ -92,7 +92,8 @@
         @if ($editing)
             <div class="comm:mt-2">
                 <div class="tip-tap-container comm:mb-2" wire:ignore>
-                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
+                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))">
+                        @include('commentions::partials.toolbar', ['toolbarButtons' => $this->getToolbarButtons()])
                         <div x-ref="element"></div>
                     </div>
                 </div>
