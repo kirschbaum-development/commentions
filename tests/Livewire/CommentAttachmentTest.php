@@ -100,6 +100,23 @@ test('oversized attachments are rejected and the comment is not created', functi
     test()->assertDatabaseCount('comments', 0);
 });
 
+test('attachments with a disallowed mime type are rejected', function () {
+    config(['commentions.attachments.accepted_mime_types' => ['application/pdf']]);
+
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, ['record' => $post, 'attachmentsEnabled' => true])
+        ->set('commentBody', 'Sneaky')
+        ->set('attachments', [UploadedFile::fake()->create('xss.svg', 10, 'image/svg+xml')])
+        ->call('save')
+        ->assertHasErrors('attachments.0');
+
+    test()->assertDatabaseCount('comments', 0);
+});
+
 test('a pending attachment can be removed before saving', function () {
     $user = User::factory()->create();
     actingAs($user);

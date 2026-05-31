@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions\Actions;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\CommentAttachment;
 
@@ -29,6 +30,12 @@ class StoreCommentAttachments
             $path = $file->store($directory, $disk);
 
             if (! is_string($path)) {
+                Log::warning('Failed to store comment attachment.', [
+                    'comment_id' => $comment->getKey(),
+                    'disk' => $disk,
+                    'filename' => $file->getClientOriginalName(),
+                ]);
+
                 continue;
             }
 

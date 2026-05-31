@@ -10,6 +10,7 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -29,6 +30,12 @@ class Comments extends Component
 
     public ?string $tipTapCssClasses = null;
 
+    // Resolved once from the per-component setting (or config) at mount and
+    // serialized so it survives subsequent requests. #[Locked] lets the client
+    // read it but not change it, so a closure-based gate such as
+    // enableAttachments(fn () => $user->isAdmin()) cannot be flipped on by
+    // tampering with the request payload.
+    #[Locked]
     public ?bool $attachmentsEnabled = null;
 
     /** @var array<mixed> */

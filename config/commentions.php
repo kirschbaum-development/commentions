@@ -70,8 +70,23 @@ return [
         // Maximum number of files per comment.
         'max_files' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_FILES', 5),
 
-        // Accepted MIME types. Leave empty to allow any file type.
-        'accepted_mime_types' => [],
+        // Accepted MIME types, validated against the file's actual contents.
+        // The defaults below cover common images and documents. Setting this
+        // to an empty array allows ANY file type — avoid this on a public
+        // disk, since it permits files browsers execute in-origin (such as
+        // image/svg+xml or text/html) to be served from your app's URL.
+        'accepted_mime_types' => [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf',
+            'text/plain',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ],
     ],
 
     /*
