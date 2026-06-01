@@ -46,7 +46,7 @@ parameters:
             path: src/RenderableComment.php
 
         -
-            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase::[a-zA-Z0-9_]+\(\)\.$#'
+            message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall::[a-zA-Z0-9_]+\(\)\.$#'
             identifier: method.notFound
             count: 3
             path: tests/**/*.php
@@ -57,13 +57,13 @@ parameters:
             path: tests/Pest.php
 
         -
-            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+            message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:assertDatabaseHas\(\)\.$#'
             identifier: method.notFound
             count: 2
             path: tests/Livewire/CommentReactionTest.php
 
         -
-            message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseMissing\(\)\.$#'
+            message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:assertDatabaseMissing\(\)\.$#'
             identifier: method.notFound
             count: 3
             path: tests/Livewire/CommentReactionTest.php
