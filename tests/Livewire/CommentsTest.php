@@ -83,6 +83,21 @@ test('guests cannot create comments', function () {
     Event::assertNotDispatched(CommentWasCreatedEvent::class);
 });
 
+test('comments composer does not render a form element', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->assertDontSeeHtml('<form')
+        ->assertSeeHtml('role="form"')
+        ->assertSeeHtml('wire:click="save"');
+});
+
 test('comments editor includes prefixed component alias', function () {
     /** @var User $user */
     $user = User::factory()->create();

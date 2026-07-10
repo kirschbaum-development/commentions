@@ -3,6 +3,7 @@
 return [
     'label' => 'Comentarii',
     'placeholder' => 'Scrie comentariul tău...',
+    'add_comment' => 'Adaugă un comentariu',
     'no_comments_yet' => 'Niciun comentariu încă.',
 
     'user_avatar_alt' => 'Avatar',
