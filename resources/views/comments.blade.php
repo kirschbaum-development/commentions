@@ -5,6 +5,10 @@
     <div class="comm:flex-1 comm:space-y-2">
         @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
             <form wire:submit.prevent="save" x-cloak>
+                @if ($this->ratingsAreEnabled())
+                    @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                @endif
+
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
                     <div
@@ -42,6 +46,8 @@
             :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
             :per-page-increment="$perPageIncrement ?? null"
             :tip-tap-css-classes="$tipTapCssClasses"
+            :ratings-enabled="$this->ratingsAreEnabled()"
+            :max-rating="$this->getMaxRating()"
         />
     </div>
 

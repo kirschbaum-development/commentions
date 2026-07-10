@@ -21,6 +21,10 @@ return [
     'add_reaction' => 'Add Reaction',
     'show_more' => 'Show More',
 
+    'rating_input_label' => 'Rating',
+    'rate_stars' => 'Rate :count star|Rate :count stars',
+    'rating_display_label' => 'Rated :rating out of :max',
+
     'notifications' => 'Notifications',
     'unsubscribe' => 'Unsubscribe',
     'subscribe' => 'Subscribe',

@@ -351,6 +351,36 @@ By default, Commentions ships with the following reactions: `['👍', '❤️', 
     ],
 ```
 
+#### Comment Ratings
+
+Commentions can attach an optional star rating to a comment, review-style. Ratings are **disabled by default**.
+
+Enable them globally in your `config/commentions.php` file (or via the matching environment variables):
+
+```php
+    'ratings' => [
+        'enabled' => env('COMMENTIONS_RATINGS_ENABLED', false),
+
+        'max' => (int) env('COMMENTIONS_RATINGS_MAX', 5),
+    ],
+```
+
+You can also enable ratings per component, which overrides the global config. This works on `CommentsEntry`, `CommentsAction`, and `CommentsTableAction`:
+
+```php
+CommentsEntry::make('comments')
+    ->enableRatings()
+    ->maxRating(10)
+```
+
+Available methods:
+
+- `enableRatings(bool|Closure $condition = true)` — enable the rating input for this component.
+- `disableRatings()` — disable the rating input, even if enabled globally.
+- `maxRating(int|Closure $max)` — set the highest selectable rating (defaults to `ratings.max`).
+
+When ratings are enabled, commenters can pick a rating while writing or editing a comment, and each rated comment renders its score as filled stars. The rating is stored in a nullable `rating` column added by the package's `add_rating_to_commentions_comments_table` migration.
+
 ### Configuring the Commenter name
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
