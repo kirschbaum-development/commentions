@@ -10,6 +10,7 @@ use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
@@ -23,6 +24,7 @@ use Kirschbaum\Commentions\Database\Factories\CommentFactory;
 
 /**
  * @property int $id
+ * @property int|null $parent_id
  * @property string $body
  * @property string $body_markdown
  * @property string $body_parsed
@@ -37,6 +39,7 @@ class Comment extends Model implements RenderableComment
     use HasFactory;
 
     protected $fillable = [
+        'parent_id',
         'body',
         'author_type',
         'author_id',
@@ -165,6 +168,45 @@ class Comment extends Model implements RenderableComment
         return $this->hasMany(CommentReaction::class);
     }
 
+    /** @return BelongsTo<self, self> */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(static::class, 'parent_id');
+    }
+
+    /** @return HasMany<self> */
+    public function replies(): HasMany
+    {
+        return $this->hasMany(static::class, 'parent_id')->oldest();
+    }
+
+    /**
+     * The nesting depth of this comment — 0 for a top-level comment.
+     */
+    public function depth(): int
+    {
+        $depth = 0;
+        $parent = $this->parent;
+
+        while ($parent !== null) {
+            $depth++;
+            $parent = $parent->parent;
+        }
+
+        return $depth;
+    }
+
+    /**
+     * Total number of descendant comments across all nested reply levels.
+     */
+    public function repliesCount(): int
+    {
+        return $this->replies->reduce(
+            fn (int $carry, self $reply): int => $carry + 1 + $reply->repliesCount(),
+            0,
+        );
+    }
+
     public function toggleReaction(string $reaction): void
     {
         ToggleCommentReaction::run($this, $reaction, Config::resolveAuthenticatedUser());
@@ -184,6 +226,13 @@ class Comment extends Model implements RenderableComment
             'body' => $this->body,
             'reactions' => $this->reactions->pluck('id'),
         ]));
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Comment $comment): void {
+            $comment->replies()->get()->each->delete();
+        });
     }
 
     protected static function newFactory()

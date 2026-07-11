@@ -16,6 +16,7 @@ return [
 
     'cancel' => 'Annuleren',
     'delete' => 'Verwijderen',
+    'reply' => 'Beantwoorden',
     'save' => 'Opslaan',
     'comment' => 'Opmerking',
     'add_reaction' => 'Reactie toevoegen',

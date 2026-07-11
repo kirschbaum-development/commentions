@@ -17,6 +17,9 @@ return [
 
     'cancel' => 'Cancel',
     'delete' => 'Delete',
+    'reply' => 'Reply',
+    'replies_count' => '{0} No replies|{1} :count reply|[2,*] :count replies',
+    'hide_replies' => 'Hide replies',
     'save' => 'Save',
     'comment' => 'Comment',
     'add_reaction' => 'Add Reaction',

@@ -17,6 +17,7 @@ return [
 
     'cancel' => 'Anulare',
     'delete' => 'Șterge',
+    'reply' => 'Răspunde',
     'save' => 'Salvare',
     'comment' => 'Comentariu',
     'add_reaction' => 'Adaugă reacție',

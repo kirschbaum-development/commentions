@@ -16,9 +16,17 @@ trait HasComments
 
     public function commentsQuery(): MorphMany
     {
-        return $this->comments()
+        $query = $this->comments()
             ->latest()
             ->with(['author', 'reactions.reactor']);
+
+        if (config('commentions.threading.enabled', false)) {
+            $query
+                ->whereNull('parent_id')
+                ->with($this->threadedRepliesEagerLoad());
+        }
+
+        return $query;
     }
 
     public function comment(string $body, ?Commenter $author): Comment
@@ -80,5 +88,27 @@ trait HasComments
                 return $commenterModel::whereKey($subscription->subscriber_id)->first();
             })
             ->filter();
+    }
+
+    /**
+     * Eager-load paths for nested replies down to the configured max depth.
+     *
+     * @return array<int, string>
+     */
+    protected function threadedRepliesEagerLoad(): array
+    {
+        $maxDepth = max(0, (int) config('commentions.threading.max_depth', 3));
+
+        $paths = [];
+        $prefix = 'replies';
+
+        for ($level = 1; $level <= $maxDepth; $level++) {
+            $paths[] = $prefix;
+            $paths[] = $prefix . '.author';
+            $paths[] = $prefix . '.reactions.reactor';
+            $prefix .= '.replies';
+        }
+
+        return $paths;
     }
 }
