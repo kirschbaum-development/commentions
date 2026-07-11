@@ -19,6 +19,8 @@ return [
     'save' => 'Opslaan',
     'comment' => 'Opmerking',
     'add_reaction' => 'Reactie toevoegen',
+    'attach_files' => 'Bestanden bijvoegen',
+    'uploading' => 'Uploaden…',
 
     'notifications' => 'Meldingen',
     'unsubscribe' => 'Afmelden',

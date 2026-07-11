@@ -20,6 +20,8 @@ return [
     'save' => 'Salvare',
     'comment' => 'Comentariu',
     'add_reaction' => 'Adaugă reacție',
+    'attach_files' => 'Atașează fișiere',
+    'uploading' => 'Se încarcă…',
     'show_more' => 'Afișează mai multe',
 
     'notifications' => 'Notificări',

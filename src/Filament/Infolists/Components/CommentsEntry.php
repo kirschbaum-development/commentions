@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions\Filament\Infolists\Components;
 
 use Filament\Infolists\Components\Entry;
+use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPagination;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
@@ -11,6 +12,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 
 class CommentsEntry extends Entry
 {
+    use HasAttachments;
     use HasMentionables;
     use HasPagination;
     use HasPolling;

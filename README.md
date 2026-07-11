@@ -351,6 +351,51 @@ By default, Commentions ships with the following reactions: `['👍', '❤️', 
     ],
 ```
 
+#### Configuring Attachments
+
+Commentions can let users attach files to their comments. The feature is **disabled by default**. Publish the migration that ships with the package (`create_commentions_attachments_table`) before enabling it.
+
+Enable attachments globally in `config/commentions.php` (or via the `COMMENTIONS_ATTACHMENTS_ENABLED` env variable):
+
+```php
+    'attachments' => [
+        'enabled' => env('COMMENTIONS_ATTACHMENTS_ENABLED', false),
+
+        // Filesystem disk and directory used to store uploads.
+        'disk' => env('COMMENTIONS_ATTACHMENTS_DISK', 'public'),
+        'directory' => env('COMMENTIONS_ATTACHMENTS_DIRECTORY', 'commentions-attachments'),
+
+        // Maximum size per file, in kilobytes.
+        'max_size' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_SIZE', 10240),
+
+        // Maximum number of files per comment.
+        'max_files' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_FILES', 5),
+
+        // Accepted MIME types, validated against the file's actual contents.
+        'accepted_mime_types' => [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf',
+            // ...
+        ],
+    ],
+```
+
+You can also toggle attachments per component instead of globally, which overrides the config value:
+
+```php
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+
+CommentsEntry::make('comments')->enableAttachments();
+CommentsEntry::make('comments')->enableAttachments(fn () => auth()->user()->isAdmin());
+CommentsEntry::make('comments')->disableAttachments();
+```
+
+The same `enableAttachments()` / `disableAttachments()` methods are available on `CommentsAction` and `CommentsTableAction`.
+
+> [!WARNING]
+> `accepted_mime_types` ships with a safe set of image and document types. Leaving it empty allows **any** file type, which is dangerous on a `public` disk: types browsers execute in-origin (such as `image/svg+xml` or `text/html`) would be served directly from your application's URL and could be used for stored XSS. Keep an explicit allowlist, or store attachments on a private disk.
+
+Attachments are deleted from both the database and the underlying disk when their parent comment is deleted through the model (`$comment->delete()`).
+
 ### Configuring the Commenter name
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
