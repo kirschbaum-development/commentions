@@ -21,6 +21,7 @@
             :comment="$comment"
             :mentionables="$mentionables"
             :tip-tap-css-classes="$tipTapCssClasses"
+            :toolbar-buttons="$toolbarButtons"
         />
     @endforeach
 

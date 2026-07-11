@@ -23,6 +23,7 @@
     "require": {
         "spatie/laravel-package-tools": "^1.18",
         "league/html-to-markdown": "^5.1",
+        "symfony/html-sanitizer": "^7.0|^8.0",
         "illuminate/support": "^11.0|^12.0|^13.0",
         "illuminate/database": "^11.0|^12.0|^13.0",
         "livewire/livewire": "^3.5|^4.0",

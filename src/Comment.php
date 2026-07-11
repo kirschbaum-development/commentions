@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Kirschbaum\Commentions\Actions\HtmlToMarkdown;
 use Kirschbaum\Commentions\Actions\ParseComment;
+use Kirschbaum\Commentions\Actions\SanitizeCommentHtml;
 use Kirschbaum\Commentions\Actions\ToggleCommentReaction;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
@@ -55,6 +56,13 @@ class Comment extends Model implements RenderableComment
     public function commentable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function body(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value): string => SanitizeCommentHtml::run($value),
+        );
     }
 
     public function bodyParsed(): Attribute

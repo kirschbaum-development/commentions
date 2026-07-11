@@ -430,6 +430,50 @@ CommentsAction::make()
 
 **Important**: Make sure to whitelist the classes in your Tailwind config if you override them.
 
+### Editor toolbar
+
+The comment editor shows a formatting toolbar above the input. The available buttons are:
+
+`bold`, `italic`, `underline`, `strike`, `h1`, `h2`, `h3`, `blockquote`, `bulletList`, `orderedList`, `code`, `link`.
+
+You can configure which buttons appear globally via the `toolbar` option in your `config/commentions.php` file. Buttons may be a flat list, or grouped into arrays to render visual separators between groups:
+
+```php
+    'toolbar' => [
+        'enabled' => env('COMMENTIONS_TOOLBAR_ENABLED', true),
+
+        'buttons' => [
+            ['bold', 'italic', 'underline'],
+            ['bulletList', 'orderedList'],
+            ['link'],
+        ],
+    ],
+```
+
+To hide the toolbar entirely, set `enabled` to `false` (or set `COMMENTIONS_TOOLBAR_ENABLED=false` in your `.env`).
+
+You can also override the buttons on a per-component basis using the `toolbarButtons()` method:
+
+```php
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+
+CommentsEntry::make('comments')
+    ->mentionables(fn (Model $record) => User::all())
+    ->toolbarButtons([['bold', 'italic'], ['link']])
+```
+
+Or with actions:
+
+```php
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
+
+CommentsAction::make()
+    ->mentionables(User::all())
+    ->toolbarButtons(['bold', 'italic', 'link'])
+```
+
+Pass an empty array (`->toolbarButtons([])`) to hide the toolbar for a single component.
+
 ### Translations
 
 You can publish the package translation files and override any strings used by the UI.

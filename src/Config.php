@@ -93,7 +93,57 @@ class Config
             return call_user_func(static::$resolveTipTapCssClasses);
         }
 
-        return 'comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700';
+        return 'comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full';
+    }
+
+    /**
+     * Resolve the configured editor toolbar buttons, normalized into groups.
+     *
+     * @return array<int, array<int, string>>
+     */
+    public static function getToolbarButtons(): array
+    {
+        if (! config('commentions.toolbar.enabled', true)) {
+            return [];
+        }
+
+        return static::normalizeToolbarButtons(config('commentions.toolbar.buttons', []));
+    }
+
+    /**
+     * Normalize a flat or grouped list of toolbar buttons into groups, so the
+     * editor can always render groups separated by visual dividers. Non-string
+     * buttons and empty groups are dropped, so malformed configuration can
+     * never reach the editor view.
+     *
+     * @param  array<mixed>  $buttons
+     * @return array<int, array<int, string>>
+     */
+    public static function normalizeToolbarButtons(array $buttons): array
+    {
+        if ($buttons === []) {
+            return [];
+        }
+
+        $isGrouped = array_is_list($buttons)
+            && count(array_filter($buttons, 'is_array')) === count($buttons);
+
+        $groups = $isGrouped ? $buttons : [$buttons];
+
+        $normalized = [];
+
+        foreach ($groups as $group) {
+            $group = array_values(array_filter(
+                is_array($group) ? $group : [$group],
+                'is_string',
+            ));
+
+            if ($group !== []) {
+                $normalized[] = $group;
+            }
+        }
+
+        return $normalized;
     }
 
     public static function getComponentPrefix(): string

@@ -48,6 +48,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Editor toolbar
+    |--------------------------------------------------------------------------
+    |
+    | The formatting toolbar shown above the comment editor. Set `enabled` to
+    | false to hide it globally, or override the buttons per component with
+    | CommentsEntry::make()->toolbarButtons([...]). Buttons may be a flat list
+    | or grouped into arrays to render visual separators between groups.
+    |
+    | Available buttons: bold, italic, underline, strike, h1, h2, h3,
+    | blockquote, bulletList, orderedList, code, link.
+    |
+    */
+    'toolbar' => [
+        'enabled' => env('COMMENTIONS_TOOLBAR_ENABLED', true),
+
+        'buttons' => [
+            ['bold', 'italic', 'underline'],
+            ['bulletList', 'orderedList'],
+            ['link'],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Subscriptions
     |--------------------------------------------------------------------------
     */

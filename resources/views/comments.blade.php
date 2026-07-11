@@ -8,8 +8,9 @@
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
                     <div
-                        x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'))"
+                        x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
                     >
+                        @include('commentions::partials.toolbar', ['toolbarButtons' => $this->getToolbarButtons()])
                         <div x-ref="element"></div>
                     </div>
                 </div>
@@ -42,6 +43,7 @@
             :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
             :per-page-increment="$perPageIncrement ?? null"
             :tip-tap-css-classes="$tipTapCssClasses"
+            :toolbar-buttons="$this->getToolbarButtons()"
         />
     </div>
 

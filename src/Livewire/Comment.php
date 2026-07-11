@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -15,6 +16,7 @@ use Livewire\Component;
 class Comment extends Component
 {
     use HasMentions;
+    use HasToolbarButtons;
 
     public CommentModel|RenderableComment $comment;
 
