@@ -9,9 +9,9 @@ use Kirschbaum\Commentions\Contracts\Commenter;
 
 trait HasSidebar
 {
-    protected bool $sidebarEnabled = true;
+    protected ?bool $sidebarEnabled = null;
 
-    protected bool $showSubscribers = true;
+    protected ?bool $showSubscribers = null;
 
     /** @var (Closure(Model): string)|string|null */
     protected $subscribeLabelOverride = null;
@@ -45,7 +45,7 @@ trait HasSidebar
 
     public function isSidebarEnabled(): bool
     {
-        return $this->sidebarEnabled;
+        return $this->sidebarEnabled ?? (bool) config('commentions.subscriptions.show_sidebar', true);
     }
 
     public function hideSubscribers(bool $condition = true): static
@@ -57,7 +57,7 @@ trait HasSidebar
 
     public function showSubscribers(): bool
     {
-        return $this->showSubscribers;
+        return $this->showSubscribers ?? (bool) config('commentions.subscriptions.show_subscribers', true);
     }
 
     public function subscribeLabel(Closure|string $label): static

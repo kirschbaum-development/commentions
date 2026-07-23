@@ -16,7 +16,7 @@ class SubscriptionSidebar extends Component
     public function mount(Model $record, ?bool $showSubscribers = null): void
     {
         $this->record = $record;
-        $this->mountHasSidebar(true, $showSubscribers);
+        $this->mountHasSidebar(config('commentions.subscriptions.show_sidebar', true), $showSubscribers);
     }
 
     #[On('commentions:subscription:toggled')]

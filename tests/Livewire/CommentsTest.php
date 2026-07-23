@@ -124,3 +124,20 @@ test('comments editor includes prefixed component alias', function () {
         'record' => $post,
     ])->assertSee($componentAlias, false);
 });
+
+test('showSidebar defaults to config when not provided', function (bool $showSidebar) {
+    config(['commentions.subscriptions.show_sidebar' => $showSidebar]);
+
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])->assertSet('sidebarEnabled', $showSidebar);
+})->with(
+    ['Show sidebar' => true],
+    ['Hide sidebar' => false],
+);

@@ -139,8 +139,8 @@ test('toggleSubscription subscribes and unsubscribes the current user', function
     ])->exists())->toBeFalse();
 });
 
-test('showSubscribers defaults to config when not provided', function () {
-    config(['commentions.subscriptions.show_subscribers' => false]);
+test('showSubscribers defaults to config when not provided', function (bool $showSubscribers) {
+    config(['commentions.subscriptions.show_subscribers' => $showSubscribers]);
 
     /** @var User $user */
     $user = User::factory()->create();
@@ -150,5 +150,8 @@ test('showSubscribers defaults to config when not provided', function () {
 
     livewire(Comments::class, [
         'record' => $post,
-    ])->assertSet('showSubscribers', false);
-});
+    ])->assertSet('showSubscribers', $showSubscribers);
+})->with(
+    ['Show subscribers' => true],
+    ['Hide subscribers' => false],
+);
