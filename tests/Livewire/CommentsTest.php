@@ -63,6 +63,19 @@ test('comment creation requires body', function () {
     ]);
 });
 
+test('comment creation disables the submit button while the editor is empty', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->assertSeeHtml('x-bind:disabled="isEmpty"');
+});
+
 test('guests cannot create comments', function () {
     Event::fake();
 

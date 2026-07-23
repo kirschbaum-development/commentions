@@ -90,28 +90,36 @@
         </div>
 
         @if ($editing)
-            <div class="comm:mt-2">
-                <div class="tip-tap-container comm:mb-2" wire:ignore>
-                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
+            <div class="comm:flex-1 comm:space-y-2">
+                <div
+                    class="comm:mt-2"
+                    x-cloak
+                    role="form"
+                    x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))"
+                >
+                    {{-- tiptap editor --}}
+                    <div class="comm:relative tip-tap-container comm:mb-2" wire:ignore>
                         <div x-ref="element"></div>
                     </div>
-                </div>
 
-                <div class="comm:flex comm:gap-x-2">
-                    <x-filament::button
-                        wire:click="updateComment({{ $comment->getId() }})"
-                        size="sm"
-                    >
-                        {{ __('commentions::comments.save') }}
-                    </x-filament::button>
+                    <div class="comm:flex comm:gap-x-2">
+                        <x-filament::button
+                            wire:click="updateComment({{ $comment->getId() }})"
+                            x-bind:disabled="isEmpty"
+                            x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                            size="sm"
+                        >
+                            {{ __('commentions::comments.save') }}
+                        </x-filament::button>
 
-                    <x-filament::button
-                        wire:click="cancelEditing"
-                        size="sm"
-                        color="gray"
-                    >
-                        {{ __('commentions::comments.cancel') }}
-                    </x-filament::button>
+                        <x-filament::button
+                            wire:click="cancelEditing"
+                            size="sm"
+                            color="gray"
+                        >
+                            {{ __('commentions::comments.cancel') }}
+                        </x-filament::button>
+                    </div>
                 </div>
             </div>
         @else

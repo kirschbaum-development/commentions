@@ -97,6 +97,22 @@ test('author can update a comment by default', function () {
     ]);
 });
 
+test('comment edit disables the save button while the editor is empty', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create([
+        'body' => 'Original body',
+    ]);
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->set('editing', true)
+        ->assertSeeHtml('x-bind:disabled="isEmpty"');
+});
+
 test('other users cannot update a comment by default', function () {
     $user = User::factory()->create();
     actingAs($user);
