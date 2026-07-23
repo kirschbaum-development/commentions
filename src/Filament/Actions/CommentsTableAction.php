@@ -30,7 +30,7 @@ class CommentsTableAction extends Action
                 'showSubscribers' => $this->showSubscribers(),
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
             ]))
-            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
+            ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
