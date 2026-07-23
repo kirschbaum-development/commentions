@@ -410,6 +410,21 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
 }
 ```
 
+### Configuring custom actions
+
+Add additional actions next to edit/delete:
+
+```bash
+use Kirschbaum\Commentions\Config;
+use Filament\Actions\Action;
+
+Config::registerCommentActions(fn ($comment) => Action::make('activityLogs')
+    ->icon('heroicon-s-clock')
+    ->iconButton()
+    ->modalContent(/* ... */)
+);
+```
+
 ### Customizing TipTap Editor Styles
 
 You can customize the TipTap editor CSS classes used using the `Config` class.
