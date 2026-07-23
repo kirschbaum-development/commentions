@@ -25,7 +25,12 @@ composer require kirschbaum-development/commentions
 php artisan vendor:publish --tag="commentions-migrations"
 ```
 
-2. In your `User` model implement the `Commenter` interface.
+2. Get the assets
+```bash
+php artisan filament:assets
+```
+
+3. In your `User` model implement the `Commenter` interface.
 
 ```php
 use Kirschbaum\Commentions\Contracts\Commenter;
@@ -36,7 +41,7 @@ class User extends Model implements Commenter
 }
 ```
 
-3. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
+4. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
 
 ```php
 use Kirschbaum\Commentions\HasComments;
@@ -172,6 +177,15 @@ Examples:
 
 // Keep the sidebar, but hide the subscribers list (uses config default if omitted)
 <livewire:commentions::comments :record="$record" :show-subscribers="false" />
+```
+
+For Livewire 4+:
+```php
+// Hide the sidebar entirely
+<livewire:commentions.comments :record="$record" :sidebar-enabled="false" />
+
+// Keep the sidebar, but hide the subscribers list (uses config default if omitted)
+<livewire:commentions.comments :record="$record" :show-subscribers="false" />
 ```
 
 Inside the component/template you can also rely on these computed properties:
@@ -604,6 +618,12 @@ public function getComments(?int $limit = null): Collection
     return $mergedCollection;
 }
 ```
+
+***
+
+## Upgrading
+
+See [UPGRADE.md](UPGRADE.md) for upgrade instructions.
 
 ***
 
