@@ -97,7 +97,7 @@ trait HasComments
      */
     protected function threadedRepliesEagerLoad(): array
     {
-        $maxDepth = max(0, (int) config('commentions.threading.max_depth', 3));
+        $maxDepth = max(1, (int) config('commentions.threading.max_depth', 3));
 
         $paths = [];
         $prefix = 'replies';

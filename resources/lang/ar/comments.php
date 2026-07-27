@@ -17,6 +17,13 @@ return [
     'cancel' => 'إلغاء',
     'delete' => 'حذف',
     'reply' => 'رد',
+    'edit' => 'تعديل',
+    'replies_count' => [
+        'none' => 'لا توجد ردود',
+        'one' => 'رد واحد',
+        'many' => ':count ردود',
+    ],
+    'hide_replies' => 'إخفاء الردود',
     'save' => 'حفظ',
     'comment' => 'تعليق',
     'add_reaction' => 'إضافة رد فعل',

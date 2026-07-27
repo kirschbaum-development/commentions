@@ -1,4 +1,6 @@
-@use('\Kirschbaum\Commentions\Config')
+@php
+    $repliesCount = config('commentions.threading.enabled', false) ? $comment->repliesCount() : 0;
+@endphp
 
 <div
     @class([
@@ -53,7 +55,7 @@
                 @endif
             </div>
 
-            @if ($comment->isComment() && ($this->canReply() || Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment)))
+            @if ($comment->isComment()  && $this->canReply())
                 <div class="comm:flex comm:gap-x-1">
                     @if ($this->canReply())
                         <x-filament::icon-button
@@ -63,83 +65,47 @@
                             color="gray"
                         />
                     @endif
+                    {{ $this->editAction }}
+                    {{ $this->deleteAction }}
 
-                    @if (Config::resolveAuthenticatedUser()?->can('update', $comment))
-                        <x-filament::icon-button
-                            icon="heroicon-s-pencil-square"
-                            wire:click="edit"
-                            size="xs"
-                            color="gray"
-                        />
-                    @endif
-
-                    @if (Config::resolveAuthenticatedUser()?->can('delete', $comment))
-                        <x-filament::modal
-                            id="delete-comment-modal-{{ $comment->getId() }}"
-                            width="sm"
-                        >
-                            <x-slot name="trigger">
-                                <x-filament::icon-button
-                                    icon="heroicon-s-trash"
-                                    size="xs"
-                                    color="gray"
-                                />
-                            </x-slot>
-
-                            <x-slot name="heading">
-                                {{ __('commentions::comments.delete_comment_heading') }}
-                            </x-slot>
-
-                            <div class="comm:py-4">
-                                {{ __('commentions::comments.delete_comment_body') }}
-                            </div>
-
-                            <x-slot name="footer">
-                                <div class="comm:flex comm:justify-end comm:gap-x-4">
-                                    <x-filament::button
-                                        wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
-                                        color="gray"
-                                    >
-                                        {{ __('commentions::comments.cancel') }}
-                                    </x-filament::button>
-
-                                    <x-filament::button
-                                        wire:click="delete"
-                                        color="danger"
-                                    >
-                                        {{ __('commentions::comments.delete') }}
-                                    </x-filament::button>
-                                </div>
-                            </x-slot>
-                        </x-filament::modal>
-                    @endif
+                    @foreach ($this->getCustomActions() as $commentAction)
+                        {{ $commentAction }}
+                    @endforeach
                 </div>
             @endif
         </div>
 
         @if ($editing)
-            <div class="comm:mt-2">
-                <div class="tip-tap-container comm:mb-2" wire:ignore>
-                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
+            <div class="comm:flex-1 comm:space-y-2">
+                <div
+                    class="comm:mt-2"
+                    x-cloak
+                    role="form"
+                    x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))"
+                >
+                    {{-- tiptap editor --}}
+                    <div class="comm:relative tip-tap-container comm:mb-2" wire:ignore>
                         <div x-ref="element"></div>
                     </div>
-                </div>
 
-                <div class="comm:flex comm:gap-x-2">
-                    <x-filament::button
-                        wire:click="updateComment({{ $comment->getId() }})"
-                        size="sm"
-                    >
-                        {{ __('commentions::comments.save') }}
-                    </x-filament::button>
+                    <div class="comm:flex comm:gap-x-2">
+                        <x-filament::button
+                            wire:click="updateComment({{ $comment->getId() }})"
+                            x-bind:disabled="isEmpty"
+                            x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                            size="sm"
+                        >
+                            {{ __('commentions::comments.save') }}
+                        </x-filament::button>
 
-                    <x-filament::button
-                        wire:click="cancelEditing"
-                        size="sm"
-                        color="gray"
-                    >
-                        {{ __('commentions::comments.cancel') }}
-                    </x-filament::button>
+                        <x-filament::button
+                            wire:click="cancelEditing"
+                            size="sm"
+                            color="gray"
+                        >
+                            {{ __('commentions::comments.cancel') }}
+                        </x-filament::button>
+                    </div>
                 </div>
             </div>
         @else
@@ -188,13 +154,13 @@
                             x-bind:class="expanded ? '' : 'comm:-rotate-90'"
                         />
                         <span x-show="expanded">{{ __('commentions::comments.hide_replies') }}</span>
-                        <span x-show="!expanded" x-cloak>{{ trans_choice('commentions::comments.replies_count', $comment->repliesCount(), ['count' => $comment->repliesCount()]) }}</span>
+                        <span x-show="!expanded" x-cloak>{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}</span>
                     </button>
 
                     <div
                         id="comment-replies-{{ $comment->getId() }}"
                         role="group"
-                        aria-label="{{ trans_choice('commentions::comments.replies_count', $comment->repliesCount(), ['count' => $comment->repliesCount()]) }}"
+                        aria-label="{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}"
                         x-show="expanded"
                         x-collapse
                         @class([
@@ -217,4 +183,6 @@
             @endif
         @endif
     </div>
+
+    <x-filament-actions::modals />
 </div>
