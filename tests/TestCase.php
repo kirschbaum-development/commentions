@@ -4,7 +4,10 @@ namespace Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
+use Filament\Infolists\InfolistsServiceProvider;
+use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -33,6 +36,9 @@ class TestCase extends Orchestra
             CommentionsServiceProvider::class,
             FilamentServiceProvider::class,
             SupportServiceProvider::class,
+            ActionsServiceProvider::class,
+            SchemasServiceProvider::class,
+            InfolistsServiceProvider::class,
             LivewireServiceProvider::class,
         ];
     }

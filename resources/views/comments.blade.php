@@ -4,24 +4,28 @@
     {{-- Main Comments Area --}}
     <div class="comm:flex-1 comm:space-y-2">
         @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
-            <form wire:submit.prevent="save" x-cloak>
+            <div
+                wire:submit.prevent="save"
+                x-cloak
+                role="form"
+                aria-label="{{ __('commentions::comments.add_comment') }}"
+                x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'))"
+            >
                 @if ($this->ratingsAreEnabled())
                     @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
                 @endif
 
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
-                    <div
-                        x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'))"
-                    >
-                        <div x-ref="element"></div>
-                    </div>
+                    <div x-ref="element"></div>
                 </div>
 
             <template x-if="wasFocused">
                 <div>
                     <x-filament::button
                         wire:click="save"
+                        x-bind:disabled="isEmpty"
+                        x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
                         size="sm"
                     >{{ __('commentions::comments.comment') }}</x-filament::button>
 
@@ -33,7 +37,7 @@
                     >{{ __('commentions::comments.cancel') }}</x-filament::button>
                 </div>
             </template>
-        </form>
+        </div>
     @endif
 
         <livewire:dynamic-component

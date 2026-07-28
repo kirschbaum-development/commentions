@@ -63,6 +63,19 @@ test('comment creation requires body', function () {
     ]);
 });
 
+test('comment creation disables the submit button while the editor is empty', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->assertSeeHtml('x-bind:disabled="isEmpty"');
+});
+
 test('guests cannot create comments', function () {
     Event::fake();
 
@@ -83,6 +96,21 @@ test('guests cannot create comments', function () {
     Event::assertNotDispatched(CommentWasCreatedEvent::class);
 });
 
+test('comments composer does not render a form element', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->assertDontSeeHtml('<form')
+        ->assertSeeHtml('role="form"')
+        ->assertSeeHtml('wire:click="save"');
+});
+
 test('comments editor includes prefixed component alias', function () {
     /** @var User $user */
     $user = User::factory()->create();
@@ -96,3 +124,20 @@ test('comments editor includes prefixed component alias', function () {
         'record' => $post,
     ])->assertSee($componentAlias, false);
 });
+
+test('showSidebar defaults to config when not provided', function (bool $showSidebar) {
+    config(['commentions.subscriptions.show_sidebar' => $showSidebar]);
+
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])->assertSet('sidebarEnabled', $showSidebar);
+})->with(
+    ['Show sidebar' => true],
+    ['Hide sidebar' => false],
+);

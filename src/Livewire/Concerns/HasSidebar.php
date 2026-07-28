@@ -15,9 +15,9 @@ trait HasSidebar
 
     public ?bool $showSubscribers = null;
 
-    public function mountHasSidebar(?bool $enableSidebar = null, ?bool $showSubscribers = null): void
+    public function mountHasSidebar(?bool $sidebarEnabled = null, ?bool $showSubscribers = null): void
     {
-        $this->sidebarEnabled = $enableSidebar ?? (bool) config('commentions.subscriptions.show_sidebar');
+        $this->sidebarEnabled = $sidebarEnabled ?? (bool) config('commentions.subscriptions.show_sidebar');
 
         $this->showSubscribers = $showSubscribers ?? (bool) config('commentions.subscriptions.show_subscribers', true);
     }
