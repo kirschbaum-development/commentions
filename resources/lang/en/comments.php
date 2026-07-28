@@ -24,7 +24,7 @@ return [
     'show_more' => 'Show More',
 
     'rating_input_label' => 'Rating',
-    'rate_stars' => 'Rate :count star|Rate :count stars',
+    'rate_stars' => 'Rate :count star out of :max|Rate :count stars out of :max',
     'rating_display_label' => 'Rated :rating out of :max',
 
     'notifications' => 'Notifications',

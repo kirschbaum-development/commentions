@@ -14,7 +14,7 @@
             class="commentions-rating-star"
             :class="{ 'commentions-rating-star-active': (hover || $wire.rating) >= {{ $ratingStar }} }"
             :aria-pressed="($wire.rating === {{ $ratingStar }}).toString()"
-            aria-label="{{ trans_choice('commentions::comments.rate_stars', $ratingStar, ['count' => $ratingStar]) }}"
+            aria-label="{{ trans_choice('commentions::comments.rate_stars', $ratingStar, ['count' => $ratingStar, 'max' => $this->getMaxRating()]) }}"
         >
             <x-filament::icon icon="heroicon-s-star" class="comm:h-5 comm:w-5" />
         </button>

@@ -23,6 +23,12 @@ return [
     'add_reaction' => 'إضافة رد فعل',
     'show_more' => 'عرض المزيد',
 
+    'rating_input_label' => 'التقييم',
+
+    // Simplified plural rules:
+    'rate_stars' => 'اضغط لاختيار تقييم :count من أصل :max',
+    'rating_display_label' => 'التقييم :rating من أصل :max',
+
     'notifications' => 'الإشعارات',
     'unsubscribe' => 'إلغاء الاشتراك',
     'subscribe' => 'اشتراك',
