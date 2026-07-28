@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Closure;
 use DateTime;
+use Filament\Facades\Filament;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -121,14 +122,18 @@ class Comment extends Model implements RenderableComment
 
     public function getAuthorAvatar(): string
     {
-        $avatar = null;
-
         if ($this->author instanceof HasAvatar) {
             $avatar = $this->author->getFilamentAvatarUrl();
+
+            if (! is_null($avatar)) {
+                return $avatar;
+            }
         }
 
-        if (! is_null($avatar)) {
-            return $avatar;
+        $providerAvatar = $this->resolveAvatarFromProvider();
+
+        if (! is_null($providerAvatar)) {
+            return $providerAvatar;
         }
 
         $name = str(Manager::getName($this->author))
@@ -184,6 +189,31 @@ class Comment extends Model implements RenderableComment
             'body' => $this->body,
             'reactions' => $this->reactions->pluck('id'),
         ]));
+    }
+
+    protected function resolveAvatarFromProvider(): ?string
+    {
+        $providerClass = Config::getAvatarProvider();
+
+        if ($providerClass === null) {
+            try {
+                if (Filament::getCurrentPanel() !== null) {
+                    $providerClass = Filament::getDefaultAvatarProvider();
+                }
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        if ($providerClass === null) {
+            return null;
+        }
+
+        try {
+            return app($providerClass)->get($this->author);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     protected static function newFactory()
