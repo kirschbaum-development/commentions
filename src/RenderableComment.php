@@ -95,6 +95,9 @@ class RenderableComment implements RenderableCommentContract, Wireable
         return $this->label;
     }
 
+    /**
+     * @deprecated No longer used internally for Livewire keys; will be removed in the next major version.
+     */
     public function getContentHash(): string
     {
         return "comment-$this->id";

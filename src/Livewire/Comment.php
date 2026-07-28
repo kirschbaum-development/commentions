@@ -2,19 +2,29 @@
 
 namespace Kirschbaum\Commentions\Livewire;
 
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Concerns\ResolvesDynamicLivewireProperties;
+use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
 
-class Comment extends Component
+class Comment extends Component implements HasActions, HasSchemas
 {
+    use HasCommentActions;
     use HasMentions;
+    use InteractsWithActions;
+    use InteractsWithSchemas;
+    use ResolvesDynamicLivewireProperties;
 
     public CommentModel|RenderableComment $comment;
 

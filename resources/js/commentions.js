@@ -25,6 +25,9 @@ document.addEventListener('alpine:init', () => {
         return {
             updatedAt: Date.now(),
 
+            // Reactive: the surrounding form reads this to disable its submit button while empty.
+            isEmpty: ! content,
+
             init() {
                 const _this = this
                 const targetComponent = componentAlias ?? `commentions::${component}`
@@ -57,11 +60,13 @@ document.addEventListener('alpine:init', () => {
 
                     onCreate({ editor }) {
                         _this.updatedAt = Date.now()
+                        _this.isEmpty = editor.isEmpty
                     },
 
                     onUpdate({ editor }) {
                         debouncedUpdate(editor);
                         _this.updatedAt = Date.now()
+                        _this.isEmpty = editor.isEmpty
                     },
 
                     onSelectionUpdate({ editor }) {
@@ -72,6 +77,7 @@ document.addEventListener('alpine:init', () => {
                 // Watch for changes in the content property from Livewire
                 Livewire.on(`${component}:content:cleared`, () => {
                     editor.commands.setContent('');
+                    _this.isEmpty = editor.isEmpty;
                 });
             },
 
