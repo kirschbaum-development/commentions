@@ -3,6 +3,7 @@
 return [
     'label' => 'Comentarios',
     'placeholder' => 'Escribe tu comentario...',
+    'add_comment' => 'Añadir un comentario',
     'no_comments_yet' => 'Aún no hay comentarios.',
 
     'user_avatar_alt' => 'Avatar de usuario',
@@ -16,6 +17,7 @@ return [
 
     'cancel' => 'Cancelar',
     'delete' => 'Eliminar',
+    'edit' => 'Editar',
     'save' => 'Guardar',
     'comment' => 'Comentar',
     'add_reaction' => 'Agregar reacción',

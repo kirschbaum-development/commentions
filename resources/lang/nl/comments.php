@@ -2,6 +2,7 @@
 
 return [
     'label' => 'Opmerkingen',
+    'add_comment' => 'Een opmerking toevoegen',
     'no_comments_yet' => 'Nog geen opmerkingen.',
 
     'user_avatar_alt' => 'Profielfoto',
@@ -15,6 +16,7 @@ return [
 
     'cancel' => 'Annuleren',
     'delete' => 'Verwijderen',
+    'edit' => 'Bewerken',
     'save' => 'Opslaan',
     'comment' => 'Opmerking',
     'add_reaction' => 'Reactie toevoegen',

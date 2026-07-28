@@ -33,7 +33,7 @@ class CommentsTableAction extends Action
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
                 'toolbarButtons' => $this->getToolbarButtons(),
             ]))
-            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
+            ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)

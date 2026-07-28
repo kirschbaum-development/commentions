@@ -3,6 +3,7 @@
 return [
     'label' => 'Comments',
     'placeholder' => 'Type your comment…',
+    'add_comment' => 'Add a comment',
     'no_comments_yet' => 'No comments yet.',
 
     'user_avatar_alt' => 'User Avatar',
@@ -16,6 +17,7 @@ return [
 
     'cancel' => 'Cancel',
     'delete' => 'Delete',
+    'edit' => 'Edit',
     'save' => 'Save',
     'comment' => 'Comment',
     'add_reaction' => 'Add Reaction',

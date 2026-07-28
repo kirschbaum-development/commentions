@@ -3,6 +3,7 @@
 return [
     'label' => 'التعليقات',
     'placeholder' => 'اكتب تعليقك…',
+    'add_comment' => 'أضف تعليقًا',
     'no_comments_yet' => 'لا توجد تعليقات .',
 
     'user_avatar_alt' => 'صورة المستخدم ',
@@ -16,6 +17,7 @@ return [
 
     'cancel' => 'إلغاء',
     'delete' => 'حذف',
+    'edit' => 'تعديل',
     'save' => 'حفظ',
     'comment' => 'تعليق',
     'add_reaction' => 'إضافة رد فعل',
