@@ -1,11 +1,12 @@
 <?php
 
-use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemas;
+use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemasBridge;
 use Livewire\Component;
 use Tests\Models\Post;
 use Tests\Models\User;
@@ -23,7 +24,8 @@ beforeEach(function () {
  */
 class CommentsEntryTestHarness extends Component implements HasSchemas
 {
-    use InteractsWithSchemas;
+    use InteractsWithCommentSchemas;
+    use InteractsWithCommentSchemasBridge;
 
     public Post $record;
 
