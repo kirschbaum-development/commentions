@@ -47,9 +47,11 @@ const isSafeUrl = (value) => {
 };
 
 const isSafeMailto = (url) => {
-    return ! url.href.includes('?')
-        && ! url.href.includes('#')
-        && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url.pathname);
+    if (/[<>]|%3c|%3e/i.test(url.href)) {
+        return false;
+    }
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url.pathname);
 };
 
 
@@ -92,7 +94,7 @@ const toolbarCommands = {
     blockquote: { run: (e) => e.chain().focus().toggleBlockquote().run(), active: (e) => e.isActive('blockquote') },
     bulletList: { run: (e) => e.chain().focus().toggleBulletList().run(), active: (e) => e.isActive('bulletList') },
     orderedList: { run: (e) => e.chain().focus().toggleOrderedList().run(), active: (e) => e.isActive('orderedList') },
-    code: { run: (e) => e.chain().focus().toggleCodeBlock().run(), active: (e) => e.isActive('code') },
+    code: { run: (e) => e.chain().focus().toggleCode().run(), active: (e) => e.isActive('code') },
     link: { run: (e, labels) => promptForLink(e, labels), active: (e) => e.isActive('link') },
 };
 

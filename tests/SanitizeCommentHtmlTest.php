@@ -27,6 +27,27 @@ test('it removes javascript link schemes but keeps the link text', function () {
         ->not->toContain('javascript:');
 });
 
+test('it strips mailto links containing suspicious content', function () {
+    $payloads = [
+        '<a href="mailto:test@example.com?body=<script>alert(1)</script>">Email</a>',
+        '<a href="mailto:test@example.com?body=%3Cscript%3Ealert(1)%3C/script%3E">Email</a>',
+        '<a href="mailto:test@example.com?body=<img src=x onerror=alert(1)>">Email</a>',
+        '<a href="mailto:test@example.com?body=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E">Email</a>',
+        '<a href="mailto:test@example.com?body=javascript:alert(1)">Email</a>',
+        '<a href="mailto:test@example.com?onclick=alert(1)">Email</a>',
+        '<a href="mailto:test@example.com?body=<anytag>">Email</a>',
+        '<a href="mailto:test@example.com?body=file:///etc/passwd">Email</a>',
+    ];
+
+    foreach ($payloads as $payload) {
+        $clean = SanitizeCommentHtml::run($payload);
+        expect($clean)
+            ->toBe('Email')
+            ->not->toContain('<a')
+            ->not->toContain('href=');
+    }
+});
+
 test('it keeps safe http links', function () {
     expect(SanitizeCommentHtml::run('<a href="https://example.test">link</a>'))
         ->toContain('href="https://example.test"');

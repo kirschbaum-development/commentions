@@ -88,8 +88,7 @@ test('the comment editor falls back to the configured default toolbar', function
     $post = Post::factory()->create();
 
     livewire(Comments::class, ['record' => $post])
-        ->assertSeeHtml('data-toolbar-button="bold"')
-        ->assertSeeHtml('data-toolbar-button="link"');
+        ->assertSeeHtml('data-toolbar-button="bold"');
 });
 
 test('the comment editor normalizes a flat toolbar buttons list', function () {

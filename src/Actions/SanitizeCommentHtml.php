@@ -18,7 +18,16 @@ class SanitizeCommentHtml
 {
     public function __invoke(string $body): string
     {
-        return $this->sanitizer()->sanitize($body);
+        $sanitized = $this->sanitizer()->sanitize($body);
+
+        return $this->stripLinksWithoutHref($sanitized);
+    }
+
+    protected function stripLinksWithoutHref(string $html): string
+    {
+        // Remove <a> tags that don't have an href attribute.
+        // These are usually links where the href was removed by the sanitizer due to suspect data.
+        return preg_replace('/<a(?![^>]*\bhref=)[^>]*>(.*?)<\/a>/is', '$1', $html);
     }
 
     protected function sanitizer(): HtmlSanitizer
@@ -45,6 +54,7 @@ class SanitizeCommentHtml
             ->allowLinkSchemes(['http', 'https', 'mailto'])
             ->allowRelativeLinks()
             ->forceAttribute('a', 'rel', 'noopener noreferrer')
+            ->withAttributeSanitizer(new MailtoAttributeSanitizer())
             ->withMaxInputLength(500_000);
 
         return new HtmlSanitizer($config);
