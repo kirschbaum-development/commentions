@@ -45,10 +45,6 @@
     @apply comm:bg-gray-100;
 }
 
-.tip-tap-container {
-    @apply comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:bg-white comm:dark:bg-gray-900 comm:overflow-hidden comm:focus-within:ring-2 comm:focus-within:ring-blue-500/50 comm:focus-within:border-blue-500;
-}
-
 .commentions-toolbar {
     @apply comm:flex comm:flex-wrap comm:items-center comm:gap-1 comm:p-1 comm:border-b comm:border-gray-300 comm:dark:border-gray-700 comm:bg-gray-50 comm:dark:bg-gray-800;
 }
@@ -77,6 +73,50 @@
     @apply comm:bg-gray-200 comm:dark:bg-gray-700 comm:text-blue-600 comm:dark:text-blue-400;
 }
 
-.tiptap a.comm-link {
+.tip-tap-container {
+    @apply comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:bg-white comm:dark:bg-gray-900 comm:overflow-hidden comm:focus-within:ring-2 comm:focus-within:ring-blue-500/50 comm:focus-within:border-blue-500;
+}
+
+.tip-tap-container .tiptap a.comm-link {
     @apply comm:text-blue-600 comm:dark:text-blue-400 comm:underline;
+}
+
+.tip-tap-container .tiptap p, .commentions-comment-body p {
+    @apply comm:mb-4;
+}
+
+.tip-tap-container .tiptap ul, .commentions-comment-body ul {
+    @apply comm:list-disc comm:ml-4;
+}
+
+.tip-tap-container .tiptap ol, .commentions-comment-body ol {
+    @apply comm:list-decimal comm:ml-4;
+}
+
+.tip-tap-container .tiptap li, .commentions-comment-body li {
+    @apply comm:mb-1;
+}
+
+.tip-tap-container .tiptap h1, .commentions-comment-body h1 {
+    @apply comm:text-2xl comm:font-bold comm:mb-4;
+}
+
+.tip-tap-container .tiptap h2, .commentions-comment-body h2 {
+    @apply comm:text-xl comm:font-bold comm:mb-3;
+}
+
+.tip-tap-container .tiptap h3, .commentions-comment-body h3 {
+    @apply comm:text-lg comm:font-bold comm:mb-2;
+}
+
+.tip-tap-container .tiptap blockquote, .commentions-comment-body blockquote {
+    @apply comm:border-l-4 comm:border-gray-300 comm:pl-4 comm:italic comm:my-4;
+}
+
+.tip-tap-container .tiptap pre, .commentions-comment-body pre, .tiptap .comm-pre, .commentions-comment-body .comm-pre {
+    @apply comm:bg-gray-100 comm:dark:bg-gray-800 comm:p-4 comm:rounded-lg comm:font-mono comm:text-sm comm:max-w-full comm:overflow-x-auto comm:my-4;
+}
+
+.tip-tap-container .tiptap pre code, .commentions-comment-body pre code, .tip-tap-container .tiptap .comm-pre code, .commentions-comment-body .comm-pre code {
+    @apply comm:block comm:w-max comm:min-w-full comm:bg-transparent comm:p-0 comm:text-inherit;
 }

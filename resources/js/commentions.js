@@ -20,13 +20,38 @@ const debounce = (func, wait) => {
 
 const SAFE_LINK_PROTOCOLS = ['http:', 'https:', 'mailto:'];
 
-const isSafeUrl = (url) => {
+const isSafeUrl = (value) => {
     try {
-        return SAFE_LINK_PROTOCOLS.includes(new URL(url, window.location.origin).protocol);
+        const url = new URL(value, window.location.origin);
+
+        if (! SAFE_LINK_PROTOCOLS.includes(url.protocol)) {
+            return false;
+        }
+
+        if (url.protocol !== 'mailto:' && ! url.hostname) {
+            return false;
+        }
+
+        if (url.username || url.password) {
+            return false;
+        }
+
+        if (url.protocol === 'mailto:') {
+            return isSafeMailto(url);
+        }
+
+        return true;
     } catch {
         return false;
     }
 };
+
+const isSafeMailto = (url) => {
+    return ! url.href.includes('?')
+        && ! url.href.includes('#')
+        && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url.pathname);
+};
+
 
 const promptForLink = (editor, labels = {}) => {
     if (editor.isActive('link')) {
@@ -67,7 +92,7 @@ const toolbarCommands = {
     blockquote: { run: (e) => e.chain().focus().toggleBlockquote().run(), active: (e) => e.isActive('blockquote') },
     bulletList: { run: (e) => e.chain().focus().toggleBulletList().run(), active: (e) => e.isActive('bulletList') },
     orderedList: { run: (e) => e.chain().focus().toggleOrderedList().run(), active: (e) => e.isActive('orderedList') },
-    code: { run: (e) => e.chain().focus().toggleCode().run(), active: (e) => e.isActive('code') },
+    code: { run: (e) => e.chain().focus().toggleCodeBlock().run(), active: (e) => e.isActive('code') },
     link: { run: (e, labels) => promptForLink(e, labels), active: (e) => e.isActive('link') },
 };
 
@@ -95,7 +120,37 @@ document.addEventListener('alpine:init', () => {
                     element: this.$refs.element,
                     extensions: [
                         StarterKit.configure({
-                            heading: { levels: [1, 2, 3] },
+                            heading: {
+                                levels: [1, 2, 3],
+                                HTMLAttributes: {
+                                    class: 'comm-font-bold comm-mb-2',
+                                },
+                            },
+                            bulletList: {
+                                HTMLAttributes: {
+                                    class: 'comm-list-disc comm-ml-4',
+                                },
+                            },
+                            orderedList: {
+                                HTMLAttributes: {
+                                    class: 'comm-list-decimal comm-ml-4',
+                                },
+                            },
+                            listItem: {
+                                HTMLAttributes: {
+                                    class: 'comm-mb-1',
+                                },
+                            },
+                            blockquote: {
+                                HTMLAttributes: {
+                                    class: 'comm-border-l-4 comm-border-gray-300 comm-pl-4 comm-italic comm-my-4',
+                                },
+                            },
+                            code: {
+                                HTMLAttributes: {
+                                    class: 'comm-pre',
+                                },
+                            },
                         }),
                         Underline,
                         Link.configure({
@@ -159,6 +214,8 @@ document.addEventListener('alpine:init', () => {
 
                 if (command && editor) {
                     command.run(editor, toolbarLabels)
+                    this.updatedAt = Date.now()
+                    this.isEmpty = editor.isEmpty
                 }
             },
 

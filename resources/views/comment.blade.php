@@ -9,7 +9,7 @@
         <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 "></div>
     @endif
 
-    <div class="comm:flex-1">
+    <div class="comm:flex-1 comm:min-w-0">
         <div class="comm:text-sm comm:font-bold comm:text-gray-900 comm:dark:text-gray-100 comm:flex comm:justify-between comm:items-center">
             <div>
                 {{ $comment->getAuthorName() }}
@@ -53,7 +53,7 @@
                     x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
                 >
                     {{-- tiptap editor --}}
-                    <div class="comm:relative tip-tap-container comm:mb-2" wire:ignore>
+                    <div class="comm:relative tip-tap-container comm:mb-2 comm:min-w-0" wire:ignore>
                         @include('commentions::partials.toolbar', ['toolbarButtons' => $this->getToolbarButtons()])
                         <div x-ref="element"></div>
                     </div>
@@ -79,7 +79,7 @@
                 </div>
             </div>
         @else
-            <div class="comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
+            <div class="comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200 commentions-comment-body comm:break-words">{!! $comment->getParsedBody() !!}</div>
 
             @if ($comment->isComment())
                 <livewire:dynamic-component

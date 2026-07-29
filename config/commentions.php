@@ -66,7 +66,6 @@ return [
         'buttons' => [
             ['bold', 'italic', 'underline'],
             ['bulletList', 'orderedList'],
-            ['link'],
         ],
     ],
 

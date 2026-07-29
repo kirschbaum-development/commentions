@@ -1,8 +1,8 @@
 @use('\Kirschbaum\Commentions\Config')
 
-<div class="comm:flex comm:gap-4 comm:h-full" x-data="{ wasFocused: false }">
+<div class="comm:flex comm:gap-4 comm:h-full comm:min-w-0" x-data="{ wasFocused: false }">
     {{-- Main Comments Area --}}
-    <div class="comm:flex-1 comm:space-y-2">
+    <div class="comm:flex-1 comm:space-y-2 comm:min-w-0">
         @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
             <div
                 wire:submit.prevent="save"
