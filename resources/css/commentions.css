@@ -81,42 +81,42 @@
     @apply comm:text-blue-600 comm:dark:text-blue-400 comm:underline;
 }
 
-.tip-tap-container .tiptap p, .commentions-comment-body p {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap p, .commentions-comment-body.tip-tap-toolbar-enabled p {
     @apply comm:mb-4;
 }
 
-.tip-tap-container .tiptap ul, .commentions-comment-body ul {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap ul, .commentions-comment-body.tip-tap-toolbar-enabled ul {
     @apply comm:list-disc comm:ml-4;
 }
 
-.tip-tap-container .tiptap ol, .commentions-comment-body ol {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap ol, .commentions-comment-body.tip-tap-toolbar-enabled ol {
     @apply comm:list-decimal comm:ml-4;
 }
 
-.tip-tap-container .tiptap li, .commentions-comment-body li {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap li, .commentions-comment-body.tip-tap-toolbar-enabled li {
     @apply comm:mb-1;
 }
 
-.tip-tap-container .tiptap h1, .commentions-comment-body h1 {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap h1, .commentions-comment-body.tip-tap-toolbar-enabled h1 {
     @apply comm:text-2xl comm:font-bold comm:mb-4;
 }
 
-.tip-tap-container .tiptap h2, .commentions-comment-body h2 {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap h2, .commentions-comment-body.tip-tap-toolbar-enabled h2 {
     @apply comm:text-xl comm:font-bold comm:mb-3;
 }
 
-.tip-tap-container .tiptap h3, .commentions-comment-body h3 {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap h3, .commentions-comment-body.tip-tap-toolbar-enabled h3 {
     @apply comm:text-lg comm:font-bold comm:mb-2;
 }
 
-.tip-tap-container .tiptap blockquote, .commentions-comment-body blockquote {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap blockquote, .commentions-comment-body.tip-tap-toolbar-enabled blockquote {
     @apply comm:border-l-4 comm:border-gray-300 comm:pl-4 comm:italic comm:my-4;
 }
 
-.tip-tap-container .tiptap pre, .commentions-comment-body pre, .tiptap .comm-pre, .commentions-comment-body .comm-pre {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap pre, .commentions-comment-body.tip-tap-toolbar-enabled pre, .tip-tap-container.tip-tap-toolbar-enabled .tiptap .comm-pre, .commentions-comment-body.tip-tap-toolbar-enabled .comm-pre {
     @apply comm:bg-gray-100 comm:dark:bg-gray-800 comm:p-4 comm:rounded-lg comm:font-mono comm:text-sm comm:max-w-full comm:overflow-x-auto comm:my-4;
 }
 
-.tip-tap-container .tiptap pre code, .commentions-comment-body pre code, .tip-tap-container .tiptap .comm-pre code, .commentions-comment-body .comm-pre code {
+.tip-tap-container.tip-tap-toolbar-enabled .tiptap pre code, .commentions-comment-body.tip-tap-toolbar-enabled pre code, .tip-tap-container.tip-tap-toolbar-enabled .tiptap .comm-pre code, .commentions-comment-body.tip-tap-toolbar-enabled .comm-pre code {
     @apply comm:block comm:w-max comm:min-w-full comm:bg-transparent comm:p-0 comm:text-inherit;
 }

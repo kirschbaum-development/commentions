@@ -1,3 +1,8 @@
+@php
+    $toolbarButtons = $this->getToolbarButtons();
+    $hasToolBar = filled($toolbarButtons);
+@endphp
+
 <div class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2" id="filament-comment-{{ $comment->getId() }}">
     @if ($avatar = $comment->getAuthorAvatar())
         <img
@@ -50,11 +55,14 @@
                     class="comm:mt-2"
                     x-cloak
                     role="form"
-                    x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
+                    x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
                 >
                     {{-- tiptap editor --}}
-                    <div class="comm:relative tip-tap-container comm:mb-2 comm:min-w-0" wire:ignore>
-                        @include('commentions::partials.toolbar', ['toolbarButtons' => $this->getToolbarButtons()])
+                    <div @class([
+                        'comm:relative tip-tap-container comm:mb-2 comm:min-w-0',
+                        'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
+                    ]) wire:ignore>
+                        @include('commentions::partials.toolbar', ['toolbarButtons' => $toolbarButtons])
                         <div x-ref="element"></div>
                     </div>
 
@@ -79,7 +87,10 @@
                 </div>
             </div>
         @else
-            <div class="comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200 commentions-comment-body comm:break-words">{!! $comment->getParsedBody() !!}</div>
+            <div @class([
+                'comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200 commentions-comment-body comm:break-words',
+                'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
+            ])>{!! $comment->getParsedBody() !!}</div>
 
             @if ($comment->isComment())
                 <livewire:dynamic-component

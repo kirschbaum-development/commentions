@@ -99,7 +99,7 @@ const toolbarCommands = {
 };
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('editor', (content, mentions, component, placeholder, editorCssClasses, componentAlias = null, toolbarLabels = {}) => {
+    Alpine.data('editor', (content, mentions, component, placeholder, hasToolbar, editorCssClasses, componentAlias = null, toolbarLabels = {}) => {
         let editor
 
         const defaultEditorCssClasses = `comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full`;
@@ -118,9 +118,21 @@ document.addEventListener('alpine:init', () => {
                     Livewire.dispatchTo(targetComponent, `body:updated`, editor.getHTML());
                 }, 300);
 
-                editor = new Editor({
-                    element: this.$refs.element,
-                    extensions: [
+                /** @type {import('@tiptap/core').Extensions} */
+                const extensions = [
+                    Mention.configure({
+                        HTMLAttributes: {
+                            class: 'mention',
+                        },
+                        suggestion: suggestion(mentions),
+                    }),
+                    Placeholder.configure({
+                        placeholder: placeholder,
+                    }),
+                ];
+
+                if (hasToolbar) {
+                    extensions.unshift(
                         StarterKit.configure({
                             heading: {
                                 levels: [1, 2, 3],
@@ -162,16 +174,16 @@ document.addEventListener('alpine:init', () => {
                                 class: 'comm-link',
                             },
                         }),
-                        Mention.configure({
-                            HTMLAttributes: {
-                                class: 'mention',
-                            },
-                            suggestion: suggestion(mentions),
-                        }),
-                        Placeholder.configure({
-                            placeholder: placeholder,
-                        }),
-                    ],
+                    );
+                } else {
+                    extensions.unshift(
+                        StarterKit
+                    );
+                }
+
+                editor = new Editor({
+                    element: this.$refs.element,
+                    extensions,
                     editorProps: {
                         attributes: {
                             class: editorCssClasses || defaultEditorCssClasses,
