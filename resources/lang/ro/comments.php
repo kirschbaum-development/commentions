@@ -23,6 +23,10 @@ return [
     'add_reaction' => 'Adaugă reacție',
     'show_more' => 'Afișează mai multe',
 
+    'rating_input_label' => 'Notă',
+    'rate_stars' => 'Acordă :count stea din :max|Acordă :count stele din :max',
+    'rating_display_label' => 'Notă :rating din :max',
+
     'notifications' => 'Notificări',
     'unsubscribe' => 'Dezabonare',
     'subscribe' => 'Abonare',

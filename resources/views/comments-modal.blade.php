@@ -12,5 +12,7 @@
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"
         :tip-tap-css-classes="$tipTapCssClasses ?? null"
+        :ratings-enabled="$ratingsEnabled ?? null"
+        :max-rating="$maxRating ?? null"
     />
 </div>

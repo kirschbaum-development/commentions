@@ -11,6 +11,10 @@
                 aria-label="{{ __('commentions::comments.add_comment') }}"
                 x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'))"
             >
+                @if ($this->ratingsAreEnabled())
+                    @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                @endif
+
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
                     <div x-ref="element"></div>
@@ -46,6 +50,8 @@
             :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
             :per-page-increment="$perPageIncrement ?? null"
             :tip-tap-css-classes="$tipTapCssClasses"
+            :ratings-enabled="$this->ratingsAreEnabled()"
+            :max-rating="$this->getMaxRating()"
         />
     </div>
 

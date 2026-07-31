@@ -14,6 +14,7 @@ use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -22,6 +23,7 @@ class Comment extends Component implements HasActions, HasSchemas
 {
     use HasCommentActions;
     use HasMentions;
+    use HasRatings;
     use InteractsWithActions;
     use InteractsWithSchemas;
     use ResolvesDynamicLivewireProperties;
@@ -31,6 +33,8 @@ class Comment extends Component implements HasActions, HasSchemas
     public string $commentBody = '';
 
     public bool $editing = false;
+
+    public ?int $rating = null;
 
     public ?string $tipTapCssClasses = null;
 
@@ -93,6 +97,7 @@ class Comment extends Component implements HasActions, HasSchemas
 
         $this->editing = true;
         $this->commentBody = $this->comment->body;
+        $this->rating = $this->comment->rating;
 
         $this->dispatch('comment:updated');
     }
@@ -103,9 +108,17 @@ class Comment extends Component implements HasActions, HasSchemas
             return;
         }
 
-        $this->comment->update([
-            'body' => $this->commentBody,
-        ]);
+        $attributes = ['body' => $this->commentBody];
+
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+
+            $attributes['rating'] = $this->rating;
+        }
+
+        $this->comment->update($attributes);
 
         $this->editing = false;
     }
@@ -114,6 +127,7 @@ class Comment extends Component implements HasActions, HasSchemas
     {
         $this->editing = false;
         $this->commentBody = '';
+        $this->rating = null;
     }
 
     #[Renderless]

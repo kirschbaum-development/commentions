@@ -44,3 +44,12 @@
 .mention-item:hover {
     @apply comm:bg-gray-100;
 }
+
+.commentions-rating-star {
+    @apply comm:flex comm:cursor-pointer comm:items-center comm:justify-center comm:text-gray-300 comm:dark:text-gray-600;
+}
+
+.commentions-rating-star:hover,
+.commentions-rating-star-active {
+    @apply comm:text-amber-400;
+}
