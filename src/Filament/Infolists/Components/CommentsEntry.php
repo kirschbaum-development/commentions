@@ -9,6 +9,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
 use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
+use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
 
 class CommentsEntry extends Entry
 {
@@ -18,6 +19,7 @@ class CommentsEntry extends Entry
     use HasRatings;
     use HasSidebar;
     use HasTipTapCssClasses;
+    use HasToolbar;
 
     protected string $view = 'commentions::filament.infolists.components.comments-entry';
 }

@@ -13,5 +13,6 @@
         :tip-tap-css-classes="$getTipTapCssClasses()"
         :ratings-enabled="$ratingsAreEnabled()"
         :max-rating="$getMaxRating()"
+        :toolbar-buttons="$getToolbarButtons()"
     />
 </x-dynamic-component>

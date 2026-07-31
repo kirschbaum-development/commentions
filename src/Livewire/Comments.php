@@ -10,6 +10,7 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
+use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -21,6 +22,7 @@ class Comments extends Component
     use HasPolling;
     use HasRatings;
     use HasSidebar;
+    use HasToolbarButtons;
 
     public Model $record;
 

@@ -23,6 +23,7 @@
             :tip-tap-css-classes="$tipTapCssClasses"
             :ratings-enabled="$ratingsEnabled"
             :max-rating="$maxRating"
+            :toolbar-buttons="$toolbarButtons"
         />
     @endforeach
 

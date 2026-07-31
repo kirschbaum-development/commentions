@@ -4,10 +4,8 @@ namespace Kirschbaum\Commentions\Livewire;
 
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Concerns\ResolvesDynamicLivewireProperties;
-use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
@@ -15,18 +13,22 @@ use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
+use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
+use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemas;
+use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemasBridge;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
 
-class Comment extends Component implements HasActions, HasSchemas
+class Comment extends Component implements HasActions, HasForms
 {
     use HasCommentActions;
     use HasMentions;
     use HasRatings;
+    use HasToolbarButtons;
     use InteractsWithActions;
-    use InteractsWithSchemas;
-    use ResolvesDynamicLivewireProperties;
+    use InteractsWithCommentSchemas;
+    use InteractsWithCommentSchemasBridge;
 
     public CommentModel|RenderableComment $comment;
 
