@@ -45,6 +45,15 @@
     @apply comm:bg-gray-100;
 }
 
+.commentions-rating-star {
+    @apply comm:flex comm:cursor-pointer comm:items-center comm:justify-center comm:text-gray-300 comm:dark:text-gray-600;
+}
+
+.commentions-rating-star:hover,
+.commentions-rating-star-active {
+    @apply comm:text-amber-400;
+}
+
 .commentions-toolbar {
     @apply comm:flex comm:flex-wrap comm:items-center comm:gap-1 comm:p-1 comm:border-b comm:border-gray-300 comm:dark:border-gray-700 comm:bg-gray-50 comm:dark:bg-gray-800;
 }

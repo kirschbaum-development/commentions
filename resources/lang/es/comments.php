@@ -23,6 +23,10 @@ return [
     'add_reaction' => 'Agregar reacción',
     'show_more' => 'Mostrar más',
 
+    'rating_input_label' => 'Calificación',
+    'rate_stars' => 'Califica con :count estrella de :max|Califica con :count estrellas de :max',
+    'rating_display_label' => 'Calificación: :rating de :max',
+
     'notifications' => 'Notificaciones',
     'unsubscribe' => 'Desabonarse',
     'subscribe' => 'Suscribir',

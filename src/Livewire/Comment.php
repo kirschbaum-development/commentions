@@ -12,6 +12,7 @@ use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
 use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemas;
 use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemasBridge;
@@ -23,6 +24,7 @@ class Comment extends Component implements HasActions, HasForms
 {
     use HasCommentActions;
     use HasMentions;
+    use HasRatings;
     use HasToolbarButtons;
     use InteractsWithActions;
     use InteractsWithCommentSchemas;
@@ -33,6 +35,8 @@ class Comment extends Component implements HasActions, HasForms
     public string $commentBody = '';
 
     public bool $editing = false;
+
+    public ?int $rating = null;
 
     public ?string $tipTapCssClasses = null;
 
@@ -95,6 +99,7 @@ class Comment extends Component implements HasActions, HasForms
 
         $this->editing = true;
         $this->commentBody = $this->comment->body;
+        $this->rating = $this->comment->rating;
 
         $this->dispatch('comment:updated');
     }
@@ -105,9 +110,17 @@ class Comment extends Component implements HasActions, HasForms
             return;
         }
 
-        $this->comment->update([
-            'body' => $this->commentBody,
-        ]);
+        $attributes = ['body' => $this->commentBody];
+
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+
+            $attributes['rating'] = $this->rating;
+        }
+
+        $this->comment->update($attributes);
 
         $this->editing = false;
     }
@@ -116,6 +129,7 @@ class Comment extends Component implements HasActions, HasForms
     {
         $this->editing = false;
         $this->commentBody = '';
+        $this->rating = null;
     }
 
     #[Renderless]

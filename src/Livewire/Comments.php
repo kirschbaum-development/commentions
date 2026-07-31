@@ -8,6 +8,7 @@ use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
+use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Livewire\Attributes\On;
@@ -19,6 +20,7 @@ class Comments extends Component
     use HasMentions;
     use HasPagination;
     use HasPolling;
+    use HasRatings;
     use HasSidebar;
     use HasToolbarButtons;
 
@@ -27,6 +29,8 @@ class Comments extends Component
     public string $commentBody = '';
 
     public ?string $tipTapCssClasses = null;
+
+    public ?int $rating = null;
 
     protected $rules = [
         'commentBody' => 'required|string',
@@ -43,10 +47,19 @@ class Comments extends Component
 
         $this->validate();
 
+        $ratingsEnabled = $this->ratingsAreEnabled();
+
+        if ($ratingsEnabled) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+        }
+
         SaveComment::run(
             $this->record,
             $user,
-            $this->commentBody
+            $this->commentBody,
+            $ratingsEnabled ? $this->rating : null,
         );
 
         $this->clear();
@@ -69,6 +82,7 @@ class Comments extends Component
     public function clear(): void
     {
         $this->commentBody = '';
+        $this->rating = null;
 
         $this->dispatch('comments:content:cleared');
     }

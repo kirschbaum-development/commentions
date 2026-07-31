@@ -57,6 +57,9 @@
                     role="form"
                     x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
                 >
+                    @if ($this->ratingsAreEnabled())
+                        @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                    @endif
                     {{-- tiptap editor --}}
                     <div @class([
                         'comm:relative tip-tap-container comm:mb-2 comm:min-w-0',
@@ -87,6 +90,26 @@
                 </div>
             </div>
         @else
+            @if ($comment->isComment() && $comment->rating)
+                <div
+                    class="comm:mt-1 comm:flex comm:items-center comm:gap-0.5"
+                    role="img"
+                    title="{{ $comment->rating }}/{{ $this->getMaxRating() }}"
+                    aria-label="{{ __('commentions::comments.rating_display_label', ['rating' => $comment->rating, 'max' => $this->getMaxRating()]) }}"
+                >
+                    @for ($ratingStar = 1; $ratingStar <= $this->getMaxRating(); $ratingStar++)
+                        <x-filament::icon
+                            icon="heroicon-s-star"
+                            @class([
+                                'comm:h-4 comm:w-4',
+                                'comm:text-amber-400' => $ratingStar <= $comment->rating,
+                                'comm:text-gray-300 comm:dark:text-gray-600' => $ratingStar > $comment->rating,
+                            ])
+                        />
+                    @endfor
+                </div>
+            @endif
+
             <div @class([
                 'comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200 commentions-comment-body comm:break-words',
                 'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),

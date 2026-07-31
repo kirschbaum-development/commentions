@@ -15,6 +15,10 @@
                 aria-label="{{ __('commentions::comments.add_comment') }}"
                 x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
             >
+                @if ($this->ratingsAreEnabled())
+                    @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                @endif
+
                 {{-- tiptap editor --}}
                 <div @class([
                     'comm:relative tip-tap-container comm:mb-2',
@@ -54,6 +58,8 @@
             :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
             :per-page-increment="$perPageIncrement ?? null"
             :tip-tap-css-classes="$tipTapCssClasses"
+            :ratings-enabled="$this->ratingsAreEnabled()"
+            :max-rating="$this->getMaxRating()"
             :toolbar-buttons="$toolbarButtons"
         />
     </div>

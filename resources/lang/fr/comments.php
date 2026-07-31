@@ -23,6 +23,10 @@ return [
     'add_reaction' => 'Ajouter une réaction',
     'show_more' => 'Afficher plus',
 
+    'rating_input_label' => 'Note',
+    'rate_stars' => 'Noter :count étoile sur :max|Noter :count étoiles sur :max',
+    'rating_display_label' => 'Note :rating sur :max',
+
     'notifications' => 'Notifications',
     'unsubscribe' => 'Se désabonner',
     'subscribe' => 'S\'abonner',

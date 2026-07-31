@@ -2,6 +2,7 @@
 
 return [
     'label' => 'Opmerkingen',
+    'placeholder' => 'Typ je opmerking…',
     'add_comment' => 'Een opmerking toevoegen',
     'no_comments_yet' => 'Nog geen opmerkingen.',
 
@@ -20,6 +21,10 @@ return [
     'save' => 'Opslaan',
     'comment' => 'Opmerking',
     'add_reaction' => 'Reactie toevoegen',
+
+    'rating_input_label' => 'Beoordeling',
+    'rate_stars' => 'Geef :count ster van de :max|Geef :count sterren van de :max',
+    'rating_display_label' => 'Beoordeeld met :rating van :max',
 
     'notifications' => 'Meldingen',
     'unsubscribe' => 'Afmelden',
