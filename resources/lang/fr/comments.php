@@ -3,6 +3,7 @@
 return [
     'label' => 'Commentaires',
     'placeholder' => 'Rédiger votre commentaire...',
+    'add_comment' => 'Ajouter un commentaire',
     'no_comments_yet' => 'Aucun commentaire pour le moment.',
 
     'user_avatar_alt' => 'Avatar de l\'utilisateur',
@@ -16,12 +17,17 @@ return [
 
     'cancel' => 'Annuler',
     'delete' => 'Supprimer',
+    'edit' => 'Modifier',
     'save' => 'Enregistrer',
     'comment' => 'Commenter',
     'add_reaction' => 'Ajouter une réaction',
     'attach_files' => 'Joindre des fichiers',
     'uploading' => 'Téléversement…',
     'show_more' => 'Afficher plus',
+
+    'rating_input_label' => 'Note',
+    'rate_stars' => 'Noter :count étoile sur :max|Noter :count étoiles sur :max',
+    'rating_display_label' => 'Note :rating sur :max',
 
     'notifications' => 'Notifications',
     'unsubscribe' => 'Se désabonner',

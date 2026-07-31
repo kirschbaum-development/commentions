@@ -49,6 +49,62 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Ratings
+    |--------------------------------------------------------------------------
+    |
+    | Allow a star rating to be attached to a comment. Disabled by default;
+    | enable globally here or per component with
+    | CommentsEntry::make()->enableRatings().
+    |
+    */
+    'ratings' => [
+        'enabled' => env('COMMENTIONS_RATINGS_ENABLED', false),
+
+        'max' => (int) env('COMMENTIONS_RATINGS_MAX', 5),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Editor toolbar
+    |--------------------------------------------------------------------------
+    |
+    | The formatting toolbar shown above the comment editor. Set `enabled` to
+    | false to hide it globally, or override the buttons per component with
+    | CommentsEntry::make()->toolbarButtons([...]). Buttons may be a flat list
+    | or grouped into arrays to render visual separators between groups.
+    |
+    | Available buttons: bold, italic, underline, strike, h1, h2, h3,
+    | blockquote, bulletList, orderedList, code, link.
+    |
+    */
+    'toolbar' => [
+        'enabled' => env('COMMENTIONS_TOOLBAR_ENABLED', true),
+
+        'buttons' => [
+            ['bold', 'italic', 'underline'],
+            ['bulletList', 'orderedList'],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Avatar provider
+    |--------------------------------------------------------------------------
+    |
+    | Class name of a Filament-compatible avatar provider used to resolve a
+    | URL for the comment author when the user does not implement HasAvatar.
+    | Must expose a `get(Model|Authenticatable $user): string` method.
+    | Examples: Filament\AvatarProviders\UiAvatarsProvider::class,
+    | Choose a 3rd party Filament Gravatar plugin and register it on the panel
+    |
+    | When null, Commentions falls back to the active Filament panel's
+    | default avatar provider (if any), and finally to ui-avatars.com.
+    |
+    */
+    'avatar_provider' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Attachments
     |--------------------------------------------------------------------------
     |

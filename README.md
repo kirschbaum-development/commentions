@@ -25,7 +25,12 @@ composer require kirschbaum-development/commentions
 php artisan vendor:publish --tag="commentions-migrations"
 ```
 
-2. In your `User` model implement the `Commenter` interface.
+2. Get the assets
+```bash
+php artisan filament:assets
+```
+
+3. In your `User` model implement the `Commenter` interface.
 
 ```php
 use Kirschbaum\Commentions\Contracts\Commenter;
@@ -36,7 +41,7 @@ class User extends Model implements Commenter
 }
 ```
 
-3. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
+4. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
 
 ```php
 use Kirschbaum\Commentions\HasComments;
@@ -172,6 +177,15 @@ Examples:
 
 // Keep the sidebar, but hide the subscribers list (uses config default if omitted)
 <livewire:commentions::comments :record="$record" :show-subscribers="false" />
+```
+
+For Livewire 4+:
+```php
+// Hide the sidebar entirely
+<livewire:commentions.comments :record="$record" :sidebar-enabled="false" />
+
+// Keep the sidebar, but hide the subscribers list (uses config default if omitted)
+<livewire:commentions.comments :record="$record" :show-subscribers="false" />
 ```
 
 Inside the component/template you can also rely on these computed properties:
@@ -351,6 +365,36 @@ By default, Commentions ships with the following reactions: `['👍', '❤️', 
     ],
 ```
 
+#### Comment Ratings
+
+Commentions can attach an optional star rating to a comment, review-style. Ratings are **disabled by default**.
+
+Enable them globally in your `config/commentions.php` file (or via the matching environment variables):
+
+```php
+    'ratings' => [
+        'enabled' => env('COMMENTIONS_RATINGS_ENABLED', false),
+
+        'max' => (int) env('COMMENTIONS_RATINGS_MAX', 5),
+    ],
+```
+
+You can also enable ratings per component, which overrides the global config. This works on `CommentsEntry`, `CommentsAction`, and `CommentsTableAction`:
+
+```php
+CommentsEntry::make('comments')
+    ->enableRatings()
+    ->maxRating(10)
+```
+
+Available methods:
+
+- `enableRatings(bool|Closure $condition = true)` — enable the rating input for this component.
+- `disableRatings()` — disable the rating input, even if enabled globally.
+- `maxRating(int|Closure $max)` — set the highest selectable rating (defaults to `ratings.max`).
+
+When ratings are enabled, commenters can pick a rating while writing or editing a comment, and each rated comment renders its score as filled stars. The rating is stored in a nullable `rating` column added by the package's `add_rating_to_commentions_comments_table` migration.
+
 #### Configuring Attachments
 
 Commentions can let users attach files to their comments. The feature is **disabled by default**. Publish the migration that ships with the package (`create_commentions_attachments_table`) before enabling it.
@@ -441,6 +485,35 @@ class User extends Authenticatable implements Commenter, HasName, HasAvatar
 }
 ```
 
+If your users do not implement `HasAvatar`, Commentions will consult an avatar provider before falling back to `ui-avatars.com`. By default it uses the current Filament panel's default provider (set via `Panel::defaultAvatarProvider(...)`). To force a specific provider regardless of panel context, set the `avatar_provider` config key:
+
+```php
+// config/commentions.php
+use Filament\AvatarProviders\GravatarProvider;
+
+return [
+    // ...
+    'avatar_provider' => GravatarProvider::class,
+];
+```
+
+Any class exposing a `get(Model|Authenticatable $user): string` method works.
+
+### Configuring custom actions
+
+Add additional actions next to edit/delete:
+
+```bash
+use Kirschbaum\Commentions\Config;
+use Filament\Actions\Action;
+
+Config::registerCommentActions(fn ($comment) => Action::make('activityLogs')
+    ->icon('heroicon-s-clock')
+    ->iconButton()
+    ->modalContent(/* ... */)
+);
+```
+
 ### Customizing TipTap Editor Styles
 
 You can customize the TipTap editor CSS classes used using the `Config` class.
@@ -474,6 +547,50 @@ CommentsAction::make()
 ```
 
 **Important**: Make sure to whitelist the classes in your Tailwind config if you override them.
+
+### Editor toolbar
+
+The comment editor shows a formatting toolbar above the input. The available buttons are:
+
+`bold`, `italic`, `underline`, `strike`, `h1`, `h2`, `h3`, `blockquote`, `bulletList`, `orderedList`, `code`, `link`.
+
+You can configure which buttons appear globally via the `toolbar` option in your `config/commentions.php` file. Buttons may be a flat list, or grouped into arrays to render visual separators between groups:
+
+```php
+    'toolbar' => [
+        'enabled' => env('COMMENTIONS_TOOLBAR_ENABLED', true),
+
+        'buttons' => [
+            ['bold', 'italic', 'underline'],
+            ['bulletList', 'orderedList'],
+            ['link'],
+        ],
+    ],
+```
+
+To hide the toolbar entirely, set `enabled` to `false` (or set `COMMENTIONS_TOOLBAR_ENABLED=false` in your `.env`).
+
+You can also override the buttons on a per-component basis using the `toolbarButtons()` method:
+
+```php
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+
+CommentsEntry::make('comments')
+    ->mentionables(fn (Model $record) => User::all())
+    ->toolbarButtons([['bold', 'italic'], ['link']])
+```
+
+Or with actions:
+
+```php
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
+
+CommentsAction::make()
+    ->mentionables(User::all())
+    ->toolbarButtons(['bold', 'italic', 'link'])
+```
+
+Pass an empty array (`->toolbarButtons([])`) to hide the toolbar for a single component.
 
 ### Translations
 
@@ -649,6 +766,12 @@ public function getComments(?int $limit = null): Collection
     return $mergedCollection;
 }
 ```
+
+***
+
+## Upgrading
+
+See [UPGRADE.md](UPGRADE.md) for upgrade instructions.
 
 ***
 

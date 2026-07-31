@@ -17,10 +17,13 @@
     @foreach ($this->comments as $comment)
         <livewire:dynamic-component
             :component="$commentionsComponentPrefix . 'comment'"
-            :key="$comment->getContentHash()"
+            :key="$comment::class . ':' . $comment->getId()"
             :comment="$comment"
             :mentionables="$mentionables"
             :tip-tap-css-classes="$tipTapCssClasses"
+            :ratings-enabled="$ratingsEnabled"
+            :max-rating="$maxRating"
+            :toolbar-buttons="$toolbarButtons"
         />
     @endforeach
 

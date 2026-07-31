@@ -24,5 +24,8 @@ interface RenderableComment
 
     public function getLabel(): ?string;
 
+    /**
+     * @deprecated No longer used internally for Livewire keys; will be removed in the next major version.
+     */
     public function getContentHash(): string;
 }

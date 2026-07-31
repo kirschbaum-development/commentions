@@ -3,6 +3,7 @@
 return [
     'label' => 'Comments',
     'placeholder' => 'Type your comment…',
+    'add_comment' => 'Add a comment',
     'no_comments_yet' => 'No comments yet.',
 
     'user_avatar_alt' => 'User Avatar',
@@ -16,12 +17,17 @@ return [
 
     'cancel' => 'Cancel',
     'delete' => 'Delete',
+    'edit' => 'Edit',
     'save' => 'Save',
     'comment' => 'Comment',
     'add_reaction' => 'Add Reaction',
     'attach_files' => 'Attach files',
     'uploading' => 'Uploading…',
     'show_more' => 'Show More',
+
+    'rating_input_label' => 'Rating',
+    'rate_stars' => 'Rate :count star out of :max|Rate :count stars out of :max',
+    'rating_display_label' => 'Rated :rating out of :max',
 
     'notifications' => 'Notifications',
     'unsubscribe' => 'Unsubscribe',
@@ -32,4 +38,22 @@ return [
     'notification_subscribed' => 'Subscribed to notifications',
     'notification_unsubscribed' => 'Unsubscribed from notifications',
     'notification_comment_deleted' => 'Comment deleted',
+
+    'toolbar' => [
+        'aria_label' => 'Text formatting',
+        'bold' => 'Bold',
+        'italic' => 'Italic',
+        'underline' => 'Underline',
+        'strike' => 'Strikethrough',
+        'h1' => 'Heading 1',
+        'h2' => 'Heading 2',
+        'h3' => 'Heading 3',
+        'blockquote' => 'Quote',
+        'bullet_list' => 'Bullet list',
+        'ordered_list' => 'Numbered list',
+        'code' => 'Code',
+        'link' => 'Link',
+        'link_prompt' => 'Enter the URL',
+        'link_invalid' => 'That link uses an unsupported or unsafe URL.',
+    ],
 ];

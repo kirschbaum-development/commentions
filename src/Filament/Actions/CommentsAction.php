@@ -8,8 +8,10 @@ use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPagination;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
+use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
+use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
 
 class CommentsAction extends Action
 {
@@ -17,8 +19,10 @@ class CommentsAction extends Action
     use HasMentionables;
     use HasPagination;
     use HasPolling;
+    use HasRatings;
     use HasSidebar;
     use HasTipTapCssClasses;
+    use HasToolbar;
 
     protected function setUp(): void
     {
@@ -37,9 +41,12 @@ class CommentsAction extends Action
                 'sidebarEnabled' => $this->isSidebarEnabled(),
                 'showSubscribers' => $this->showSubscribers(),
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
+                'ratingsEnabled' => $this->ratingsAreEnabled(),
+                'maxRating' => $this->getMaxRating(),
+                'toolbarButtons' => $this->getToolbarButtons(),
                 'attachmentsEnabled' => $this->attachmentsAreEnabled(),
             ]))
-            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
+            ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)

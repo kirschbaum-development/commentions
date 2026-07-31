@@ -9,7 +9,11 @@
         :load-more-label="$getLoadMoreLabel()"
         :per-page-increment="$getPerPageIncrement()"
         :sidebar-enabled="$isSidebarEnabled()"
+        :show-subscribers="$showSubscribers()"
         :tip-tap-css-classes="$getTipTapCssClasses()"
+        :ratings-enabled="$ratingsAreEnabled()"
+        :max-rating="$getMaxRating()"
+        :toolbar-buttons="$getToolbarButtons()"
         :attachments-enabled="$attachmentsAreEnabled()"
     />
 </x-dynamic-component>

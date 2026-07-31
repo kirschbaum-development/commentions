@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Closure;
 use DateTime;
+use Filament\Facades\Filament;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Kirschbaum\Commentions\Actions\HtmlToMarkdown;
 use Kirschbaum\Commentions\Actions\ParseComment;
+use Kirschbaum\Commentions\Actions\SanitizeCommentHtml;
 use Kirschbaum\Commentions\Actions\ToggleCommentReaction;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
@@ -24,6 +26,7 @@ use Kirschbaum\Commentions\Database\Factories\CommentFactory;
 /**
  * @property int $id
  * @property string $body
+ * @property int|null $rating
  * @property string $body_markdown
  * @property string $body_parsed
  * @property int $author_id
@@ -38,8 +41,13 @@ class Comment extends Model implements RenderableComment
 
     protected $fillable = [
         'body',
+        'rating',
         'author_type',
         'author_id',
+    ];
+
+    protected $casts = [
+        'rating' => 'integer',
     ];
 
     public function getTable()
@@ -55,6 +63,13 @@ class Comment extends Model implements RenderableComment
     public function commentable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function body(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value): string => SanitizeCommentHtml::run($value),
+        );
     }
 
     public function bodyParsed(): Attribute
@@ -121,14 +136,18 @@ class Comment extends Model implements RenderableComment
 
     public function getAuthorAvatar(): string
     {
-        $avatar = null;
-
         if ($this->author instanceof HasAvatar) {
             $avatar = $this->author->getFilamentAvatarUrl();
+
+            if (! is_null($avatar)) {
+                return $avatar;
+            }
         }
 
-        if (! is_null($avatar)) {
-            return $avatar;
+        $providerAvatar = $this->resolveAvatarFromProvider();
+
+        if (! is_null($providerAvatar)) {
+            return $providerAvatar;
         }
 
         $name = str(Manager::getName($this->author))
@@ -180,12 +199,41 @@ class Comment extends Model implements RenderableComment
         return null;
     }
 
+    /**
+     * @deprecated No longer used internally for Livewire keys; will be removed in the next major version.
+     */
     public function getContentHash(): string
     {
         return md5(json_encode([
             'body' => $this->body,
+            'rating' => $this->rating,
             'reactions' => $this->reactions->pluck('id'),
         ]));
+    }
+
+    protected function resolveAvatarFromProvider(): ?string
+    {
+        $providerClass = Config::getAvatarProvider();
+
+        if ($providerClass === null) {
+            try {
+                if (Filament::getCurrentPanel() !== null) {
+                    $providerClass = Filament::getDefaultAvatarProvider();
+                }
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        if ($providerClass === null) {
+            return null;
+        }
+
+        try {
+            return app($providerClass)->get($this->author);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     protected static function booted(): void
