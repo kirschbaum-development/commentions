@@ -27,7 +27,7 @@ test('a file can be attached to a comment', function () {
 
     livewire(Comments::class, ['record' => $post, 'attachmentsEnabled' => true])
         ->set('commentBody', 'See the attached file')
-        ->set('attachments', [UploadedFile::fake()->create('report.pdf', 120, 'application/pdf')])
+        ->set('attachments', [UploadedFile::fake()->create('report.txt', 120, 'text/plain')])
         ->call('save')
         ->assertHasNoErrors()
         ->assertSet('attachments', []);
@@ -35,7 +35,7 @@ test('a file can be attached to a comment', function () {
     $comment = Comment::query()->latest('id')->first();
 
     expect($comment->attachments)->toHaveCount(1);
-    expect($comment->attachments->first()->filename)->toBe('report.pdf');
+    expect($comment->attachments->first()->filename)->toBe('report.txt');
 
     Storage::disk('public')->assertExists($comment->attachments->first()->path);
 });

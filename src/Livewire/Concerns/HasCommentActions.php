@@ -25,6 +25,9 @@ trait HasCommentActions
      */
     public function cacheHasCommentActions(): void
     {
+        $this->cacheAction($this->deleteAction());
+        $this->cacheAction($this->editAction());
+
         foreach ($this->getCustomActions() as $action) {
             $this->cacheAction($action);
         }

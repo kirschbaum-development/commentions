@@ -18,6 +18,7 @@ use Kirschbaum\Commentions\Livewire\Comments;
 use Kirschbaum\Commentions\Livewire\Reactions;
 use Kirschbaum\Commentions\Livewire\SubscriptionSidebar;
 use Livewire\Livewire;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -36,6 +37,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
             ->name(static::$name)
             ->hasConfigFile()
             ->hasTranslations()
+            ->hasAssets()
             ->hasViews()
             ->hasMigrations([
                 'create_commentions_tables',
@@ -43,7 +45,14 @@ class CommentionsServiceProvider extends PackageServiceProvider
                 'create_commentions_subscriptions_table',
                 'add_rating_to_commentions_comments_table',
                 'create_commentions_attachments_table',
-            ]);
+            ])
+            ->hasInstallCommand(function (InstallCommand $command) {
+                $command
+                    ->publishMigrations()
+                    ->askToRunMigrations()
+                    ->publishAssets()
+                    ->askToStarRepoOnGitHub('kirschbaum-development/commentions');
+            });
     }
 
     public function packageRegistered(): void
@@ -64,19 +73,10 @@ class CommentionsServiceProvider extends PackageServiceProvider
         // Share component prefix with views for dynamic component names
         View::share('commentionsComponentPrefix', $prefix);
 
-        FilamentAsset::register(
-            [
-                Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js')->module(),
-            ],
-            'kirschbaum-development/' . static::$name
-        );
-
-        FilamentAsset::register(
-            [
-                Css::make('commentions', __DIR__ . '/../resources/dist/commentions.css'),
-            ],
-            'kirschbaum-development/' . static::$name
-        );
+        FilamentAsset::register([
+            Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js')->module(),
+            Css::make('commentions', __DIR__ . '/../resources/dist/commentions.css'),
+        ], 'kirschbaum-development/' . static::$name);
 
         Gate::policy(CommentModel::class, config('commentions.comment.policy'));
 

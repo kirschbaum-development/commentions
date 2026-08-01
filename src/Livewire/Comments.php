@@ -51,7 +51,7 @@ class Comments extends Component
         'commentBody' => 'required|string',
     ];
 
-    public function save()
+    public function save(): void
     {
         $user = Config::resolveAuthenticatedUser();
 
@@ -105,6 +105,8 @@ class Comments extends Component
         unset($this->attachments[$index]);
 
         $this->attachments = array_values($this->attachments);
+
+        $this->resetValidation('attachments');
     }
 
     public function clear(): void

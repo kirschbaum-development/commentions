@@ -22,7 +22,7 @@ return [
     'comment' => 'Comentariu',
     'add_reaction' => 'Adaugă reacție',
     'attach_files' => 'Atașează fișiere',
-    'uploading' => 'Se încarcă…',
+    'uploading' => 'Se încarcă fișierele…',
     'show_more' => 'Afișează mai multe',
 
     'rating_input_label' => 'Notă',

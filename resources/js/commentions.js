@@ -111,6 +111,12 @@ document.addEventListener('alpine:init', () => {
             isEmpty: ! content,
 
             init() {
+                if (this.$refs.element.dataset.tiptapInitialized) {
+                    return;
+                }
+
+                this.$refs.element.dataset.tiptapInitialized = true;
+
                 const _this = this
                 const targetComponent = componentAlias ?? `commentions::${component}`
 

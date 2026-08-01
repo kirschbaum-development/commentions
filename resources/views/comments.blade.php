@@ -1,7 +1,7 @@
 @use('\Kirschbaum\Commentions\Config')
 @php
     $toolbarButtons = $this->getToolbarButtons();
-    $hasToolBar = filled($toolbarButtons);
+    $hasToolBar = is_array($toolbarButtons);
 @endphp
 
 <div class="comm:flex comm:gap-4 comm:h-full comm:min-w-0" x-data="{ wasFocused: false }">
@@ -16,7 +16,7 @@
                 x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
             >
                 @if ($this->ratingsAreEnabled())
-                    @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                    @include('commentions::partials.ratings.rating-input', ['maxRating' => $this->getMaxRating()])
                 @endif
 
                 {{-- tiptap editor --}}
@@ -28,64 +28,31 @@
                     <div x-ref="element"></div>
                 </div>
 
-            @if ($this->attachmentsAreEnabled())
-                <div class="comm:mb-2 comm:space-y-1" x-show="wasFocused" x-cloak>
-                    <label class="comm:inline-flex comm:cursor-pointer comm:items-center comm:gap-1 comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:px-2 comm:py-1 comm:text-xs comm:text-gray-600 comm:dark:text-gray-300 comm:hover:bg-gray-100 comm:dark:hover:bg-gray-800">
-                        <input type="file" class="comm:hidden" wire:model="attachments" multiple />
-                        <x-filament::icon icon="heroicon-s-paper-clip" class="comm:h-4 comm:w-4" />
-                        <span>{{ __('commentions::comments.attach_files') }}</span>
-                    </label>
+                @if ($this->attachmentsAreEnabled())
+                    @include('commentions::partials.attachments.form-attachments',[
+                        'attachments' => $attachments,
+                    ])
+                @endif
 
-                    <div wire:loading wire:target="attachments" class="comm:text-xs comm:text-gray-500">
-                        {{ __('commentions::comments.uploading') }}
+                <template x-if="wasFocused">
+                    <div>
+                        <x-filament::button
+                            wire:click="save"
+                            x-bind:disabled="isEmpty"
+                            x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                            size="sm"
+                        >{{ __('commentions::comments.comment') }}</x-filament::button>
+
+                        <x-filament::button
+                            x-on:click="wasFocused = false"
+                            wire:click="clear"
+                            size="sm"
+                            color="gray"
+                        >{{ __('commentions::comments.cancel') }}</x-filament::button>
                     </div>
-
-                    @error('attachments')
-                        <p class="comm:text-xs comm:text-red-600">{{ $message }}</p>
-                    @enderror
-                    @error('attachments.*')
-                        <p class="comm:text-xs comm:text-red-600">{{ $message }}</p>
-                    @enderror
-
-                    @if (! empty($attachments))
-                        <ul class="comm:space-y-1">
-                            @foreach ($attachments as $attachmentIndex => $pendingAttachment)
-                                <li class="comm:flex comm:items-center comm:gap-1.5 comm:text-xs comm:text-gray-600 comm:dark:text-gray-300">
-                                    <x-filament::icon icon="heroicon-s-document" class="comm:h-4 comm:w-4 comm:flex-shrink-0" />
-                                    <span class="comm:truncate">{{ $pendingAttachment->getClientOriginalName() }}</span>
-                                    <button
-                                        type="button"
-                                        wire:click="removeAttachment({{ $attachmentIndex }})"
-                                        class="comm:text-red-600 comm:hover:text-red-700"
-                                    >
-                                        <x-filament::icon icon="heroicon-s-x-mark" class="comm:h-4 comm:w-4" />
-                                    </button>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-            @endif
-
-            <template x-if="wasFocused">
-                <div>
-                    <x-filament::button
-                        wire:click="save"
-                        x-bind:disabled="isEmpty"
-                        x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
-                        size="sm"
-                    >{{ __('commentions::comments.comment') }}</x-filament::button>
-
-                    <x-filament::button
-                        x-on:click="wasFocused = false"
-                        wire:click="clear"
-                        size="sm"
-                        color="gray"
-                    >{{ __('commentions::comments.cancel') }}</x-filament::button>
-                </div>
-            </template>
-        </div>
-    @endif
+                </template>
+            </div>
+        @endif
 
         <livewire:dynamic-component
             :component="$commentionsComponentPrefix . 'comment-list'"

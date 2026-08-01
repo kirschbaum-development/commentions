@@ -9,15 +9,12 @@
 
 ## Upgrading
 
-Run Migrations:
-
+Re-run the installer
 ```bash
-php artisan vendor:publish --tag="commentions-migrations"
-php artisan migrate
+php artisan commentions:install
 ```
 
-Update Filament Assets:
+Register new assets:
 ```bash
 php artisan filament:upgrade
-php artisan filament:assets
 ```
