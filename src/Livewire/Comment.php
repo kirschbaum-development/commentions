@@ -2,20 +2,34 @@
 
 namespace Kirschbaum\Commentions\Livewire;
 
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Actions\SaveComment;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
+use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
+use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
+use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemas;
+use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemasBridge;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
 
-class Comment extends Component
+class Comment extends Component implements HasActions, HasForms
 {
+    use HasCommentActions;
     use HasMentions;
+    use HasRatings;
+    use HasToolbarButtons;
+    use InteractsWithActions;
+    use InteractsWithCommentSchemas;
+    use InteractsWithCommentSchemasBridge;
 
     /**
      * Deepest level that still receives added horizontal indent. Beyond this
@@ -34,6 +48,8 @@ class Comment extends Component
 
     public int $depth = 0;
 
+    public ?int $rating = null;
+
     public ?string $tipTapCssClasses = null;
 
     protected $rules = [
@@ -51,7 +67,7 @@ class Comment extends Component
     }
 
     #[Renderless]
-    public function delete()
+    public function delete(): void
     {
         if (! auth()->user()?->can('delete', $this->comment)) {
             return;
@@ -95,27 +111,37 @@ class Comment extends Component
 
         $this->editing = true;
         $this->commentBody = $this->comment->body;
+        $this->rating = $this->comment->rating;
 
         $this->dispatch('comment:updated');
     }
 
-    public function updateComment()
+    public function updateComment(): void
     {
         if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 
-        $this->comment->update([
-            'body' => $this->commentBody,
-        ]);
+        $attributes = ['body' => $this->commentBody];
+
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+
+            $attributes['rating'] = $this->rating;
+        }
+
+        $this->comment->update($attributes);
 
         $this->editing = false;
     }
 
-    public function cancelEditing()
+    public function cancelEditing(): void
     {
         $this->editing = false;
         $this->commentBody = '';
+        $this->rating = null;
     }
 
     public function reply(): void
@@ -145,12 +171,19 @@ class Comment extends Component
             return;
         }
 
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+        }
+
         $this->validate();
 
         SaveComment::run(
             $this->comment->commentable,
             $user,
             $this->commentBody,
+            $this->rating,
             (int) $this->comment->getId(),
         );
 

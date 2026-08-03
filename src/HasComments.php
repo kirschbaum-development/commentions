@@ -18,7 +18,7 @@ trait HasComments
     {
         $query = $this->comments()
             ->latest()
-            ->with(['author', 'reactions.reactor']);
+            ->with(['author', 'reactions.reactor', 'attachments']);
 
         if (config('commentions.threading.enabled', false)) {
             $query

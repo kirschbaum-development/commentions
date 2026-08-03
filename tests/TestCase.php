@@ -4,7 +4,10 @@ namespace Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
+use Filament\Infolists\InfolistsServiceProvider;
+use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -33,6 +36,9 @@ class TestCase extends Orchestra
             CommentionsServiceProvider::class,
             FilamentServiceProvider::class,
             SupportServiceProvider::class,
+            ActionsServiceProvider::class,
+            SchemasServiceProvider::class,
+            InfolistsServiceProvider::class,
             LivewireServiceProvider::class,
         ];
     }
@@ -55,6 +61,8 @@ class TestCase extends Orchestra
             __DIR__ . '/../database/migrations/create_commentions_tables.php.stub',
             __DIR__ . '/../database/migrations/create_commentions_reactions_table.php.stub',
             __DIR__ . '/../database/migrations/create_commentions_subscriptions_table.php.stub',
+            __DIR__ . '/../database/migrations/add_rating_to_commentions_comments_table.php.stub',
+            __DIR__ . '/../database/migrations/create_commentions_attachments_table.php.stub',
             __DIR__ . '/../database/migrations/add_parent_id_to_commentions_comments_table.php.stub',
         ];
 

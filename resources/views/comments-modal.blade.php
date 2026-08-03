@@ -1,7 +1,7 @@
 <div>
     <livewire:dynamic-component
         :component="$commentionsComponentPrefix . 'comments'"
-        :key="'comments-modal'"
+        :key="'comments-modal-' . $record->getKey()"
         :record="$record"
         :mentionables="$mentionables"
         :polling-interval="$pollingInterval"
@@ -12,5 +12,9 @@
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"
         :tip-tap-css-classes="$tipTapCssClasses ?? null"
+        :ratings-enabled="$ratingsEnabled ?? null"
+        :max-rating="$maxRating ?? null"
+        :toolbar-buttons="$toolbarButtons ?? null"
+        :attachments-enabled="$attachmentsEnabled ?? null"
     />
 </div>

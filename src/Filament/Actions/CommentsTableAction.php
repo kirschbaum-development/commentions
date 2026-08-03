@@ -2,19 +2,31 @@
 
 namespace Kirschbaum\Commentions\Filament\Actions;
 
-use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
+use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
+use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
 
-class CommentsTableAction extends Action
+/**
+ * Table/record action for the comments modal.
+ *
+ * Filament 3 keeps a dedicated table-action class (`Filament\Tables\Actions\Action`);
+ * Filament 4/5 unified actions under `Filament\Actions\Action`. {@see TableAction}
+ * resolves to the correct base class for the installed Filament version.
+ */
+class CommentsTableAction extends TableAction
 {
+    use HasAttachments;
     use HasMentionables;
     use HasPolling;
+    use HasRatings;
     use HasSidebar;
     use HasTipTapCssClasses;
+    use HasToolbar;
 
     protected function setUp(): void
     {
@@ -29,8 +41,12 @@ class CommentsTableAction extends Action
                 'sidebarEnabled' => $this->isSidebarEnabled(),
                 'showSubscribers' => $this->showSubscribers(),
                 'tipTapCssClasses' => $this->getTipTapCssClasses(),
+                'ratingsEnabled' => $this->ratingsAreEnabled(),
+                'maxRating' => $this->getMaxRating(),
+                'toolbarButtons' => $this->getToolbarButtons(),
+                'attachmentsEnabled' => $this->attachmentsAreEnabled(),
             ]))
-            ->modalWidth($this->isSidebarEnabled() ? '4xl' : 'xl')
+            ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))
             ->modalSubmitAction(false)
             ->modalCancelAction(false)

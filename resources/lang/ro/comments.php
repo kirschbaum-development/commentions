@@ -3,6 +3,7 @@
 return [
     'label' => 'Comentarii',
     'placeholder' => 'Scrie comentariul tău...',
+    'add_comment' => 'Adaugă un comentariu',
     'no_comments_yet' => 'Niciun comentariu încă.',
 
     'user_avatar_alt' => 'Avatar',
@@ -16,14 +17,20 @@ return [
 
     'cancel' => 'Anulare',
     'delete' => 'Șterge',
-    'reply' => 'Răspunde',
     'edit' => 'Editează',
+    'reply' => 'Răspunde',
     'replies_count' => '{0} Niciun răspuns|{1} :count răspuns|[2,*] :count răspunsuri',
     'hide_replies' => 'Ascunde răspunsurile',
     'save' => 'Salvare',
     'comment' => 'Comentariu',
     'add_reaction' => 'Adaugă reacție',
+    'attach_files' => 'Atașează fișiere',
+    'uploading' => 'Se încarcă fișierele…',
     'show_more' => 'Afișează mai multe',
+
+    'rating_input_label' => 'Notă',
+    'rate_stars' => 'Acordă :count stea din :max|Acordă :count stele din :max',
+    'rating_display_label' => 'Notă :rating din :max',
 
     'notifications' => 'Notificări',
     'unsubscribe' => 'Dezabonare',

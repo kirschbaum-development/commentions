@@ -3,6 +3,7 @@
 return [
     'label' => 'التعليقات',
     'placeholder' => 'اكتب تعليقك…',
+    'add_comment' => 'أضف تعليقًا',
     'no_comments_yet' => 'لا توجد تعليقات .',
 
     'user_avatar_alt' => 'صورة المستخدم ',
@@ -27,7 +28,15 @@ return [
     'save' => 'حفظ',
     'comment' => 'تعليق',
     'add_reaction' => 'إضافة رد فعل',
+    'attach_files' => 'إرفاق ملفات',
+    'uploading' => 'جارٍ الرفع…',
     'show_more' => 'عرض المزيد',
+
+    'rating_input_label' => 'التقييم',
+
+    // Simplified plural rules:
+    'rate_stars' => 'اضغط لاختيار تقييم :count من أصل :max',
+    'rating_display_label' => 'التقييم :rating من أصل :max',
 
     'notifications' => 'الإشعارات',
     'unsubscribe' => 'إلغاء الاشتراك',

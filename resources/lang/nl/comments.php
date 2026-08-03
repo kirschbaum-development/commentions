@@ -2,6 +2,8 @@
 
 return [
     'label' => 'Opmerkingen',
+    'placeholder' => 'Typ je opmerking…',
+    'add_comment' => 'Een opmerking toevoegen',
     'no_comments_yet' => 'Nog geen opmerkingen.',
 
     'user_avatar_alt' => 'Profielfoto',
@@ -15,13 +17,19 @@ return [
 
     'cancel' => 'Annuleren',
     'delete' => 'Verwijderen',
-    'reply' => 'Beantwoorden',
     'edit' => 'Bewerken',
+    'reply' => 'Beantwoorden',
     'replies_count' => '{0} Geen reacties|{1} :count reactie|[2,*] :count reacties',
     'hide_replies' => 'Reacties verbergen',
     'save' => 'Opslaan',
     'comment' => 'Opmerking',
     'add_reaction' => 'Reactie toevoegen',
+    'attach_files' => 'Bestanden bijvoegen',
+    'uploading' => 'Uploaden…',
+
+    'rating_input_label' => 'Beoordeling',
+    'rate_stars' => 'Geef :count ster van de :max|Geef :count sterren van de :max',
+    'rating_display_label' => 'Beoordeeld met :rating van :max',
 
     'notifications' => 'Meldingen',
     'unsubscribe' => 'Afmelden',

@@ -3,6 +3,7 @@
 return [
     'label' => 'Comentarios',
     'placeholder' => 'Escribe tu comentario...',
+    'add_comment' => 'Añadir un comentario',
     'no_comments_yet' => 'Aún no hay comentarios.',
 
     'user_avatar_alt' => 'Avatar de usuario',
@@ -16,14 +17,20 @@ return [
 
     'cancel' => 'Cancelar',
     'delete' => 'Eliminar',
-    'reply' => 'Responder',
     'edit' => 'Editar',
+    'reply' => 'Responder',
     'replies_count' => '{0} No hay respuestas|{1} :count respuesta|[2,*] :count respuestas',
     'hide_replies' => 'Ocultar respuestas',
     'save' => 'Guardar',
     'comment' => 'Comentar',
     'add_reaction' => 'Agregar reacción',
+    'attach_files' => 'Adjuntar archivos',
+    'uploading' => 'Subiendo…',
     'show_more' => 'Mostrar más',
+
+    'rating_input_label' => 'Calificación',
+    'rate_stars' => 'Califica con :count estrella de :max|Califica con :count estrellas de :max',
+    'rating_display_label' => 'Calificación: :rating de :max',
 
     'notifications' => 'Notificaciones',
     'unsubscribe' => 'Desabonarse',

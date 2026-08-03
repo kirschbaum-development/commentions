@@ -4,6 +4,8 @@ namespace Kirschbaum\Commentions;
 
 use Closure;
 use Composer\InstalledVersions;
+use Filament\Actions\Action;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Kirschbaum\Commentions\Contracts\Commenter;
 
@@ -16,6 +18,9 @@ class Config
     protected static ?Closure $resolveCommentUrl = null;
 
     protected static ?Closure $resolveTipTapCssClasses = null;
+
+    /** @var array<Closure> */
+    protected static array $commentActions = [];
 
     public static function resolveAuthenticatedUserUsing(Closure $callback): void
     {
@@ -47,6 +52,21 @@ class Config
     public static function getCommentSubscriptionTable(): string
     {
         return config('commentions.tables.comment_subscriptions', 'comment_subscriptions');
+    }
+
+    public static function ratingsAreEnabled(): bool
+    {
+        return (bool) config('commentions.ratings.enabled', false);
+    }
+
+    public static function getMaxRating(): int
+    {
+        return (int) config('commentions.ratings.max', 5);
+    }
+
+    public static function getCommentAttachmentTable(): string
+    {
+        return config('commentions.tables.comment_attachments', 'comment_attachments');
     }
 
     public static function resolveCommentUrlUsing(Closure $callback): void
@@ -82,6 +102,11 @@ class Config
         return config('commentions.reactions.allowed', ['👍']);
     }
 
+    public static function getAvatarProvider(): ?string
+    {
+        return config('commentions.avatar_provider');
+    }
+
     public static function resolveTipTapCssClassesUsing(Closure $callback): void
     {
         static::$resolveTipTapCssClasses = $callback;
@@ -93,7 +118,87 @@ class Config
             return call_user_func(static::$resolveTipTapCssClasses);
         }
 
-        return 'comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full comm:rounded-lg comm:border comm:border-gray-300 comm:dark:border-gray-700';
+        return 'comm:prose comm:dark:prose-invert comm:prose-sm comm:sm:prose-base comm:lg:prose-lg comm:xl:prose-2xl comm:focus:outline-none comm:p-4 comm:min-w-full comm:w-full';
+    }
+
+    /**
+     * Resolve the configured editor toolbar buttons, normalized into groups.
+     *
+     * @return array<int, array<int, string>>
+     */
+    public static function getToolbarButtons(): array
+    {
+        if (! config('commentions.toolbar.enabled', true)) {
+            return [];
+        }
+
+        return static::normalizeToolbarButtons(config('commentions.toolbar.buttons', []));
+    }
+
+    /**
+     * Normalize a flat or grouped list of toolbar buttons into groups, so the
+     * editor can always render groups separated by visual dividers. Non-string
+     * buttons and empty groups are dropped, so malformed configuration can
+     * never reach the editor view.
+     *
+     * @param  array<mixed>  $buttons
+     * @return array<int, array<int, string>>
+     */
+    public static function normalizeToolbarButtons(array $buttons): array
+    {
+        if ($buttons === []) {
+            return [];
+        }
+
+        $isGrouped = array_is_list($buttons)
+            && count(array_filter($buttons, 'is_array')) === count($buttons);
+
+        $groups = $isGrouped ? $buttons : [$buttons];
+
+        $normalized = [];
+
+        foreach ($groups as $group) {
+            $group = array_values(array_filter(
+                is_array($group) ? $group : [$group],
+                'is_string',
+            ));
+
+            if ($group !== []) {
+                $normalized[] = $group;
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Register a callback that returns one or more Filament actions to render
+     * alongside each comment's built-in edit/delete actions. The callback
+     * receives the Comment the actions are being rendered for.
+     *
+     * @param  Closure(Comment): (Action|array<Action>)  $callback
+     */
+    public static function registerCommentActions(Closure $callback): void
+    {
+        static::$commentActions[] = $callback;
+    }
+
+    /**
+     * Resolve the custom actions registered for a given comment.
+     *
+     * @return array<Action>
+     */
+    public static function getCommentActions(Comment $comment): array
+    {
+        return collect(static::$commentActions)
+            ->flatMap(fn (Closure $callback): array => Arr::wrap($callback($comment)))
+            ->values()
+            ->all();
+    }
+
+    public static function flushCommentActions(): void
+    {
+        static::$commentActions = [];
     }
 
     public static function getComponentPrefix(): string

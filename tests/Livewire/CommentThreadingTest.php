@@ -22,7 +22,7 @@ test('a comment can be created as a reply to another comment', function () {
 
     $parent = Comment::factory()->author($user)->commentable($post)->create();
 
-    $reply = SaveComment::run($post, $user, 'A reply', $parent->id);
+    $reply = SaveComment::run($post, $user, 'A reply', null, $parent->id);
 
     expect($reply->parent_id)->toBe($parent->id)
         ->and($parent->replies()->count())->toBe(1)
