@@ -22,5 +22,5 @@
 </div>
 
 @error('rating')
-    <p class="comm:mb-2 comm:text-xs comm:text-red-600">{{ $message }}</p>
+    <p class="comm:mb-2 comm:text-xs commentions-error">{{ $message }}</p>
 @enderror

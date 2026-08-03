@@ -3,6 +3,7 @@
 namespace Kirschbaum\Commentions\Filament\Actions;
 
 use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
 use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
@@ -19,6 +20,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
  */
 class CommentsTableAction extends TableAction
 {
+    use HasAttachments;
     use HasMentionables;
     use HasPolling;
     use HasRatings;
@@ -42,6 +44,7 @@ class CommentsTableAction extends TableAction
                 'ratingsEnabled' => $this->ratingsAreEnabled(),
                 'maxRating' => $this->getMaxRating(),
                 'toolbarButtons' => $this->getToolbarButtons(),
+                'attachmentsEnabled' => $this->attachmentsAreEnabled(),
             ]))
             ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))

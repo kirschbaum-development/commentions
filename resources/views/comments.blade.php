@@ -1,7 +1,7 @@
 @use('\Kirschbaum\Commentions\Config')
 @php
     $toolbarButtons = $this->getToolbarButtons();
-    $hasToolBar = filled($toolbarButtons);
+    $hasToolBar = is_array($toolbarButtons);
 @endphp
 
 <div class="comm:flex comm:gap-4 comm:h-full comm:min-w-0" x-data="{ wasFocused: false }">
@@ -16,7 +16,7 @@
                 x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
             >
                 @if ($this->ratingsAreEnabled())
-                    @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                    @include('commentions::partials.ratings.rating-input', ['maxRating' => $this->getMaxRating()])
                 @endif
 
                 {{-- tiptap editor --}}
@@ -28,25 +28,31 @@
                     <div x-ref="element"></div>
                 </div>
 
-            <template x-if="wasFocused">
-                <div>
-                    <x-filament::button
-                        wire:click="save"
-                        x-bind:disabled="isEmpty"
-                        x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
-                        size="sm"
-                    >{{ __('commentions::comments.comment') }}</x-filament::button>
+                @if ($this->attachmentsAreEnabled())
+                    @include('commentions::partials.attachments.form-attachments',[
+                        'attachments' => $attachments,
+                    ])
+                @endif
 
-                    <x-filament::button
-                        x-on:click="wasFocused = false"
-                        wire:click="clear"
-                        size="sm"
-                        color="gray"
-                    >{{ __('commentions::comments.cancel') }}</x-filament::button>
-                </div>
-            </template>
-        </div>
-    @endif
+                <template x-if="wasFocused">
+                    <div>
+                        <x-filament::button
+                            wire:click="save"
+                            x-bind:disabled="isEmpty"
+                            x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                            size="sm"
+                        >{{ __('commentions::comments.comment') }}</x-filament::button>
+
+                        <x-filament::button
+                            x-on:click="wasFocused = false"
+                            wire:click="clear"
+                            size="sm"
+                            color="gray"
+                        >{{ __('commentions::comments.cancel') }}</x-filament::button>
+                    </div>
+                </template>
+            </div>
+        @endif
 
         <livewire:dynamic-component
             :component="$commentionsComponentPrefix . 'comment-list'"

@@ -10,6 +10,10 @@
     display: none;
 }
 
+.commentions-error {
+    @apply comm:text-red-600 comm:hover:text-red-400 comm:dark:text-red-400 comm:dark:hover:text-red-300;
+}
+
 .tiptap {
     @apply comm:text-sm comm:leading-normal;
 }

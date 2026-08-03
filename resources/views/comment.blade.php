@@ -1,9 +1,12 @@
 @php
     $toolbarButtons = $this->getToolbarButtons();
-    $hasToolBar = filled($toolbarButtons);
+    $hasToolBar = is_array($toolbarButtons);
 @endphp
 
-<div class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2" id="filament-comment-{{ $comment->getId() }}">
+<div
+    class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2"
+    id="filament-comment-{{ $comment->getId() }}"
+>
     @if ($avatar = $comment->getAuthorAvatar())
         <img
             src="{{ $comment->getAuthorAvatar() }}"
@@ -58,7 +61,7 @@
                     x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
                 >
                     @if ($this->ratingsAreEnabled())
-                        @include('commentions::partials.rating-input', ['maxRating' => $this->getMaxRating()])
+                        @include('commentions::partials.ratings.rating-input', ['maxRating' => $this->getMaxRating()])
                     @endif
                     {{-- tiptap editor --}}
                     <div @class([
@@ -90,30 +93,19 @@
                 </div>
             </div>
         @else
-            @if ($comment->isComment() && $comment->rating)
-                <div
-                    class="comm:mt-1 comm:flex comm:items-center comm:gap-0.5"
-                    role="img"
-                    title="{{ $comment->rating }}/{{ $this->getMaxRating() }}"
-                    aria-label="{{ __('commentions::comments.rating_display_label', ['rating' => $comment->rating, 'max' => $this->getMaxRating()]) }}"
-                >
-                    @for ($ratingStar = 1; $ratingStar <= $this->getMaxRating(); $ratingStar++)
-                        <x-filament::icon
-                            icon="heroicon-s-star"
-                            @class([
-                                'comm:h-4 comm:w-4',
-                                'comm:text-amber-400' => $ratingStar <= $comment->rating,
-                                'comm:text-gray-300 comm:dark:text-gray-600' => $ratingStar > $comment->rating,
-                            ])
-                        />
-                    @endfor
-                </div>
-            @endif
+            @include('commentions::partials.ratings.show-comment-rating', [
+                'comment' => $comment,
+                'maxRating' => $this->getMaxRating(),
+            ])
 
             <div @class([
                 'comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200 commentions-comment-body comm:break-words',
                 'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
             ])>{!! $comment->getParsedBody() !!}</div>
+
+            @include('commentions::partials.attachments.show-comment-attachments', [
+                'comment' => $comment,
+            ])
 
             @if ($comment->isComment())
                 <livewire:dynamic-component

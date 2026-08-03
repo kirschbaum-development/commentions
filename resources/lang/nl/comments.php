@@ -21,6 +21,8 @@ return [
     'save' => 'Opslaan',
     'comment' => 'Opmerking',
     'add_reaction' => 'Reactie toevoegen',
+    'attach_files' => 'Bestanden bijvoegen',
+    'uploading' => 'Uploaden…',
 
     'rating_input_label' => 'Beoordeling',
     'rate_stars' => 'Geef :count ster van de :max|Geef :count sterren van de :max',

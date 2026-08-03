@@ -4,6 +4,7 @@ namespace Kirschbaum\Commentions\Filament\Actions;
 
 use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPagination;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
@@ -14,6 +15,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
 
 class CommentsAction extends Action
 {
+    use HasAttachments;
     use HasMentionables;
     use HasPagination;
     use HasPolling;
@@ -42,6 +44,7 @@ class CommentsAction extends Action
                 'ratingsEnabled' => $this->ratingsAreEnabled(),
                 'maxRating' => $this->getMaxRating(),
                 'toolbarButtons' => $this->getToolbarButtons(),
+                'attachmentsEnabled' => $this->attachmentsAreEnabled(),
             ]))
             ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))

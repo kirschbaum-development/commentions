@@ -21,6 +21,8 @@ return [
     'save' => 'Enregistrer',
     'comment' => 'Commenter',
     'add_reaction' => 'Ajouter une réaction',
+    'attach_files' => 'Joindre des fichiers',
+    'uploading' => 'Téléversement…',
     'show_more' => 'Afficher plus',
 
     'rating_input_label' => 'Note',

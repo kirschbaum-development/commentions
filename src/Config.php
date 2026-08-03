@@ -64,6 +64,11 @@ class Config
         return (int) config('commentions.ratings.max', 5);
     }
 
+    public static function getCommentAttachmentTable(): string
+    {
+        return config('commentions.tables.comment_attachments', 'comment_attachments');
+    }
+
     public static function resolveCommentUrlUsing(Closure $callback): void
     {
         static::$resolveCommentUrl = $callback;

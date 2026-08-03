@@ -11,27 +11,34 @@ Commentions is a drop-in package for Filament that allows you to add comments to
 
 ![](screenshots/comments-demo.png)
 
-## Installation
+<!-- TOC -->
+* [Installation](#installation)
+* [Usage](#usage)
+* [Upgrading](#upgrading)
+* [Security](#security)
+* [Credits](#credits)
+* [Sponsorship](#sponsorship)
+* [License](#license)
+<!-- TOC -->
 
+## Installation
+1. Install the package via Composer:
 ```bash
 composer require kirschbaum-development/commentions
+```
+2. Run the installer
+```bash
+php artisan commentions:install
 ```
 
 ## Usage
 
-1. Publish the migrations
-
-```bash
-php artisan vendor:publish --tag="commentions-migrations"
-```
-
-2. Get the assets
+1. Register the assets
 ```bash
 php artisan filament:assets
 ```
 
-3. In your `User` model implement the `Commenter` interface.
-
+2. In your `User` model implement the `Commenter` interface.
 ```php
 use Kirschbaum\Commentions\Contracts\Commenter;
 
@@ -41,7 +48,7 @@ class User extends Model implements Commenter
 }
 ```
 
-4. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
+3. In the model you want to add comments, implement the `Commentable` interface and the `HasComments` trait.
 
 ```php
 use Kirschbaum\Commentions\HasComments;
@@ -73,7 +80,8 @@ For Filament 3:
 ```php
 \Filament\Infolists\Components\Section::make('Comments')
     ->schema([
-        CommentsEntry::make('comments'),
+        CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all()),
     ]),
 ```
 
@@ -82,7 +90,8 @@ For Filament 4:
 ```php
 \Filament\Schemas\Components\Section::make('Comments')
     ->components([
-        CommentsEntry::make('comments'),
+        CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all()),
     ]),
 ```
 
@@ -120,7 +129,8 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 protected function getHeaderActions(): array
 {
     return [
-        CommentsAction::make(),
+        CommentsAction::make()
+            ->mentionables(User::all()),
     ];
 }
 ```
@@ -171,21 +181,22 @@ When using the `commentions::comments` Livewire component directly, you can cont
 
 Examples:
 
+For Livewire 3:
 ```php
 // Hide the sidebar entirely
-<livewire:commentions::comments :record="$record" :sidebar-enabled="false" />
+<livewire:commentions::comments :mentionables="App\Models\User::all()" :record="$record" :sidebar-enabled="false" />
 
 // Keep the sidebar, but hide the subscribers list (uses config default if omitted)
-<livewire:commentions::comments :record="$record" :show-subscribers="false" />
+<livewire:commentions::comments :mentionables="App\Models\User::all()" :record="$record" :show-subscribers="false" />
 ```
 
-For Livewire 4+:
+For Livewire 4:
 ```php
 // Hide the sidebar entirely
-<livewire:commentions.comments :record="$record" :sidebar-enabled="false" />
+<livewire:commentions.comments :mentionables="App\Models\User::all()" :record="$record" :sidebar-enabled="false" />
 
 // Keep the sidebar, but hide the subscribers list (uses config default if omitted)
-<livewire:commentions.comments :record="$record" :show-subscribers="false" />
+<livewire:commentions.comments :mentionables="App\Models\User::all()" :record="$record" :show-subscribers="false" />
 ```
 
 Inside the component/template you can also rely on these computed properties:
@@ -316,7 +327,7 @@ If you need to customize the Comment model, you can extend the `\Kirschbaum\Comm
 
 By default, users can create comments, as well as edit and delete their own comments. You can adjust these permissions by implementing your own policy:
 
-##### 1) Create a custom policy
+1) Create a custom policy
 
 ```php
 namespace App\Policies;
@@ -344,7 +355,7 @@ class CommentPolicy extends CommentionsPolicy
 }
 ```
 
-##### 2) Register your policy in the configuration file
+2) Register your policy in the configuration file
 
 Update the `comment.policy` option in your `config/commentions.php` file:
 
@@ -355,47 +366,7 @@ Update the `comment.policy` option in your `config/commentions.php` file:
     ],
 ```
 
-#### Configuring Reactions
-
-By default, Commentions ships with the following reactions: `['👍', '❤️', '😂', '😮', '😢', '🤔']`. You can customize which reactions are available by updating the `reactions.allowed` option in your `config/commentions.php` file:
-
-```php
-    'reactions' => [
-        'allowed' => ['👍', '❤️', '😂', '🎉', '👀'],
-    ],
-```
-
-#### Comment Ratings
-
-Commentions can attach an optional star rating to a comment, review-style. Ratings are **disabled by default**.
-
-Enable them globally in your `config/commentions.php` file (or via the matching environment variables):
-
-```php
-    'ratings' => [
-        'enabled' => env('COMMENTIONS_RATINGS_ENABLED', false),
-
-        'max' => (int) env('COMMENTIONS_RATINGS_MAX', 5),
-    ],
-```
-
-You can also enable ratings per component, which overrides the global config. This works on `CommentsEntry`, `CommentsAction`, and `CommentsTableAction`:
-
-```php
-CommentsEntry::make('comments')
-    ->enableRatings()
-    ->maxRating(10)
-```
-
-Available methods:
-
-- `enableRatings(bool|Closure $condition = true)` — enable the rating input for this component.
-- `disableRatings()` — disable the rating input, even if enabled globally.
-- `maxRating(int|Closure $max)` — set the highest selectable rating (defaults to `ratings.max`).
-
-When ratings are enabled, commenters can pick a rating while writing or editing a comment, and each rated comment renders its score as filled stars. The rating is stored in a nullable `rating` column added by the package's `add_rating_to_commentions_comments_table` migration.
-
-### Configuring the Commenter name
+#### Configuring the Commenter name
 
 By default, the `name` property will be used to render the mention names. You can customize it either by implementing the Filament `HasName` interface OR by implementing the optional `getCommenterName` method.
 
@@ -424,7 +395,17 @@ class User extends Model implements Commenter
 }
 ```
 
-### Configuring the Commenter avatar
+#### Configuring Reactions
+
+By default, Commentions ships with the following reactions: `['👍', '❤️', '😂', '😮', '😢', '🤔']`. You can customize which reactions are available by updating the `reactions.allowed` option in your `config/commentions.php` file:
+
+```php
+    'reactions' => [
+        'allowed' => ['👍', '❤️', '😂', '🎉', '👀'],
+    ],
+```
+
+#### Configuring the Commenter avatar
 
 To configure the avatar, make sure your User model implements Filament's `HasAvatar` interface.
 
@@ -454,7 +435,7 @@ return [
 
 Any class exposing a `get(Model|Authenticatable $user): string` method works.
 
-### Configuring custom actions
+#### Configuring Custom Actions
 
 Add additional actions next to edit/delete:
 
@@ -469,7 +450,85 @@ Config::registerCommentActions(fn ($comment) => Action::make('activityLogs')
 );
 ```
 
-### Customizing TipTap Editor Styles
+#### Configuring Comment Ratings
+
+Commentions can attach an optional star rating to a comment, review-style. Ratings are **disabled by default**.
+
+Enable them globally in your `config/commentions.php` file (or via the matching environment variables):
+
+```php
+    'ratings' => [
+        'enabled' => env('COMMENTIONS_RATINGS_ENABLED', false),
+
+        'max' => (int) env('COMMENTIONS_RATINGS_MAX', 5),
+    ],
+```
+
+You can also enable ratings per component, which overrides the global config. This works on `CommentsEntry`, `CommentsAction`, and `CommentsTableAction`:
+
+```php
+CommentsEntry::make('comments')
+    ->mentionables(fn (Model $record) => User::all())
+    ->enableRatings()
+    ->maxRating(10)
+```
+
+Available methods:
+
+- `enableRatings(bool|Closure $condition = true)` — enable the rating input for this component.
+- `disableRatings()` — disable the rating input, even if enabled globally.
+- `maxRating(int|Closure $max)` — set the highest selectable rating (defaults to `ratings.max`).
+
+When ratings are enabled, commenters can pick a rating while writing or editing a comment, and each rated comment renders its score as filled stars. The rating is stored in a nullable `rating` column added by the package's `add_rating_to_commentions_comments_table` migration.
+
+#### Configuring Attachments
+
+Commentions can let users attach files to their comments. Attachments are **disabled by default**.
+
+Enable attachments globally in `config/commentions.php` (or via the `COMMENTIONS_ATTACHMENTS_ENABLED` env variable):
+
+```php
+    'attachments' => [
+        'enabled' => env('COMMENTIONS_ATTACHMENTS_ENABLED', false),
+
+        // Filesystem disk and directory used to store uploads.
+        'disk' => env('COMMENTIONS_ATTACHMENTS_DISK', 'public'),
+        'directory' => env('COMMENTIONS_ATTACHMENTS_DIRECTORY', 'commentions-attachments'),
+
+        // Maximum size per file, in kilobytes.
+        'max_size' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_SIZE', 10240),
+
+        // Maximum number of files per comment.
+        'max_files' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_FILES', 5),
+
+        // Accepted MIME types, validated against the file's actual contents.
+        'accepted_mime_types' => [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf',
+            // ...
+        ],
+    ],
+```
+
+You can also toggle attachments per component instead of globally, which overrides the config value:
+
+```php
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+
+CommentsEntry::make('comments')->mentionables(User::all())->enableAttachments();
+CommentsEntry::make('comments')->mentionables(User::all())->enableAttachments(fn () => auth()->user()->isAdmin());
+CommentsEntry::make('comments')->mentionables(User::all())->disableAttachments();
+```
+
+The same `enableAttachments()` / `disableAttachments()` methods are available on `CommentsAction` and `CommentsTableAction`.
+
+> [!WARNING]
+> `accepted_mime_types` ships with a safe set of image types and file types. Leaving it empty allows **any** file type, which is dangerous on a `public` disk. Types that browsers execute in-origin (such as `image/svg+xml` or `text/html`) would be served directly from your application's URL and could be used for stored XSS. Keep an explicit allowlist, or store attachments on a private disk.
+
+Attachments are deleted from both the database and the underlying disk when their parent comment is deleted through the model (`$comment->delete()`).
+
+#### Customizing TipTap Editor
+
+1. Style
 
 You can customize the TipTap editor CSS classes used using the `Config` class.
 
@@ -503,7 +562,7 @@ CommentsAction::make()
 
 **Important**: Make sure to whitelist the classes in your Tailwind config if you override them.
 
-### Editor toolbar
+2. Toolbar
 
 The comment editor shows a formatting toolbar above the input. The available buttons are:
 
@@ -690,6 +749,7 @@ Commentions supports polling for new comments. You can enable it on any componen
 Infolists\Components\Section::make('Comments')
     ->schema([
         CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all())
             ->poll('10s')
     ]),
 ```

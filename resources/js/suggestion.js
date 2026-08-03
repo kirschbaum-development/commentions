@@ -41,8 +41,6 @@ const renderSuggestionsComponent = (items) => {
                 )
                 .slice(0, 5);
 
-            console.log('filteredItems', items, filteredItems, query);
-
             Alpine.store('filamentCommentsMentionsFiltered').items = filteredItems;
             Alpine.store('filamentCommentsMentionsFiltered').selectedIndex = 0;
 
@@ -117,6 +115,12 @@ const renderSuggestionsComponent = (items) => {
                         placement: document.dir === 'rtl' ? 'bottom-end' : 'bottom-start',
                         theme: 'light',
                         arrow: true,
+                        onShow(instance) {
+                            if (!items.length) {
+                                instance.hide();
+                                return false;
+                            }
+                        },
                     });
                 },
                 onUpdate: (props) => {

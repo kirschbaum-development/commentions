@@ -14,5 +14,6 @@
         :ratings-enabled="$ratingsAreEnabled()"
         :max-rating="$getMaxRating()"
         :toolbar-buttons="$getToolbarButtons()"
+        :attachments-enabled="$attachmentsAreEnabled()"
     />
 </x-dynamic-component>

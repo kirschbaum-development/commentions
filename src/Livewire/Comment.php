@@ -55,7 +55,7 @@ class Comment extends Component implements HasActions, HasForms
     }
 
     #[Renderless]
-    public function delete()
+    public function delete(): void
     {
         if (! auth()->user()?->can('delete', $this->comment)) {
             return;
@@ -104,7 +104,7 @@ class Comment extends Component implements HasActions, HasForms
         $this->dispatch('comment:updated');
     }
 
-    public function updateComment()
+    public function updateComment(): void
     {
         if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
@@ -125,7 +125,7 @@ class Comment extends Component implements HasActions, HasForms
         $this->editing = false;
     }
 
-    public function cancelEditing()
+    public function cancelEditing(): void
     {
         $this->editing = false;
         $this->commentBody = '';
