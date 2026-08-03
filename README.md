@@ -145,9 +145,9 @@ public static function configure(Schema $schema): Schema
     return $schema
         ->components([
             // Your other form fields...
-            
+
             ViewField::make('comments_section')
-                ->view('commentions::filament.forms.comments-section')
+                ->view('...') // View file
                 ->viewData(fn ($livewire) => [
                     'record' => $livewire->record ?? null
                 ])
@@ -157,11 +157,30 @@ public static function configure(Schema $schema): Schema
 }
 ```
 
+View file contents
+
+Filament 3:
+```php
+@livewire('commentions::comments', [
+    'record' => $record,
+    'mentionables' => \App\Models\User::all(),
+    'readonly' => $readonly ?? false
+])
+```
+Filament 4:
+```php
+@livewire('commentions.comments', [
+    'record' => $record,
+    'mentionables' => \App\Models\User::all(),
+    'readonly' => $readonly ?? false
+])
+```
+
 To make the form comments readonly, pass the `readonly` flag in the viewData:
 
 ```php
 ViewField::make('comments_section')
-    ->view('commentions::filament.forms.comments-section')
+    ->view('...') // View file
     ->viewData(fn ($livewire) => [
         'record' => $livewire->record ?? null,
         'readonly' => true, // Enable readonly mode
@@ -181,7 +200,11 @@ You can make comments readonly by chaining the `readonly()` method on the action
 - Users cannot react to comments (reactions are displayed but not interactive)
 
 ```php
-// Make comments readonly for all actions
+// Make comments readonly
+CommentsEntry::make()
+    ->readonly()
+    ->mentionables(User::all())
+
 CommentsAction::make()
     ->readonly()
     ->mentionables(User::all())
@@ -201,27 +224,6 @@ This is useful for scenarios like:
 - View-only access for certain user roles
 - Historical comment viewing
 - Audit trails where comments should be preserved but not modified
-
-#### Testing Readonly Functionality
-
-The package includes comprehensive tests for readonly functionality designed for Filament 4. To run the readonly-specific tests:
-
-```bash
-# Run all readonly tests
-./vendor/bin/pest tests/Livewire/Readonly* tests/Filament/ReadonlyActionsTest.php tests/Concerns/ReadonlyTraitsTest.php tests/Integration/ReadonlyIntegrationTest.php
-
-# Run specific test categories
-./vendor/bin/pest tests/Livewire/ReadonlyCommentsTest.php     # Comments component tests
-./vendor/bin/pest tests/Livewire/ReadonlyCommentTest.php      # Individual comment tests
-./vendor/bin/pest tests/Livewire/ReadonlyReactionsTest.php    # Reactions tests
-./vendor/bin/pest tests/Filament/ReadonlyActionsTest.php      # Filament 4 action tests
-./vendor/bin/pest tests/Integration/ReadonlyIntegrationTest.php # Integration tests
-
-# Run trait tests
-./vendor/bin/pest tests/Concerns/ReadonlyTraitsTest.php       # IsReadonly trait tests
-```
-
-**Note**: These tests are specifically designed for Filament 4 and may not be compatible with Filament 3.
 
 ### Subscription Management
 

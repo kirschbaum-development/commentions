@@ -11,6 +11,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
+use Kirschbaum\Commentions\Filament\Concerns\IsReadonly;
 
 class CommentsEntry extends Entry
 {
@@ -22,6 +23,7 @@ class CommentsEntry extends Entry
     use HasSidebar;
     use HasTipTapCssClasses;
     use HasToolbar;
+    use IsReadonly;
 
     protected string $view = 'commentions::filament.infolists.components.comments-entry';
 }

@@ -40,7 +40,7 @@
                 @endif
             </div>
 
-            @if (!$this->isReadonly() && $comment->isComment())
+            @if (! $this->isReadonly() && $comment->isComment())
                 <div class="comm:flex comm:gap-x-1">
                     {{ $this->editAction }}
                     {{ $this->deleteAction }}
@@ -52,7 +52,7 @@
             @endif
         </div>
 
-        @if ($editing)
+        @if (! $this->isReadonly() && $editing)
             <div class="comm:flex-1 comm:space-y-2">
                 <div
                     class="comm:mt-2"
