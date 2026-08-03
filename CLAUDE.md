@@ -24,10 +24,10 @@ composer install
 ./vendor/bin/pest
 
 # Code style checks
-composer check-style
+composer lint:check
 
 # Apply code style fixes
-composer fix-style
+composer lint
 
 # Static analysis
 composer static-analysis

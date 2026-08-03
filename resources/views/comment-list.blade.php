@@ -15,10 +15,15 @@
     @endif
 
     @foreach ($this->comments as $comment)
-        <livewire:commentions::comment
-            :key="$comment->getContentHash()"
+        <livewire:dynamic-component
+            :component="$commentionsComponentPrefix . 'comment'"
+            :key="$comment::class . ':' . $comment->getId()"
             :comment="$comment"
             :mentionables="$mentionables"
+            :tip-tap-css-classes="$tipTapCssClasses"
+            :ratings-enabled="$ratingsEnabled"
+            :max-rating="$maxRating"
+            :toolbar-buttons="$toolbarButtons"
             :readonly="$this->isReadonly()"
         />
     @endforeach
@@ -31,7 +36,7 @@
                 wire:click="loadMore"
                 wire:target="loadMore"
                 wire:loading.attr="disabled"
-            >{{ $loadMoreLabel }}</x-filament::button>
+            >{{ $this->getLoadMoreLabel() }}</x-filament::button>
         </div>
     @endif
 </div>

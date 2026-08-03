@@ -7,8 +7,10 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Events\UserWasMentionedEvent;
+use Kirschbaum\Commentions\Filament\Actions\TableAction;
 use Kirschbaum\Commentions\Listeners\SendUserMentionedNotification;
 use Kirschbaum\Commentions\Livewire\Comment;
 use Kirschbaum\Commentions\Livewire\CommentList;
@@ -16,6 +18,7 @@ use Kirschbaum\Commentions\Livewire\Comments;
 use Kirschbaum\Commentions\Livewire\Reactions;
 use Kirschbaum\Commentions\Livewire\SubscriptionSidebar;
 use Livewire\Livewire;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -34,35 +37,46 @@ class CommentionsServiceProvider extends PackageServiceProvider
             ->name(static::$name)
             ->hasConfigFile()
             ->hasTranslations()
+            ->hasAssets()
             ->hasViews()
             ->hasMigrations([
                 'create_commentions_tables',
                 'create_commentions_reactions_table',
                 'create_commentions_subscriptions_table',
-            ]);
+                'add_rating_to_commentions_comments_table',
+                'create_commentions_attachments_table',
+            ])
+            ->hasInstallCommand(function (InstallCommand $command) {
+                $command
+                    ->publishMigrations()
+                    ->askToRunMigrations()
+                    ->publishAssets()
+                    ->askToStarRepoOnGitHub('kirschbaum-development/commentions');
+            });
+    }
+
+    public function packageRegistered(): void
+    {
+        $this->aliasTableAction();
     }
 
     public function packageBooted(): void
     {
-        Livewire::component('commentions::comment', Comment::class);
-        Livewire::component('commentions::comment-list', CommentList::class);
-        Livewire::component('commentions::comments', Comments::class);
-        Livewire::component('commentions::reactions', Reactions::class);
-        Livewire::component('commentions::subscription-sidebar', SubscriptionSidebar::class);
+        $prefix = Config::getComponentPrefix();
 
-        FilamentAsset::register(
-            [
-                Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js'),
-            ],
-            'kirschbaum-development/' . static::$name
-        );
+        Livewire::component($prefix . 'comment', Comment::class);
+        Livewire::component($prefix . 'comment-list', CommentList::class);
+        Livewire::component($prefix . 'comments', Comments::class);
+        Livewire::component($prefix . 'reactions', Reactions::class);
+        Livewire::component($prefix . 'subscription-sidebar', SubscriptionSidebar::class);
 
-        FilamentAsset::register(
-            [
-                Css::make('commentions', __DIR__ . '/../resources/dist/commentions.css'),
-            ],
-            'kirschbaum-development/' . static::$name
-        );
+        // Share component prefix with views for dynamic component names
+        View::share('commentionsComponentPrefix', $prefix);
+
+        FilamentAsset::register([
+            Js::make('commentions-scripts', __DIR__ . '/../resources/dist/commentions.js')->module(),
+            Css::make('commentions', __DIR__ . '/../resources/dist/commentions.css'),
+        ], 'kirschbaum-development/' . static::$name);
 
         Gate::policy(CommentModel::class, config('commentions.comment.policy'));
 
@@ -74,6 +88,26 @@ class CommentionsServiceProvider extends PackageServiceProvider
         if (config('commentions.notifications.mentions.enabled', false)) {
             $listenerClass = (string) config('commentions.notifications.mentions.listener', SendUserMentionedNotification::class);
             Event::listen(UserWasMentionedEvent::class, $listenerClass);
+        }
+    }
+
+    /**
+     * Bridge the package's {@see TableAction} to the correct Filament base class.
+     *
+     * Filament 4 unified actions under `Filament\Actions\Action`, removing the
+     * `Filament\Tables\Actions\Action` base that table actions extend on
+     * Filament 3. The bundled TableAction class already extends the unified base
+     * (correct for Filament 4/5); on Filament 3 it must instead resolve to the
+     * legacy table-action base, so alias it before CommentsTableAction loads.
+     */
+    protected function aliasTableAction(): void
+    {
+        if (class_exists(TableAction::class, false)) {
+            return;
+        }
+
+        if (class_exists('Filament\Tables\Actions\Action')) {
+            class_alias('Filament\Tables\Actions\Action', TableAction::class);
         }
     }
 }

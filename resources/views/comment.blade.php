@@ -1,6 +1,12 @@
-@use('\Kirschbaum\Commentions\Config')
+@php
+    $toolbarButtons = $this->getToolbarButtons();
+    $hasToolBar = is_array($toolbarButtons);
+@endphp
 
-<div class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2" id="filament-comment-{{ $comment->getId() }}">
+<div
+    class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2"
+    id="filament-comment-{{ $comment->getId() }}"
+>
     @if ($avatar = $comment->getAuthorAvatar())
         <img
             src="{{ $comment->getAuthorAvatar() }}"
@@ -11,7 +17,7 @@
         <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 "></div>
     @endif
 
-    <div class="comm:flex-1">
+    <div class="comm:flex-1 comm:min-w-0">
         <div class="comm:text-sm comm:font-bold comm:text-gray-900 comm:dark:text-gray-100 comm:flex comm:justify-between comm:items-center">
             <div>
                 {{ $comment->getAuthorName() }}
@@ -34,91 +40,76 @@
                 @endif
             </div>
 
-            @if (!$this->isReadonly() && $comment->isComment() && Config::resolveAuthenticatedUser()?->canAny(['update', 'delete'], $comment))
+            @if (!$this->isReadonly() && $comment->isComment())
                 <div class="comm:flex comm:gap-x-1">
-                    @if (Config::resolveAuthenticatedUser()?->can('update', $comment))
-                        <x-filament::icon-button
-                            icon="heroicon-s-pencil-square"
-                            wire:click="edit"
-                            size="xs"
-                            color="gray"
-                        />
-                    @endif
+                    {{ $this->editAction }}
+                    {{ $this->deleteAction }}
 
-                    @if (Config::resolveAuthenticatedUser()?->can('delete', $comment))
-                        <x-filament::modal
-                            id="delete-comment-modal-{{ $comment->getId() }}"
-                            width="sm"
-                        >
-                            <x-slot name="trigger">
-                                <x-filament::icon-button
-                                    icon="heroicon-s-trash"
-                                    size="xs"
-                                    color="gray"
-                                />
-                            </x-slot>
-
-                            <x-slot name="heading">
-                                {{ __('commentions::comments.delete_comment_heading') }}
-                            </x-slot>
-
-                            <div class="comm:py-4">
-                                {{ __('commentions::comments.delete_comment_body') }}
-                            </div>
-
-                            <x-slot name="footer">
-                                <div class="comm:flex comm:justify-end comm:gap-x-4">
-                                    <x-filament::button
-                                        wire:click="$dispatch('close-modal', { id: 'delete-comment-modal-{{ $comment->getId() }}' })"
-                                        color="gray"
-                                    >
-                                        {{ __('commentions::comments.cancel') }}
-                                    </x-filament::button>
-
-                                    <x-filament::button
-                                        wire:click="delete"
-                                        color="danger"
-                                    >
-                                        {{ __('commentions::comments.delete') }}
-                                    </x-filament::button>
-                                </div>
-                            </x-slot>
-                        </x-filament::modal>
-                    @endif
+                    @foreach ($this->getCustomActions() as $commentAction)
+                        {{ $commentAction }}
+                    @endforeach
                 </div>
             @endif
         </div>
 
         @if ($editing)
-            <div class="comm:mt-2">
-                <div class="tip-tap-container comm:mb-2" wire:ignore>
-                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment')">
+            <div class="comm:flex-1 comm:space-y-2">
+                <div
+                    class="comm:mt-2"
+                    x-cloak
+                    role="form"
+                    x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
+                >
+                    @if ($this->ratingsAreEnabled())
+                        @include('commentions::partials.ratings.rating-input', ['maxRating' => $this->getMaxRating()])
+                    @endif
+                    {{-- tiptap editor --}}
+                    <div @class([
+                        'comm:relative tip-tap-container comm:mb-2 comm:min-w-0',
+                        'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
+                    ]) wire:ignore>
+                        @include('commentions::partials.toolbar', ['toolbarButtons' => $toolbarButtons])
                         <div x-ref="element"></div>
                     </div>
-                </div>
 
-                <div class="comm:flex comm:gap-x-2">
-                    <x-filament::button
-                        wire:click="updateComment({{ $comment->getId() }})"
-                        size="sm"
-                    >
-                        {{ __('commentions::comments.save') }}
-                    </x-filament::button>
+                    <div class="comm:flex comm:gap-x-2">
+                        <x-filament::button
+                            wire:click="updateComment({{ $comment->getId() }})"
+                            x-bind:disabled="isEmpty"
+                            x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                            size="sm"
+                        >
+                            {{ __('commentions::comments.save') }}
+                        </x-filament::button>
 
-                    <x-filament::button
-                        wire:click="cancelEditing"
-                        size="sm"
-                        color="gray"
-                    >
-                        {{ __('commentions::comments.cancel') }}
-                    </x-filament::button>
+                        <x-filament::button
+                            wire:click="cancelEditing"
+                            size="sm"
+                            color="gray"
+                        >
+                            {{ __('commentions::comments.cancel') }}
+                        </x-filament::button>
+                    </div>
                 </div>
             </div>
         @else
-            <div class="comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200">{!! $comment->getParsedBody() !!}</div>
+            @include('commentions::partials.ratings.show-comment-rating', [
+                'comment' => $comment,
+                'maxRating' => $this->getMaxRating(),
+            ])
+
+            <div @class([
+                'comm:mt-1 comm:space-y-6 comm:text-sm comm:text-gray-800 comm:dark:text-gray-200 commentions-comment-body comm:break-words',
+                'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
+            ])>{!! $comment->getParsedBody() !!}</div>
+
+            @include('commentions::partials.attachments.show-comment-attachments', [
+                'comment' => $comment,
+            ])
 
             @if ($comment->isComment())
-                <livewire:commentions::reactions
+                <livewire:dynamic-component
+                    :component="$commentionsComponentPrefix . 'reactions'"
                     :comment="$comment"
                     :readonly="$this->isReadonly()"
                     :wire:key="'reaction-manager-' . $comment->getId()"
@@ -126,4 +117,6 @@
             @endif
         @endif
     </div>
+
+    <x-filament-actions::modals />
 </div>

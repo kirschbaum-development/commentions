@@ -10,7 +10,7 @@ trait HasPagination
 
     protected int|Closure $perPage = 5;
 
-    protected string|Closure $loadMoreLabel = 'Show more';
+    protected string|Closure|null $loadMoreLabel = null;
 
     protected int|Closure|null $perPageIncrement = null;
 
@@ -59,7 +59,7 @@ trait HasPagination
 
     public function getLoadMoreLabel(): string
     {
-        return (string) $this->evaluate($this->loadMoreLabel);
+        return (string) filled($this->evaluate($this->loadMoreLabel)) ? $this->evaluate($this->loadMoreLabel) : __('commentions::comments.show_more');
     }
 
     public function getPerPageIncrement(): int

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
+use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Events\CommentWasCreatedEvent;
 use Kirschbaum\Commentions\Livewire\Comments;
 use Tests\Models\Post;
@@ -64,18 +65,29 @@ test('comment creation requires body', function () {
     ]);
 });
 
+test('comment creation disables the submit button while the editor is empty', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->assertSeeHtml('x-bind:disabled="isEmpty"');
+});
+
 test('guests cannot create comments', function () {
     Event::fake();
 
     $post = Post::factory()->create();
 
-    expect(function () use ($post) {
-        livewire(Comments::class, [
-            'record' => $post,
-        ])
-            ->set('commentBody', 'This is a test comment')
-            ->call('save');
-    })->toThrow(TypeError::class);
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->set('commentBody', 'This is a test comment')
+        ->call('save');
 
     assertDatabaseMissing('comments', [
         'body' => 'This is a test comment',
@@ -85,3 +97,49 @@ test('guests cannot create comments', function () {
 
     Event::assertNotDispatched(CommentWasCreatedEvent::class);
 });
+
+test('comments composer does not render a form element', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->assertDontSeeHtml('<form')
+        ->assertSeeHtml('role="form"')
+        ->assertSeeHtml('wire:click="save"');
+});
+
+test('comments editor includes prefixed component alias', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    $componentAlias = Config::getComponentPrefix() . 'comments';
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])->assertSee($componentAlias, false);
+});
+
+test('showSidebar defaults to config when not provided', function (bool $showSidebar) {
+    config(['commentions.subscriptions.show_sidebar' => $showSidebar]);
+
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])->assertSet('sidebarEnabled', $showSidebar);
+})->with(
+    ['Show sidebar' => true],
+    ['Hide sidebar' => false],
+);

@@ -33,10 +33,13 @@ const renderSuggestionsComponent = (items) => {
     return {
         items: ({ query }) => {
             filteredItems = items
-                .filter(item => item.name.toLowerCase().startsWith(query.toLowerCase()))
+                .filter(
+                    item => item.name
+                        .toLowerCase()
+                        .replace(/\s/g, '')
+                        .includes(query.toLowerCase())
+                )
                 .slice(0, 5);
-
-            console.log('filteredItems', items, filteredItems, query);
 
             Alpine.store('filamentCommentsMentionsFiltered').items = filteredItems;
             Alpine.store('filamentCommentsMentionsFiltered').selectedIndex = 0;
@@ -112,6 +115,12 @@ const renderSuggestionsComponent = (items) => {
                         placement: document.dir === 'rtl' ? 'bottom-end' : 'bottom-start',
                         theme: 'light',
                         arrow: true,
+                        onShow(instance) {
+                            if (!items.length) {
+                                instance.hide();
+                                return false;
+                            }
+                        },
                     });
                 },
                 onUpdate: (props) => {

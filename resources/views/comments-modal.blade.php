@@ -1,15 +1,21 @@
 <div>
-    <livewire:commentions::comments
-        :key="'comments-modal'"
+    <livewire:dynamic-component
+        :component="$commentionsComponentPrefix . 'comments'"
+        :key="'comments-modal-' . $record->getKey()"
         :record="$record"
         :mentionables="$mentionables"
         :polling-interval="$pollingInterval"
         :paginate="$paginate ?? true"
         :per-page="$perPage ?? 5"
-        :load-more-label="$loadMoreLabel ?? 'Show more'"
+        :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
         :per-page-increment="$perPageIncrement ?? null"
         :sidebar-enabled="$sidebarEnabled ?? true"
         :show-subscribers="$showSubscribers ?? true"
+        :tip-tap-css-classes="$tipTapCssClasses ?? null"
+        :ratings-enabled="$ratingsEnabled ?? null"
+        :max-rating="$maxRating ?? null"
+        :toolbar-buttons="$toolbarButtons ?? null"
+        :attachments-enabled="$attachmentsEnabled ?? null"
         :readonly="$readonly ?? false"
     />
 </div>

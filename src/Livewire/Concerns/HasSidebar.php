@@ -15,11 +15,9 @@ trait HasSidebar
 
     public ?bool $showSubscribers = null;
 
-    public function mountHasSidebar(?bool $enableSidebar = null, ?bool $showSubscribers = null): void
+    public function mountHasSidebar(?bool $sidebarEnabled = null, ?bool $showSubscribers = null): void
     {
-        if ($enableSidebar !== null) {
-            $this->sidebarEnabled = $enableSidebar;
-        }
+        $this->sidebarEnabled = $sidebarEnabled ?? (bool) config('commentions.subscriptions.show_sidebar');
 
         $this->showSubscribers = $showSubscribers ?? (bool) config('commentions.subscriptions.show_subscribers', true);
     }
@@ -80,21 +78,21 @@ trait HasSidebar
             $this->record->unsubscribe($user);
 
             Notification::make()
-                ->title('Unsubscribed from notifications')
+                ->title(__('commentions::comments.notification_unsubscribed'))
                 ->success()
                 ->send();
         } else {
             $this->record->subscribe($user);
 
             Notification::make()
-                ->title('Subscribed to notifications')
+                ->title(__('commentions::comments.notification_subscribed'))
                 ->success()
                 ->send();
         }
 
         $this->refreshSubscribers();
 
-        $this->dispatch('commentions:subscription:toggled')->to('commentions::subscription-sidebar');
+        $this->dispatch('commentions:subscription:toggled')->to(Config::getComponentPrefix() . 'subscription-sidebar');
     }
 
     protected function getCurrentUser(): ?Commenter

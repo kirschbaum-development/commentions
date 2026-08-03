@@ -2,6 +2,8 @@
 
 namespace Kirschbaum\Commentions\Contracts;
 
+use Carbon\CarbonInterface;
+
 interface RenderableComment
 {
     public function isComment(): bool;
@@ -16,11 +18,14 @@ interface RenderableComment
 
     public function getParsedBody(): string;
 
-    public function getCreatedAt(): \DateTime|\Carbon\Carbon;
+    public function getCreatedAt(): \DateTime|CarbonInterface;
 
-    public function getUpdatedAt(): \DateTime|\Carbon\Carbon;
+    public function getUpdatedAt(): \DateTime|CarbonInterface;
 
     public function getLabel(): ?string;
 
+    /**
+     * @deprecated No longer used internally for Livewire keys; will be removed in the next major version.
+     */
     public function getContentHash(): string;
 }

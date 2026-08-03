@@ -1,52 +1,80 @@
 @use('\Kirschbaum\Commentions\Config')
+@php
+    $toolbarButtons = $this->getToolbarButtons();
+    $hasToolBar = is_array($toolbarButtons);
+@endphp
 
-<div class="comm:flex comm:gap-4 comm:h-full" x-data="{ wasFocused: false }">
+<div class="comm:flex comm:gap-4 comm:h-full comm:min-w-0" x-data="{ wasFocused: false }">
     {{-- Main Comments Area --}}
-    <div class="comm:flex-1 comm:space-y-2">
-        @if (!$this->isReadonly() && Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
-            <form wire:submit.prevent="save" x-cloak>
+    <div class="comm:flex-1 comm:space-y-2 comm:min-w-0">
+        @if (! $this->isReadonly() && Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
+            <div
+                wire:submit.prevent="save"
+                x-cloak
+                role="form"
+                aria-label="{{ __('commentions::comments.add_comment') }}"
+                x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comments'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
+            >
+                @if ($this->ratingsAreEnabled())
+                    @include('commentions::partials.ratings.rating-input', ['maxRating' => $this->getMaxRating()])
+                @endif
+
                 {{-- tiptap editor --}}
-                <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
-                    <div
-                        x-data="editor(@js($commentBody), @js($this->mentions), 'comments')"
-                    >
-                        <div x-ref="element"></div>
+                <div @class([
+                    'comm:relative tip-tap-container comm:mb-2',
+                    'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
+                ]) x-on:click="wasFocused = true" wire:ignore>
+                    @include('commentions::partials.toolbar', ['toolbarButtons' => $toolbarButtons])
+                    <div x-ref="element"></div>
+                </div>
+
+                @if ($this->attachmentsAreEnabled())
+                    @include('commentions::partials.attachments.form-attachments',[
+                        'attachments' => $attachments,
+                    ])
+                @endif
+
+                <template x-if="wasFocused">
+                    <div>
+                        <x-filament::button
+                            wire:click="save"
+                            x-bind:disabled="isEmpty"
+                            x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                            size="sm"
+                        >{{ __('commentions::comments.comment') }}</x-filament::button>
+
+                        <x-filament::button
+                            x-on:click="wasFocused = false"
+                            wire:click="clear"
+                            size="sm"
+                            color="gray"
+                        >{{ __('commentions::comments.cancel') }}</x-filament::button>
                     </div>
-                </div>
+                </template>
+            </div>
+        @endif
 
-            <template x-if="wasFocused">
-                <div>
-                    <x-filament::button
-                        wire:click="save"
-                        size="sm"
-                    >{{ __('commentions::comments.comment') }}</x-filament::button>
-
-                    <x-filament::button
-                        x-on:click="wasFocused = false"
-                        wire:click="clear"
-                        size="sm"
-                        color="gray"
-                    >{{ __('commentions::comments.cancel') }}</x-filament::button>
-                </div>
-            </template>
-        </form>
-    @endif
-
-        <livewire:commentions::comment-list
+        <livewire:dynamic-component
+            :component="$commentionsComponentPrefix . 'comment-list'"
             :record="$record"
             :mentionables="$this->mentions"
             :polling-interval="$pollingInterval"
             :paginate="$paginate ?? true"
             :per-page="$perPage ?? 5"
-            :load-more-label="$loadMoreLabel ?? 'Show more'"
+            :load-more-label="$loadMoreLabel ?? __('commentions::comments.show_more')"
             :per-page-increment="$perPageIncrement ?? null"
+            :tip-tap-css-classes="$tipTapCssClasses"
+            :ratings-enabled="$this->ratingsAreEnabled()"
+            :max-rating="$this->getMaxRating()"
+            :toolbar-buttons="$toolbarButtons"
             :readonly="$this->isReadonly()"
         />
     </div>
 
     {{-- Subscription Sidebar --}}
     @if ($this->canSubscribe && $this->resolvedSidebarEnabled)
-        <livewire:commentions::subscription-sidebar
+        <livewire:dynamic-component
+            :component="$commentionsComponentPrefix . 'subscription-sidebar'"
             :record="$record"
             :show-subscribers="$this->resolvedShowSubscribers"
         />

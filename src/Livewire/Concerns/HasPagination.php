@@ -10,7 +10,7 @@ trait HasPagination
 
     public int $perPage = 5;
 
-    public string $loadMoreLabel = 'Show more';
+    public ?string $loadMoreLabel = null;
 
     public ?int $perPageIncrement = null;
 
@@ -36,5 +36,10 @@ trait HasPagination
         }
 
         return $this->record->comments()->count() > $this->perPage;
+    }
+
+    public function getLoadMoreLabel(): string
+    {
+        return __('commentions::comments.show_more');
     }
 }

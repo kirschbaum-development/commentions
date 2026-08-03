@@ -7,7 +7,7 @@
                     class="comm:w-4 comm:h-4 comm:text-gray-700 comm:dark:text-gray-300"
                 />
                 <h3 class="comm:text-sm comm:font-bold comm:text-gray-900 comm:dark:text-gray-100">
-                    Notifications
+                    {{ __('commentions::comments.notifications') }}
                 </h3>
             </div>
 
@@ -25,7 +25,7 @@
                             icon="heroicon-s-bell-slash"
                             class="comm:w-3 comm:h-3 comm:flex-shrink-0"
                         />
-                        <span>Unsubscribe</span>
+                        <span>{{ __('commentions::comments.unsubscribe') }}</span>
                     </span>
                 </x-filament::button>
             @else
@@ -42,7 +42,7 @@
                             icon="heroicon-o-bell"
                             class="comm:w-3 comm:h-3 comm:flex-shrink-0"
                         />
-                        <span>Subscribe</span>
+                        <span>{{ __('commentions::comments.subscribe') }}</span>
                     </span>
                 </x-filament::button>
             @endif
@@ -56,15 +56,15 @@
                             class="comm:w-4 comm:h-4 comm:text-gray-700 comm:dark:text-gray-300"
                         />
                         <span class="comm:text-sm comm:font-bold comm:text-gray-900 comm:dark:text-gray-100">
-                            Subscribers ({{ $this->subscribers->count() }})
+                            {{ __('commentions::comments.subscribers') }} ({{ $this->subscribers->count() }})
                         </span>
                     </div>
                     <div class="comm:space-y-1">
                         @foreach ($this->subscribers->take(5) as $subscriber)
                             <div class="comm:flex comm:items-center comm:gap-2">
                                 @if ($subscriber instanceof \Filament\Models\Contracts\HasAvatar && $subscriber->getFilamentAvatarUrl())
-                                    <img 
-                                        src="{{ $subscriber->getFilamentAvatarUrl() }}" 
+                                    <img
+                                        src="{{ $subscriber->getFilamentAvatarUrl() }}"
                                         alt="{{ $subscriber->name }}"
                                         class="comm:w-4 comm:h-4 comm:rounded-full comm:object-cover comm:flex-shrink-0"
                                     />
@@ -82,7 +82,7 @@
                         @endforeach
                         @if ($this->subscribers->count() > 5)
                             <div class="comm:text-xs comm:text-gray-500 comm:dark:text-gray-400 comm:pl-6">
-                                +{{ $this->subscribers->count() - 5 }} more
+                                +{{ $this->subscribers->count() - 5 }} {{ trans_choice('commentions::comments.more', $this->subscribers->count() - 5) }}
                             </div>
                         @endif
                     </div>

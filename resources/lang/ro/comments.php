@@ -1,0 +1,42 @@
+<?php
+
+return [
+    'label' => 'Comentarii',
+    'placeholder' => 'Scrie comentariul tău...',
+    'add_comment' => 'Adaugă un comentariu',
+    'no_comments_yet' => 'Niciun comentariu încă.',
+
+    'user_avatar_alt' => 'Avatar',
+
+    'commented_at' => 'Adăugat la :datetime',
+    'edited_at' => 'Editat la :datetime',
+    'edited' => 'editat',
+
+    'delete_comment_heading' => 'Șterge comentariu',
+    'delete_comment_body' => 'Sigur vrei să ștergi acest comentariu? Această acțiune nu poate fi anulată.',
+
+    'cancel' => 'Anulare',
+    'delete' => 'Șterge',
+    'edit' => 'Editează',
+    'save' => 'Salvare',
+    'comment' => 'Comentariu',
+    'add_reaction' => 'Adaugă reacție',
+    'attach_files' => 'Atașează fișiere',
+    'uploading' => 'Se încarcă fișierele…',
+    'show_more' => 'Afișează mai multe',
+
+    'rating_input_label' => 'Notă',
+    'rate_stars' => 'Acordă :count stea din :max|Acordă :count stele din :max',
+    'rating_display_label' => 'Notă :rating din :max',
+
+    'notifications' => 'Notificări',
+    'unsubscribe' => 'Dezabonare',
+    'subscribe' => 'Abonare',
+    'subscribers' => 'Abonați',
+    'more' => 'mai mulţi',
+
+    'notification_subscribed' => 'Abonat la notificări',
+    'notification_unsubscribed' => 'Dezabonat de la notificări',
+    'notification_comment_deleted' => 'Comentariu șters',
+
+];

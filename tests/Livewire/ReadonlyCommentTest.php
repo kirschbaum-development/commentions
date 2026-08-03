@@ -146,8 +146,8 @@ test('non-readonly comment component allows editing and deleting', function () {
         'comment' => $comment,
         'readonly' => false,
     ])
-        ->assertSeeHtml('wire:click="edit"')  // Edit button should be visible
-        ->assertSeeHtml('wire:click="delete"') // Delete button should be visible
+        ->assertActionVisible('edit') // Edit button should be visible
+        ->assertActionVisible('delete') // Delete button should be visible
         ->call('edit')
         ->assertSet('editing', true) // Should enter edit mode
         ->assertSet('commentBody', 'Original comment body'); // Comment body should be loaded
