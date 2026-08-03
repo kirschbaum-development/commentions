@@ -17,6 +17,7 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemas;
 use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemasBridge;
+use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -30,6 +31,7 @@ class Comment extends Component implements HasActions, HasForms
     use InteractsWithActions;
     use InteractsWithCommentSchemas;
     use InteractsWithCommentSchemasBridge;
+    use IsReadonly;
 
     /**
      * Deepest level that still receives added horizontal indent. Beyond this
@@ -69,7 +71,7 @@ class Comment extends Component implements HasActions, HasForms
     #[Renderless]
     public function delete(): void
     {
-        if (! auth()->user()?->can('delete', $this->comment)) {
+        if ($this->isReadonly() || ! auth()->user()?->can('delete', $this->comment)) {
             return;
         }
 
@@ -105,7 +107,7 @@ class Comment extends Component implements HasActions, HasForms
 
     public function edit(): void
     {
-        if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
+        if ($this->isReadonly() || ! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 
@@ -118,7 +120,7 @@ class Comment extends Component implements HasActions, HasForms
 
     public function updateComment(): void
     {
-        if (! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
+        if ($this->isReadonly() || ! Config::resolveAuthenticatedUser()?->can('update', $this->comment)) {
             return;
         }
 

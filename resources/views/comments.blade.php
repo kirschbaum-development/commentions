@@ -7,7 +7,7 @@
 <div class="comm:flex comm:gap-4 comm:h-full comm:min-w-0" x-data="{ wasFocused: false }">
     {{-- Main Comments Area --}}
     <div class="comm:flex-1 comm:space-y-2 comm:min-w-0">
-        @if (Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
+        @if (! $this->isReadonly() && Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel()))
             <div
                 wire:submit.prevent="save"
                 x-cloak
@@ -67,6 +67,7 @@
             :ratings-enabled="$this->ratingsAreEnabled()"
             :max-rating="$this->getMaxRating()"
             :toolbar-buttons="$toolbarButtons"
+            :readonly="$this->isReadonly()"
         />
     </div>
 

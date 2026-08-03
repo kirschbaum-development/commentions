@@ -12,6 +12,7 @@ use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
+use Kirschbaum\Commentions\Filament\Concerns\IsReadonly;
 
 class CommentsAction extends Action
 {
@@ -23,6 +24,7 @@ class CommentsAction extends Action
     use HasSidebar;
     use HasTipTapCssClasses;
     use HasToolbar;
+    use IsReadonly;
 
     protected function setUp(): void
     {
@@ -45,6 +47,7 @@ class CommentsAction extends Action
                 'maxRating' => $this->getMaxRating(),
                 'toolbarButtons' => $this->getToolbarButtons(),
                 'attachmentsEnabled' => $this->attachmentsAreEnabled(),
+                'readonly' => $this->readonly,
             ]))
             ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')
             ->label(__('commentions::comments.label'))

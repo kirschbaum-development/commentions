@@ -24,6 +24,7 @@
             :ratings-enabled="$ratingsEnabled"
             :max-rating="$maxRating"
             :toolbar-buttons="$toolbarButtons"
+            :readonly="$this->isReadonly()"
         />
     @endforeach
 
