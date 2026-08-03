@@ -40,7 +40,7 @@
                 @endif
             </div>
 
-            @if ($comment->isComment())
+            @if (! $this->isReadonly() && $comment->isComment())
                 <div class="comm:flex comm:gap-x-1">
                     {{ $this->editAction }}
                     {{ $this->deleteAction }}
@@ -52,7 +52,7 @@
             @endif
         </div>
 
-        @if ($editing)
+        @if (! $this->isReadonly() && $editing)
             <div class="comm:flex-1 comm:space-y-2">
                 <div
                     class="comm:mt-2"
@@ -111,6 +111,7 @@
                 <livewire:dynamic-component
                     :component="$commentionsComponentPrefix . 'reactions'"
                     :comment="$comment"
+                    :readonly="$this->isReadonly()"
                     :wire:key="'reaction-manager-' . $comment->getId()"
                 />
             @endif

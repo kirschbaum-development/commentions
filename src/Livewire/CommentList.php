@@ -9,6 +9,7 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
+use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -20,6 +21,7 @@ class CommentList extends Component
     use HasPolling;
     use HasRatings;
     use HasToolbarButtons;
+    use IsReadonly;
 
     public Model $record;
 

@@ -135,6 +135,96 @@ protected function getHeaderActions(): array
 }
 ```
 
+4. Or directly in form schemas for Edit pages (Filament 4):
+
+```php
+use Filament\Forms\Components\ViewField;
+
+public static function configure(Schema $schema): Schema
+{
+    return $schema
+        ->components([
+            // Your other form fields...
+
+            ViewField::make('comments_section')
+                ->view('...') // View file
+                ->viewData(fn ($livewire) => [
+                    'record' => $livewire->record ?? null
+                ])
+                ->columnSpanFull()
+                ->hiddenLabel(),
+        ]);
+}
+```
+
+View file contents
+
+Filament 3:
+```php
+@livewire('commentions::comments', [
+    'record' => $record,
+    'mentionables' => \App\Models\User::all(),
+    'readonly' => $readonly ?? false
+])
+```
+Filament 4:
+```php
+@livewire('commentions.comments', [
+    'record' => $record,
+    'mentionables' => \App\Models\User::all(),
+    'readonly' => $readonly ?? false
+])
+```
+
+To make the form comments readonly, pass the `readonly` flag in the viewData:
+
+```php
+ViewField::make('comments_section')
+    ->view('...') // View file
+    ->viewData(fn ($livewire) => [
+        'record' => $livewire->record ?? null,
+        'readonly' => true, // Enable readonly mode
+    ])
+    ->columnSpanFull()
+    ->hiddenLabel(),
+```
+
+**Note:** For View pages, continue using the infolist approach (option 1) as it works perfectly in that context.
+
+### Readonly Mode
+
+You can make comments readonly by chaining the `readonly()` method on the action. In readonly mode:
+- Users cannot add new comments
+- Users cannot edit existing comments
+- Users cannot delete comments
+- Users cannot react to comments (reactions are displayed but not interactive)
+
+```php
+// Make comments readonly
+CommentsEntry::make()
+    ->readonly()
+    ->mentionables(User::all())
+
+CommentsAction::make()
+    ->readonly()
+    ->mentionables(User::all())
+
+CommentsTableAction::make()
+    ->readonly()
+    ->mentionables(User::all())
+
+// You can also conditionally enable readonly mode
+CommentsAction::make()
+    ->readonly(auth()->user()->cannot('create', Comment::class))
+    ->mentionables(User::all())
+```
+
+This is useful for scenarios like:
+- Archived or closed records where no further comments should be allowed
+- View-only access for certain user roles
+- Historical comment viewing
+- Audit trails where comments should be preserved but not modified
+
 ### Subscription Management
 
 Commentions includes a subscription system that allows users to subscribe to receive notifications when new comments are added to a commentable resource.

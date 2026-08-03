@@ -8,6 +8,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 test('can create a comment', function () {
@@ -28,7 +30,7 @@ test('can create a comment', function () {
         ->assertSet('commentBody', '')
         ->assertDispatched('comment:saved');
 
-    $this->assertDatabaseHas('comments', [
+    assertDatabaseHas('comments', [
         'body' => 'This is a test comment',
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,
@@ -57,7 +59,7 @@ test('comment creation requires body', function () {
         ->call('save')
         ->assertHasErrors(['commentBody' => 'required']);
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,
     ]);
@@ -87,7 +89,7 @@ test('guests cannot create comments', function () {
         ->set('commentBody', 'This is a test comment')
         ->call('save');
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'body' => 'This is a test comment',
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,

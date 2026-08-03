@@ -12,6 +12,7 @@ use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
+use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
@@ -26,6 +27,7 @@ class Comments extends Component
     use HasRatings;
     use HasSidebar;
     use HasToolbarButtons;
+    use IsReadonly;
     use WithFileUploads;
 
     public Model $record;
@@ -53,6 +55,10 @@ class Comments extends Component
 
     public function save(): void
     {
+        if ($this->isReadonly()) {
+            return;
+        }
+
         $user = Config::resolveAuthenticatedUser();
 
         if (! $user) {
