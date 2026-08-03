@@ -1,20 +1,37 @@
 @php
     $toolbarButtons = $this->getToolbarButtons();
     $hasToolBar = is_array($toolbarButtons);
+    $repliesCount = config('commentions.threading.enabled', false) ? $comment->repliesCount() : 0;
 @endphp
 
 <div
-    class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2"
+    @class([
+        'comm:flex comm:items-start',
+        'comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2' => $depth === 0,
+        'comm:relative comm:gap-x-3 comm:py-2 comm:pl-6' => $depth > 0,
+    ])
     id="filament-comment-{{ $comment->getId() }}"
 >
+    @if ($depth > 0)
+        <div class="commentions-thread" aria-hidden="true"></div>
+    @endif
+
     @if ($avatar = $comment->getAuthorAvatar())
         <img
             src="{{ $comment->getAuthorAvatar() }}"
             alt="{{ __('commentions::comments.user_avatar_alt') }}"
-            class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center"
+            @class([
+                'comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center',
+                'comm:w-10 comm:h-10' => $depth === 0,
+                'comm:w-7 comm:h-7' => $depth > 0,
+            ])
         />
     @else
-        <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 "></div>
+        <div @class([
+            'comm:rounded-full comm:mt-0.5',
+            'comm:w-10 comm:h-10' => $depth === 0,
+            'comm:w-7 comm:h-7' => $depth > 0,
+        ])></div>
     @endif
 
     <div class="comm:flex-1 comm:min-w-0">
@@ -42,6 +59,14 @@
 
             @if (! $this->isReadonly() && $comment->isComment())
                 <div class="comm:flex comm:gap-x-1">
+                    @if ($this->canReply())
+                        <x-filament::icon-button
+                            icon="heroicon-s-arrow-uturn-left"
+                            wire:click="reply"
+                            size="xs"
+                            color="gray"
+                        />
+                    @endif
                     {{ $this->editAction }}
                     {{ $this->deleteAction }}
 
@@ -114,6 +139,69 @@
                     :readonly="$this->isReadonly()"
                     :wire:key="'reaction-manager-' . $comment->getId()"
                 />
+            @endif
+
+            @if ($replying)
+                <div class="comm:mt-3">
+                    <div class="tip-tap-container comm:mb-2" wire:ignore>
+                        <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', @js(__('commentions::comments.placeholder')), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
+                            <div x-ref="element"></div>
+                        </div>
+                    </div>
+
+                    <div class="comm:flex comm:gap-x-2">
+                        <x-filament::button wire:click="saveReply" size="sm">
+                            {{ __('commentions::comments.reply') }}
+                        </x-filament::button>
+
+                        <x-filament::button wire:click="cancelReplying" size="sm" color="gray">
+                            {{ __('commentions::comments.cancel') }}
+                        </x-filament::button>
+                    </div>
+                </div>
+            @endif
+
+            @if ($comment->isComment() && config('commentions.threading.enabled', false) && $comment->replies->isNotEmpty())
+                <div x-data="{ expanded: true }" class="comm:mt-3">
+                    <button
+                        type="button"
+                        @click="expanded = !expanded"
+                        :aria-expanded="expanded ? 'true' : 'false'"
+                        aria-controls="comment-replies-{{ $comment->getId() }}"
+                        class="comm:flex comm:items-center comm:gap-x-1 comm:text-xs comm:font-medium comm:text-gray-500 comm:dark:text-gray-400 comm:hover:text-gray-700 comm:dark:hover:text-gray-200 comm:focus:outline-none comm:focus-visible:ring-2 comm:focus-visible:ring-blue-500 comm:rounded comm:mb-1"
+                    >
+                        <x-filament::icon
+                            icon="heroicon-m-chevron-down"
+                            class="comm:w-4 comm:h-4 comm:transition-transform"
+                            x-bind:class="expanded ? '' : 'comm:-rotate-90'"
+                        />
+                        <span x-show="expanded">{{ __('commentions::comments.hide_replies') }}</span>
+                        <span x-show="!expanded" x-cloak>{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}</span>
+                    </button>
+
+                    <div
+                        id="comment-replies-{{ $comment->getId() }}"
+                        role="group"
+                        aria-label="{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}"
+                        x-show="expanded"
+                        x-collapse
+                        @class([
+                            'commentions-replies',
+                            'comm:pl-3' => $this->shouldIndentReplies(),
+                        ])
+                    >
+                        @foreach ($comment->replies as $reply)
+                            <livewire:dynamic-component
+                                :component="$commentionsComponentPrefix . 'comment'"
+                                :key="'reply-' . $reply->getContentHash()"
+                                :comment="$reply"
+                                :depth="$depth + 1"
+                                :mentionables="$mentionables"
+                                :tip-tap-css-classes="$tipTapCssClasses"
+                            />
+                        @endforeach
+                    </div>
+                </div>
             @endif
         @endif
     </div>

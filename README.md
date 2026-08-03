@@ -66,7 +66,7 @@ There are a couple of ways to use Commentions with Filament.
 
 1. Register the component in your Filament Infolists:
 
-> This works for Filament 3 and 4.
+> This works for Filament 3, 4 and 5.
 
 ```php
     CommentsEntry::make('comments')
@@ -85,7 +85,7 @@ For Filament 3:
     ]),
 ```
 
-For Filament 4:
+For Filament 4-5:
 
 ```php
 \Filament\Schemas\Components\Section::make('Comments')
@@ -108,7 +108,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsTableAction;
 ])
 ```
 
-If you are using Filament 4, you should use `CommentsAction` in `recordActions` instead:
+If you are using Filament 4-5, you should use `CommentsAction` in `recordActions` instead:
 
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
@@ -121,7 +121,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
 3. Or as a header action:
 
-> This works for Filament 3 and 4.
+> This works for Filament 3, 4 and 5.
 
 ```php
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
@@ -249,7 +249,7 @@ protected function getHeaderActions(): array
     SubscriptionTableAction::make(),
 ])
 
-// In record actions (Filament 4)
+// In record actions (Filament 4 and 5)
 ->recordActions([
     SubscriptionAction::make(),
 ])
@@ -375,6 +375,7 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
 ])
 ```
+
 Advanced Usage:
 
 ```php
@@ -391,6 +392,18 @@ Infolists\Components\Section::make('Comments')
 ```
 
 When pagination is enabled, a "Show more" button is displayed to load additional comments incrementally.
+
+#### Threaded comments
+Enable in the .env:
+```bash
+COMMENTIONS_THREADING_ENABLED=true
+````
+
+Optional: set the nested depth (default is 3):
+```bash
+COMMENTIONS_THREADING_MAX_DEPTH=3
+````
+*Recommended to not change the depth after the initial setup.
 
 #### Configuring the User model and the mentionables
 
