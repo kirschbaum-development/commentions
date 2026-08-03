@@ -1,7 +1,7 @@
 <div>
     <livewire:dynamic-component
         :component="$commentionsComponentPrefix . 'comments'"
-        :key="'comments-modal'"
+        :key="'comments-modal-' . $record->getKey()"
         :record="$record"
         :mentionables="$mentionables"
         :polling-interval="$pollingInterval"

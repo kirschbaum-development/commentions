@@ -80,7 +80,8 @@ For Filament 3:
 ```php
 \Filament\Infolists\Components\Section::make('Comments')
     ->schema([
-        CommentsEntry::make('comments'),
+        CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all()),
     ]),
 ```
 
@@ -89,7 +90,8 @@ For Filament 4:
 ```php
 \Filament\Schemas\Components\Section::make('Comments')
     ->components([
-        CommentsEntry::make('comments'),
+        CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all()),
     ]),
 ```
 
@@ -127,7 +129,8 @@ use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 protected function getHeaderActions(): array
 {
     return [
-        CommentsAction::make(),
+        CommentsAction::make()
+            ->mentionables(User::all()),
     ];
 }
 ```
@@ -181,19 +184,19 @@ Examples:
 For Livewire 3:
 ```php
 // Hide the sidebar entirely
-<livewire:commentions::comments :record="$record" :sidebar-enabled="false" />
+<livewire:commentions::comments :mentionables="App\Models\User::all()" :record="$record" :sidebar-enabled="false" />
 
 // Keep the sidebar, but hide the subscribers list (uses config default if omitted)
-<livewire:commentions::comments :record="$record" :show-subscribers="false" />
+<livewire:commentions::comments :mentionables="App\Models\User::all()" :record="$record" :show-subscribers="false" />
 ```
 
 For Livewire 4:
 ```php
 // Hide the sidebar entirely
-<livewire:commentions.comments :record="$record" :sidebar-enabled="false" />
+<livewire:commentions.comments :mentionables="App\Models\User::all()" :record="$record" :sidebar-enabled="false" />
 
 // Keep the sidebar, but hide the subscribers list (uses config default if omitted)
-<livewire:commentions.comments :record="$record" :show-subscribers="false" />
+<livewire:commentions.comments :mentionables="App\Models\User::all()" :record="$record" :show-subscribers="false" />
 ```
 
 Inside the component/template you can also rely on these computed properties:
@@ -465,6 +468,7 @@ You can also enable ratings per component, which overrides the global config. Th
 
 ```php
 CommentsEntry::make('comments')
+    ->mentionables(fn (Model $record) => User::all())
     ->enableRatings()
     ->maxRating(10)
 ```
@@ -510,9 +514,9 @@ You can also toggle attachments per component instead of globally, which overrid
 ```php
 use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
 
-CommentsEntry::make('comments')->enableAttachments();
-CommentsEntry::make('comments')->enableAttachments(fn () => auth()->user()->isAdmin());
-CommentsEntry::make('comments')->disableAttachments();
+CommentsEntry::make('comments')->mentionables(User::all())->enableAttachments();
+CommentsEntry::make('comments')->mentionables(User::all())->enableAttachments(fn () => auth()->user()->isAdmin());
+CommentsEntry::make('comments')->mentionables(User::all())->disableAttachments();
 ```
 
 The same `enableAttachments()` / `disableAttachments()` methods are available on `CommentsAction` and `CommentsTableAction`.
@@ -745,6 +749,7 @@ Commentions supports polling for new comments. You can enable it on any componen
 Infolists\Components\Section::make('Comments')
     ->schema([
         CommentsEntry::make('comments')
+            ->mentionables(fn (Model $record) => User::all())
             ->poll('10s')
     ]),
 ```
