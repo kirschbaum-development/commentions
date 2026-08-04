@@ -40,7 +40,7 @@ test('CommentList calls getComments when paginating', function () {
     $post = Mockery::mock(Post::class)->makePartial();
 
     $post->shouldReceive('getComments')
-        ->once()
+        ->twice()
         ->andReturn(collect());
 
     $component = livewire(CommentList::class, [
