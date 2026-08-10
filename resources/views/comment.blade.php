@@ -1,7 +1,7 @@
 @php
     $toolbarButtons = $this->getToolbarButtons();
     $hasToolBar = is_array($toolbarButtons);
-    $repliesCount = config('commentions.threading.enabled', false) ? $comment->repliesCount() : 0;
+    $repliesCount = config('commentions.threading.enabled', false) && $comment->isComment() ? $comment->repliesCount() : 0;
 @endphp
 
 <div
@@ -141,22 +141,38 @@
                 />
             @endif
 
-            @if ($replying)
+            @if (! $this->isReadonly() && $replying)
                 <div class="comm:mt-3">
-                    <div class="tip-tap-container comm:mb-2" wire:ignore>
-                        <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', @js(__('commentions::comments.placeholder')), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
+                    <div
+                        class="comm:mt-2"
+                        x-cloak
+                        role="form"
+                        x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($hasToolBar), @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'), @js(['prompt' => __('commentions::comments.toolbar.link_prompt'), 'invalid' => __('commentions::comments.toolbar.link_invalid')]))"
+                    >
+                        @if ($this->ratingsAreEnabled())
+                            @include('commentions::partials.ratings.rating-input', ['maxRating' => $this->getMaxRating()])
+                        @endif
+                        {{-- tiptap editor --}}
+                        <div
+                            @class([
+                                'tip-tap-container comm:mb-2',
+                                'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
+                            ])
+                            wire:ignore
+                        >
+                            @include('commentions::partials.toolbar', ['toolbarButtons' => $toolbarButtons])
                             <div x-ref="element"></div>
                         </div>
-                    </div>
 
-                    <div class="comm:flex comm:gap-x-2">
-                        <x-filament::button wire:click="saveReply" size="sm">
-                            {{ __('commentions::comments.reply') }}
-                        </x-filament::button>
+                        <div class="comm:flex comm:gap-x-2">
+                            <x-filament::button wire:click="saveReply" size="sm">
+                                {{ __('commentions::comments.reply') }}
+                            </x-filament::button>
 
-                        <x-filament::button wire:click="cancelReplying" size="sm" color="gray">
-                            {{ __('commentions::comments.cancel') }}
-                        </x-filament::button>
+                            <x-filament::button wire:click="cancelReplying" size="sm" color="gray">
+                                {{ __('commentions::comments.cancel') }}
+                            </x-filament::button>
+                        </div>
                     </div>
                 </div>
             @endif
@@ -193,11 +209,15 @@
                         @foreach ($comment->replies as $reply)
                             <livewire:dynamic-component
                                 :component="$commentionsComponentPrefix . 'comment'"
-                                :key="'reply-' . $reply->getContentHash()"
+                                :key="'reply-' . $depth + 1 . '-' . $comment::class . ':' . $comment->getId()"
                                 :comment="$reply"
                                 :depth="$depth + 1"
                                 :mentionables="$mentionables"
                                 :tip-tap-css-classes="$tipTapCssClasses"
+                                :ratings-enabled="$ratingsEnabled"
+                                :max-rating="$maxRating"
+                                :toolbar-buttons="$toolbarButtons"
+                                :readonly="$this->isReadonly()"
                             />
                         @endforeach
                     </div>

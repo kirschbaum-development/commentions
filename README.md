@@ -873,7 +873,7 @@ public function getComments(?int $limit = null): Collection
         createdAt: $statusHistory->created_at,
     ));
 
-    $comments = $this->comments()->latest()->with('author')->get();
+    $comments = $this->commentsQuery()->latest()->get();
 
     $mergedCollection = $statusHistory->merge($comments);
 

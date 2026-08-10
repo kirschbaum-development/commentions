@@ -118,6 +118,14 @@ class RenderableComment implements RenderableCommentContract, Wireable
         ];
     }
 
+    /**
+     * Cannot reply on RenderableComments.
+     */
+    public function repliesCount(): int
+    {
+        return 0;
+    }
+
     public static function fromLivewire($value)
     {
         return new static(
@@ -131,13 +139,5 @@ class RenderableComment implements RenderableCommentContract, Wireable
             updatedAt: new Carbon($value['updatedAt']),
             label: $value['label'],
         );
-    }
-
-    /**
-     * Cannot reply on RenderableComments.
-     */
-    public function repliesCount(): int
-    {
-        return 0;
     }
 }
