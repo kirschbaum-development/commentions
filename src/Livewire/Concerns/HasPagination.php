@@ -35,7 +35,7 @@ trait HasPagination
             return false;
         }
 
-        return $this->record->comments()->count() > $this->perPage;
+        return $this->record->getComments()->count() > $this->perPage;
     }
 
     public function getLoadMoreLabel(): string
