@@ -132,4 +132,12 @@ class RenderableComment implements RenderableCommentContract, Wireable
             label: $value['label'],
         );
     }
+
+    /**
+     * Cannot reply on RenderableComments.
+     */
+    public function repliesCount(): int
+    {
+        return 0;
+    }
 }
