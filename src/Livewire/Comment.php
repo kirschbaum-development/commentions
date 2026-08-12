@@ -8,9 +8,11 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Actions\SaveComment;
+use Kirschbaum\Commentions\Actions\StoreCommentAttachments;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Kirschbaum\Commentions\Livewire\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
@@ -21,9 +23,11 @@ use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Comment extends Component implements HasActions, HasForms
 {
+    use HasAttachments;
     use HasCommentActions;
     use HasMentions;
     use HasRatings;
@@ -32,13 +36,7 @@ class Comment extends Component implements HasActions, HasForms
     use InteractsWithCommentSchemas;
     use InteractsWithCommentSchemasBridge;
     use IsReadonly;
-
-    /**
-     * Deepest level that still receives added horizontal indent. Beyond this
-     * the thread line still renders, but no extra padding is added so deep
-     * threads don't compound horizontally on small screens.
-     */
-    public const INDENT_CAP_DEPTH = 2;
+    use WithFileUploads;
 
     public CommentModel|RenderableComment $comment;
 
@@ -181,7 +179,11 @@ class Comment extends Component implements HasActions, HasForms
 
         $this->validate();
 
-        SaveComment::run(
+        if ($this->attachmentsAreEnabled() && $this->attachments !== []) {
+            $this->validate($this->attachmentValidationRules());
+        }
+
+        $reply = SaveComment::run(
             $this->comment->commentable,
             $user,
             $this->commentBody,
@@ -189,8 +191,13 @@ class Comment extends Component implements HasActions, HasForms
             (int) $this->comment->getId(),
         );
 
+        if ($this->attachmentsAreEnabled() && $this->attachments !== []) {
+            StoreCommentAttachments::run($reply, $this->attachments);
+        }
+
         $this->replying = false;
         $this->commentBody = '';
+        $this->attachments = [];
 
         $this->dispatch('comment:saved');
         $this->dispatch('comment:content:cleared');
@@ -229,15 +236,6 @@ class Comment extends Component implements HasActions, HasForms
             && (bool) config('commentions.threading.enabled', false)
             && $this->depth < $this->maxReplyDepth()
             && (bool) Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel());
-    }
-
-    /**
-     * Whether the replies wrapper rendered by this comment should add
-     * horizontal indent. Past the cap the thread line still renders.
-     */
-    public function shouldIndentReplies(): bool
-    {
-        return $this->depth < self::INDENT_CAP_DEPTH;
     }
 
     protected function maxReplyDepth(): int

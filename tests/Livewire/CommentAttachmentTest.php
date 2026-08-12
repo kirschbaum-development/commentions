@@ -7,6 +7,7 @@ use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\CommentAttachment;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+use Kirschbaum\Commentions\Livewire\Comment as CommentComponent;
 use Kirschbaum\Commentions\Livewire\Comments;
 use Tests\Models\Post;
 use Tests\Models\User;
@@ -38,6 +39,47 @@ test('a file can be attached to a comment', function () {
     expect($comment->attachments->first()->filename)->toBe('report.txt');
 
     Storage::disk('public')->assertExists($comment->attachments->first()->path);
+});
+
+test('a file can be attached to a reply', function () {
+    config(['commentions.threading.enabled' => true]);
+
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $parent = Comment::factory()->author($user)->commentable($post)->create();
+
+    livewire(CommentComponent::class, ['comment' => $parent, 'attachmentsEnabled' => true])
+        ->call('reply')
+        ->set('commentBody', 'A reply with a file')
+        ->set('attachments', [UploadedFile::fake()->create('reply.txt', 120, 'text/plain')])
+        ->call('saveReply')
+        ->assertHasNoErrors()
+        ->assertSet('replying', false)
+        ->assertSet('attachments', []);
+
+    $reply = $parent->replies()->first();
+
+    expect($reply->body)->toBe('A reply with a file')
+        ->and($reply->attachments)->toHaveCount(1)
+        ->and($reply->attachments->first()->filename)->toBe('reply.txt');
+
+    Storage::disk('public')->assertExists($reply->attachments->first()->path);
+});
+
+test('the attach control renders in the reply form when enabled', function () {
+    config(['commentions.threading.enabled' => true]);
+
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $parent = Comment::factory()->author($user)->commentable($post)->create();
+
+    livewire(CommentComponent::class, ['comment' => $parent, 'attachmentsEnabled' => true])
+        ->call('reply')
+        ->assertSeeHtml('wire:model="attachments"');
 });
 
 test('the attach control is hidden when attachments are disabled', function () {

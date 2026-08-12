@@ -211,24 +211,23 @@ test('a comment with no replies renders no collapse toggle', function () {
         ->assertDontSeeHtml('aria-controls="comment-replies-');
 });
 
-test('replies indent for the first levels then stop', function () {
-    config(['commentions.threading.max_depth' => 5]);
-
+test('top-level comments carry the flex gap while replies space the avatar instead', function () {
     $user = User::factory()->create();
     actingAs($user);
 
     $post = Post::factory()->create();
-    $c0 = Comment::factory()->author($user)->commentable($post)->create();
-    $c1 = Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $c0->id]);
-    Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $c1->id]);
+    $parent = Comment::factory()->author($user)->commentable($post)->create();
+    $reply = Comment::factory()->author($user)->commentable($post)->create(['parent_id' => $parent->id]);
 
-    // A depth-0 wrapper indents the replies it renders.
-    livewire(CommentComponent::class, ['comment' => $c0, 'depth' => 0])
-        ->assertSeeHtml('comm:pl-3');
+    // Top-level row carries the flex gap between avatar and content.
+    livewire(CommentComponent::class, ['comment' => $parent, 'depth' => 0])
+        ->assertSeeHtml('comm:gap-x-4');
 
-    // A wrapper at INDENT_CAP_DEPTH stops adding indent.
-    livewire(CommentComponent::class, ['comment' => $c1, 'depth' => CommentComponent::INDENT_CAP_DEPTH])
-        ->assertDontSeeHtml('comm:pl-3');
+    // A reply drops the row gap so its content fills to the edge, and spaces
+    // its avatar with a margin instead.
+    livewire(CommentComponent::class, ['comment' => $reply, 'depth' => 1])
+        ->assertDontSeeHtml('comm:gap-x-4')
+        ->assertSeeHtml('comm:mr-3');
 });
 
 test('repliesCount counts every descendant comment', function () {

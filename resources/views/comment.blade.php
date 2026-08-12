@@ -7,8 +7,8 @@
 <div
     @class([
         'comm:flex comm:items-start',
-        'comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2' => $depth === 0,
-        'comm:relative comm:gap-x-3 comm:py-2 comm:pl-6' => $depth > 0,
+        'comm:gap-x-4 comm:overflow-x-auto comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2' => $depth === 0,
+        'comm:relative comm:py-2' => $depth > 0,
     ])
     id="filament-comment-{{ $comment->getId() }}"
 >
@@ -23,14 +23,14 @@
             @class([
                 'comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center',
                 'comm:w-10 comm:h-10' => $depth === 0,
-                'comm:w-7 comm:h-7' => $depth > 0,
+                'comm:w-7 comm:h-7 comm:mr-3' => $depth > 0,
             ])
         />
     @else
         <div @class([
             'comm:rounded-full comm:mt-0.5',
             'comm:w-10 comm:h-10' => $depth === 0,
-            'comm:w-7 comm:h-7' => $depth > 0,
+            'comm:w-7 comm:h-7 comm:mr-3' => $depth > 0,
         ])></div>
     @endif
 
@@ -142,7 +142,7 @@
             @endif
 
             @if (! $this->isReadonly() && $replying)
-                <div class="comm:mt-3">
+                <div class="comm:mt-3" x-data="{ wasFocused: false }">
                     <div
                         class="comm:mt-2"
                         x-cloak
@@ -158,14 +158,26 @@
                                 'tip-tap-container comm:mb-2',
                                 'tip-tap-toolbar-enabled' => config('commentions.toolbar.enabled', true),
                             ])
+                            x-on:click="wasFocused = true"
                             wire:ignore
                         >
                             @include('commentions::partials.toolbar', ['toolbarButtons' => $toolbarButtons])
                             <div x-ref="element"></div>
                         </div>
 
+                        @if ($this->attachmentsAreEnabled())
+                            @include('commentions::partials.attachments.form-attachments', [
+                                'attachments' => $attachments,
+                            ])
+                        @endif
+
                         <div class="comm:flex comm:gap-x-2">
-                            <x-filament::button wire:click="saveReply" size="sm">
+                            <x-filament::button
+                                wire:click="saveReply"
+                                x-bind:disabled="isEmpty"
+                                x-bind:class="{ 'comm:opacity-50 comm:cursor-not-allowed': isEmpty }"
+                                size="sm"
+                            >
                                 {{ __('commentions::comments.reply') }}
                             </x-filament::button>
 
@@ -176,54 +188,52 @@
                     </div>
                 </div>
             @endif
-
-            @if ($comment->isComment() && config('commentions.threading.enabled', false) && $comment->replies->isNotEmpty())
-                <div x-data="{ expanded: true }" class="comm:mt-3">
-                    <button
-                        type="button"
-                        @click="expanded = !expanded"
-                        :aria-expanded="expanded ? 'true' : 'false'"
-                        aria-controls="comment-replies-{{ $comment->getId() }}"
-                        class="comm:flex comm:items-center comm:gap-x-1 comm:text-xs comm:font-medium comm:text-gray-500 comm:dark:text-gray-400 comm:hover:text-gray-700 comm:dark:hover:text-gray-200 comm:focus:outline-none comm:focus-visible:ring-2 comm:focus-visible:ring-blue-500 comm:rounded comm:mb-1"
-                    >
-                        <x-filament::icon
-                            icon="heroicon-m-chevron-down"
-                            class="comm:w-4 comm:h-4 comm:transition-transform"
-                            x-bind:class="expanded ? '' : 'comm:-rotate-90'"
-                        />
-                        <span x-show="expanded">{{ __('commentions::comments.hide_replies') }}</span>
-                        <span x-show="!expanded" x-cloak>{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}</span>
-                    </button>
-
-                    <div
-                        id="comment-replies-{{ $comment->getId() }}"
-                        role="group"
-                        aria-label="{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}"
-                        x-show="expanded"
-                        x-collapse
-                        @class([
-                            'commentions-replies',
-                            'comm:pl-3' => $this->shouldIndentReplies(),
-                        ])
-                    >
-                        @foreach ($comment->replies as $reply)
-                            <livewire:dynamic-component
-                                :component="$commentionsComponentPrefix . 'comment'"
-                                :key="'reply-' . $depth + 1 . '-' . $comment::class . ':' . $comment->getId()"
-                                :comment="$reply"
-                                :depth="$depth + 1"
-                                :mentionables="$mentionables"
-                                :tip-tap-css-classes="$tipTapCssClasses"
-                                :ratings-enabled="$ratingsEnabled"
-                                :max-rating="$maxRating"
-                                :toolbar-buttons="$toolbarButtons"
-                                :readonly="$this->isReadonly()"
-                            />
-                        @endforeach
-                    </div>
-                </div>
-            @endif
         @endif
+
+        @if ($comment->isComment() && config('commentions.threading.enabled', false) && $comment->replies->isNotEmpty())
+        <div x-data="{ expanded: true }" class="comm:mt-3">
+            <button
+                type="button"
+                @click="expanded = !expanded"
+                :aria-expanded="expanded ? 'true' : 'false'"
+                aria-controls="comment-replies-{{ $comment->getId() }}"
+                class="comm:flex comm:items-center comm:gap-x-1 comm:text-xs comm:font-medium comm:text-gray-500 comm:dark:text-gray-400 comm:hover:text-gray-700 comm:dark:hover:text-gray-200 comm:focus:outline-none comm:focus-visible:ring-2 comm:focus-visible:ring-blue-500 comm:rounded comm:mb-1"
+            >
+                <x-filament::icon
+                    icon="heroicon-m-chevron-down"
+                    class="comm:w-4 comm:h-4 comm:transition-transform"
+                    x-bind:class="expanded ? '' : 'comm:-rotate-90'"
+                />
+                <span x-show="expanded">{{ __('commentions::comments.hide_replies') }}</span>
+                <span x-show="!expanded" x-cloak>{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}</span>
+            </button>
+
+            <div
+                id="comment-replies-{{ $comment->getId() }}"
+                role="group"
+                aria-label="{{ trans_choice('commentions::comments.replies_count', $repliesCount, ['count' => $repliesCount]) }}"
+                x-show="expanded"
+                x-collapse
+                class="commentions-replies"
+            >
+                @foreach ($comment->replies as $reply)
+                    <livewire:dynamic-component
+                        :component="$commentionsComponentPrefix . 'comment'"
+                        :key="'reply-' . $depth + 1 . '-' . $comment::class . ':' . $comment->getId()"
+                        :comment="$reply"
+                        :depth="$depth + 1"
+                        :mentionables="$mentionables"
+                        :tip-tap-css-classes="$tipTapCssClasses"
+                        :ratings-enabled="$ratingsEnabled"
+                        :max-rating="$maxRating"
+                        :toolbar-buttons="$toolbarButtons"
+                        :attachments-enabled="$attachmentsEnabled ?? null"
+                        :readonly="$this->isReadonly()"
+                    />
+                @endforeach
+            </div>
+        </div>
+    @endif
     </div>
 
     <x-filament-actions::modals />
