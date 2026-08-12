@@ -67,6 +67,7 @@
             :ratings-enabled="$this->ratingsAreEnabled()"
             :max-rating="$this->getMaxRating()"
             :toolbar-buttons="$toolbarButtons"
+            :attachments-enabled="$this->attachmentsAreEnabled()"
             :readonly="$this->isReadonly()"
         />
     </div>

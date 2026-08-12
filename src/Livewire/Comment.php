@@ -7,9 +7,12 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
+use Kirschbaum\Commentions\Actions\SaveComment;
+use Kirschbaum\Commentions\Actions\StoreCommentAttachments;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Kirschbaum\Commentions\Livewire\Concerns\HasAttachments;
 use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
@@ -20,9 +23,11 @@ use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Comment extends Component implements HasActions, HasForms
 {
+    use HasAttachments;
     use HasCommentActions;
     use HasMentions;
     use HasRatings;
@@ -31,12 +36,17 @@ class Comment extends Component implements HasActions, HasForms
     use InteractsWithCommentSchemas;
     use InteractsWithCommentSchemasBridge;
     use IsReadonly;
+    use WithFileUploads;
 
     public CommentModel|RenderableComment $comment;
 
     public string $commentBody = '';
 
     public bool $editing = false;
+
+    public bool $replying = false;
+
+    public int $depth = 0;
 
     public ?int $rating = null;
 
@@ -134,6 +144,71 @@ class Comment extends Component implements HasActions, HasForms
         $this->rating = null;
     }
 
+    public function reply(): void
+    {
+        if (! $this->comment instanceof CommentModel) {
+            return;
+        }
+
+        $this->editing = false;
+        $this->replying = true;
+        $this->commentBody = '';
+    }
+
+    public function saveReply(): void
+    {
+        if (! $this->comment instanceof CommentModel) {
+            return;
+        }
+
+        $user = Config::resolveAuthenticatedUser();
+
+        if (! $user) {
+            return;
+        }
+
+        if ($this->comment->depth() >= $this->maxReplyDepth()) {
+            return;
+        }
+
+        if ($this->ratingsAreEnabled()) {
+            $this->validate([
+                'rating' => ['nullable', 'integer', 'min:1', 'max:' . $this->getMaxRating()],
+            ]);
+        }
+
+        $this->validate();
+
+        if ($this->attachmentsAreEnabled() && $this->attachments !== []) {
+            $this->validate($this->attachmentValidationRules());
+        }
+
+        $reply = SaveComment::run(
+            $this->comment->commentable,
+            $user,
+            $this->commentBody,
+            $this->rating,
+            (int) $this->comment->getId(),
+        );
+
+        if ($this->attachmentsAreEnabled() && $this->attachments !== []) {
+            StoreCommentAttachments::run($reply, $this->attachments);
+        }
+
+        $this->replying = false;
+        $this->commentBody = '';
+        $this->attachments = [];
+
+        $this->dispatch('comment:saved');
+        $this->dispatch('comment:content:cleared');
+    }
+
+    public function cancelReplying(): void
+    {
+        $this->replying = false;
+        $this->commentBody = '';
+    }
+
     #[Renderless]
     public function toggleReaction(string $reaction): void
     {
@@ -149,5 +224,22 @@ class Comment extends Component implements HasActions, HasForms
     public function getTipTapCssClasses(): ?string
     {
         return $this->tipTapCssClasses ?? Config::getTipTapCssClasses();
+    }
+
+    /**
+     * Whether the current user may post a reply to this comment, given that
+     * threading is enabled and the comment is not already at the max depth.
+     */
+    public function canReply(): bool
+    {
+        return $this->comment instanceof CommentModel
+            && (bool) config('commentions.threading.enabled', false)
+            && $this->depth < $this->maxReplyDepth()
+            && (bool) Config::resolveAuthenticatedUser()?->can('create', Config::getCommentModel());
+    }
+
+    protected function maxReplyDepth(): int
+    {
+        return max(0, (int) config('commentions.threading.max_depth', 3));
     }
 }

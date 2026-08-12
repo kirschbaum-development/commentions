@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        $table = config('commentions.tables.comments', 'comments');
+
+        Schema::table($table, function (Blueprint $blueprint) use ($table) {
+            $blueprint->foreignId('parent_id')
+                ->nullable()
+                ->after('id')
+                ->constrained($table)
+                ->cascadeOnDelete();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table(config('commentions.tables.comments', 'comments'), function (Blueprint $blueprint) {
+            $blueprint->dropConstrainedForeignId('parent_id');
+        });
+    }
+};

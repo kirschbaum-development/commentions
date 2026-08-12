@@ -4,6 +4,7 @@ namespace Kirschbaum\Commentions\Livewire;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Kirschbaum\Commentions\Livewire\Concerns\HasAttachmentSetting;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
@@ -16,6 +17,7 @@ use Livewire\Component;
 
 class CommentList extends Component
 {
+    use HasAttachmentSetting;
     use HasMentions;
     use HasPagination;
     use HasPolling;

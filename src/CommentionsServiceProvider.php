@@ -45,6 +45,7 @@ class CommentionsServiceProvider extends PackageServiceProvider
                 'create_commentions_subscriptions_table',
                 'add_rating_to_commentions_comments_table',
                 'create_commentions_attachments_table',
+                'add_parent_id_to_commentions_comments_table',
             ])
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
