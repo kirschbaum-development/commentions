@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 use Kirschbaum\Commentions\Filament\Actions\CommentsTableAction;
@@ -46,7 +47,7 @@ test('avatars render by default and can be disabled per component', function () 
     actingAs($user);
 
     $post = Post::factory()->create();
-    $comment = Kirschbaum\Commentions\Comment::factory()->author($user)->commentable($post)->create([
+    $comment = Comment::factory()->author($user)->commentable($post)->create([
         'body' => 'Avatar test',
     ]);
 
@@ -67,7 +68,7 @@ test('avatars can be disabled globally via config', function () {
     actingAs($user);
 
     $post = Post::factory()->create();
-    $comment = Kirschbaum\Commentions\Comment::factory()->author($user)->commentable($post)->create([
+    $comment = Comment::factory()->author($user)->commentable($post)->create([
         'body' => 'Avatar config test',
     ]);
 
@@ -95,7 +96,7 @@ test('reactions render by default and can be disabled per component', function (
     actingAs($user);
 
     $post = Post::factory()->create();
-    $comment = Kirschbaum\Commentions\Comment::factory()->author($user)->commentable($post)->create([
+    $comment = Comment::factory()->author($user)->commentable($post)->create([
         'body' => 'Reaction test',
     ]);
 
@@ -116,7 +117,7 @@ test('reactions can be disabled globally via config', function () {
     actingAs($user);
 
     $post = Post::factory()->create();
-    $comment = Kirschbaum\Commentions\Comment::factory()->author($user)->commentable($post)->create([
+    $comment = Comment::factory()->author($user)->commentable($post)->create([
         'body' => 'Reaction config test',
     ]);
 
@@ -144,7 +145,7 @@ test('toggling a reaction is ignored when reactions are disabled', function () {
     actingAs($user);
 
     $post = Post::factory()->create();
-    $comment = Kirschbaum\Commentions\Comment::factory()->author($user)->commentable($post)->create();
+    $comment = Comment::factory()->author($user)->commentable($post)->create();
 
     livewire(CommentComponent::class, ['comment' => $comment, 'reactionsEnabled' => false])
         ->call('toggleReaction', '👍');
