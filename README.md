@@ -95,6 +95,14 @@ For Filament 4:
     ]),
 ```
 
+By default the entry uses the page's record. To comment on a different model (e.g. a pivot or a related record in a table modal), override it explicitly:
+
+```php
+CommentsEntry::make('comments')
+    ->record(fn () => $pivot)
+    ->mentionables(User::all());
+```
+
 2. Or in your table actions:
 
 If you are using Filament 3, you must use `CommentsTableAction` in your table's `actions` array:
@@ -491,9 +499,47 @@ By default, Commentions ships with the following reactions: `['👍', '❤️', 
 
 ```php
     'reactions' => [
+        'enabled' => env('COMMENTIONS_REACTIONS_ENABLED', true),
+
         'allowed' => ['👍', '❤️', '😂', '🎉', '👀'],
     ],
 ```
+
+Reactions are enabled by default. Disable them globally via `reactions.enabled`, or per component:
+
+```php
+CommentsEntry::make('comments')
+    ->mentionables(User::all())
+    ->disableReactions();
+
+CommentsAction::make()
+    ->mentionables(User::all())
+    ->disableReactions();
+```
+
+You can re-enable per component with `->enableReactions()` when disabled globally.
+
+#### Configuring Avatars
+
+Avatars are enabled by default. Disable them globally, or per component when you want comments flush to the left:
+
+```php
+    'avatars' => [
+        'enabled' => env('COMMENTIONS_AVATARS_ENABLED', true),
+    ],
+```
+
+```php
+CommentsEntry::make('comments')
+    ->mentionables(User::all())
+    ->disableAvatars();
+
+CommentsAction::make()
+    ->mentionables(User::all())
+    ->disableAvatars();
+```
+
+You can re-enable per component with `->enableAvatars()` when disabled globally.
 
 #### Configuring the Commenter avatar
 

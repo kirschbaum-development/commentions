@@ -4,9 +4,11 @@ namespace Kirschbaum\Commentions\Filament\Actions;
 
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Filament\Concerns\HasAttachments;
+use Kirschbaum\Commentions\Filament\Concerns\HasAvatars;
 use Kirschbaum\Commentions\Filament\Concerns\HasMentionables;
 use Kirschbaum\Commentions\Filament\Concerns\HasPolling;
 use Kirschbaum\Commentions\Filament\Concerns\HasRatings;
+use Kirschbaum\Commentions\Filament\Concerns\HasReactions;
 use Kirschbaum\Commentions\Filament\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Filament\Concerns\HasTipTapCssClasses;
 use Kirschbaum\Commentions\Filament\Concerns\HasToolbar;
@@ -22,9 +24,11 @@ use Kirschbaum\Commentions\Filament\Concerns\IsReadonly;
 class CommentsTableAction extends TableAction
 {
     use HasAttachments;
+    use HasAvatars;
     use HasMentionables;
     use HasPolling;
     use HasRatings;
+    use HasReactions;
     use HasSidebar;
     use HasTipTapCssClasses;
     use HasToolbar;
@@ -47,6 +51,8 @@ class CommentsTableAction extends TableAction
                 'maxRating' => $this->getMaxRating(),
                 'toolbarButtons' => $this->getToolbarButtons(),
                 'attachmentsEnabled' => $this->attachmentsAreEnabled(),
+                'avatarsEnabled' => $this->avatarsAreEnabled(),
+                'reactionsEnabled' => $this->reactionsAreEnabled(),
                 'readonly' => $this->readonly,
             ]))
             ->modalWidth(fn () => $this->isSidebarEnabled() ? '4xl' : 'xl')

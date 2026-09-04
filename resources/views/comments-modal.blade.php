@@ -16,6 +16,8 @@
         :max-rating="$maxRating ?? null"
         :toolbar-buttons="$toolbarButtons ?? null"
         :attachments-enabled="$attachmentsEnabled ?? null"
+        :avatars-enabled="$avatarsEnabled ?? null"
+        :reactions-enabled="$reactionsEnabled ?? null"
         :readonly="$readonly ?? false"
     />
 </div>

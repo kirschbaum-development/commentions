@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Actions\SaveComment;
 use Kirschbaum\Commentions\Actions\StoreCommentAttachments;
 use Kirschbaum\Commentions\Config;
+use Kirschbaum\Commentions\Livewire\Concerns\HasAvatars;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPagination;
 use Kirschbaum\Commentions\Livewire\Concerns\HasPolling;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
+use Kirschbaum\Commentions\Livewire\Concerns\HasReactions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasSidebar;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
@@ -21,10 +23,12 @@ use Livewire\WithFileUploads;
 
 class Comments extends Component
 {
+    use HasAvatars;
     use HasMentions;
     use HasPagination;
     use HasPolling;
     use HasRatings;
+    use HasReactions;
     use HasSidebar;
     use HasToolbarButtons;
     use IsReadonly;
