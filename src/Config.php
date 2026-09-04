@@ -102,6 +102,16 @@ class Config
         return config('commentions.reactions.allowed', ['👍']);
     }
 
+    public static function reactionsAreEnabled(): bool
+    {
+        return (bool) config('commentions.reactions.enabled', true);
+    }
+
+    public static function avatarsAreEnabled(): bool
+    {
+        return (bool) config('commentions.avatars.enabled', true);
+    }
+
     public static function getAvatarProvider(): ?string
     {
         return config('commentions.avatar_provider');

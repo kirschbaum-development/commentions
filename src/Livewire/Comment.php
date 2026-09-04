@@ -10,9 +10,11 @@ use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Kirschbaum\Commentions\Livewire\Concerns\HasAvatars;
 use Kirschbaum\Commentions\Livewire\Concerns\HasCommentActions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasMentions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasRatings;
+use Kirschbaum\Commentions\Livewire\Concerns\HasReactions;
 use Kirschbaum\Commentions\Livewire\Concerns\HasToolbarButtons;
 use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemas;
 use Kirschbaum\Commentions\Livewire\Concerns\InteractsWithCommentSchemasBridge;
@@ -23,9 +25,11 @@ use Livewire\Component;
 
 class Comment extends Component implements HasActions, HasForms
 {
+    use HasAvatars;
     use HasCommentActions;
     use HasMentions;
     use HasRatings;
+    use HasReactions;
     use HasToolbarButtons;
     use InteractsWithActions;
     use InteractsWithCommentSchemas;
@@ -137,6 +141,10 @@ class Comment extends Component implements HasActions, HasForms
     #[Renderless]
     public function toggleReaction(string $reaction): void
     {
+        if ($this->isReadonly() || ! $this->reactionsAreEnabled()) {
+            return;
+        }
+
         if (! $this->comment instanceof CommentModel) {
             return;
         }

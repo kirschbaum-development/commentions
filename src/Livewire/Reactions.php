@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\View;
 use Kirschbaum\Commentions\Comment as CommentModel;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Contracts\RenderableComment;
+use Kirschbaum\Commentions\Livewire\Concerns\HasReactions;
 use Kirschbaum\Commentions\Livewire\Concerns\IsReadonly;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -13,13 +14,14 @@ use Livewire\Component;
 
 class Reactions extends Component
 {
+    use HasReactions;
     use IsReadonly;
 
     public RenderableComment $comment;
 
     public function handleReactionToggle(string $reaction): void
     {
-        if ($this->isReadonly()) {
+        if ($this->isReadonly() || ! $this->reactionsAreEnabled()) {
             return;
         }
 

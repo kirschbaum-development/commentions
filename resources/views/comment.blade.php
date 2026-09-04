@@ -7,14 +7,16 @@
     class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2"
     id="filament-comment-{{ $comment->getId() }}"
 >
-    @if ($avatar = $comment->getAuthorAvatar())
-        <img
-            src="{{ $comment->getAuthorAvatar() }}"
-            alt="{{ __('commentions::comments.user_avatar_alt') }}"
-            class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center"
-        />
-    @else
-        <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 "></div>
+    @if ($this->avatarsAreEnabled())
+        @if ($avatar = $comment->getAuthorAvatar())
+            <img
+                src="{{ $comment->getAuthorAvatar() }}"
+                alt="{{ __('commentions::comments.user_avatar_alt') }}"
+                class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center"
+            />
+        @else
+            <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 "></div>
+        @endif
     @endif
 
     <div class="comm:flex-1 comm:min-w-0">
@@ -107,10 +109,11 @@
                 'comment' => $comment,
             ])
 
-            @if ($comment->isComment())
+            @if ($comment->isComment() && $this->reactionsAreEnabled())
                 <livewire:dynamic-component
                     :component="$commentionsComponentPrefix . 'reactions'"
                     :comment="$comment"
+                    :reactions-enabled="$this->reactionsAreEnabled()"
                     :readonly="$this->isReadonly()"
                     :wire:key="'reaction-manager-' . $comment->getId()"
                 />

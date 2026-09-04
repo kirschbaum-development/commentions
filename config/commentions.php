@@ -42,8 +42,14 @@ return [
     |--------------------------------------------------------------------------
     | Reactions
     |--------------------------------------------------------------------------
+    |
+    | Emoji reactions on comments. Enabled by default; disable globally here
+    | or per component with CommentsEntry::make()->disableReactions().
+    |
     */
     'reactions' => [
+        'enabled' => env('COMMENTIONS_REACTIONS_ENABLED', true),
+
         'allowed' => ['👍', '❤️', '😂', '😮', '😢', '🤔'],
     ],
 
@@ -84,6 +90,19 @@ return [
             ['bold', 'italic', 'underline'],
             ['bulletList', 'orderedList'],
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Avatars
+    |--------------------------------------------------------------------------
+    |
+    | Comment author avatars. Enabled by default; disable globally here
+    | or per component with CommentsEntry::make()->disableAvatars().
+    |
+    */
+    'avatars' => [
+        'enabled' => env('COMMENTIONS_AVATARS_ENABLED', true),
     ],
 
     /*
