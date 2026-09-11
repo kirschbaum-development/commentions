@@ -7,6 +7,7 @@ return [
     'no_comments_yet' => 'Nog geen opmerkingen.',
 
     'user_avatar_alt' => 'Profielfoto',
+    'deleted_user' => 'Verwijderde gebruiker',
 
     'commented_at' => 'Geplaatst op :datetime',
     'edited_at' => 'Bewerkt op :datetime',

@@ -30,7 +30,7 @@ use Kirschbaum\Commentions\Database\Factories\CommentFactory;
  * @property string $body_markdown
  * @property string $body_parsed
  * @property int $author_id
- * @property Model|Commenter $author
+ * @property Model|Commenter|null $author
  * @property Commentable $commentable
  * @property-read DateTime|Carbon $created_at
  * @property-read DateTime|Carbon $updated_at
@@ -131,7 +131,13 @@ class Comment extends Model implements RenderableComment
 
     public function getAuthorName(): string
     {
-        return $this->author->name;
+        if ($this->author === null) {
+            return __('commentions::comments.deleted_user');
+        }
+
+        $name = Manager::getName($this->author);
+
+        return filled($name) ? (string) $name : __('commentions::comments.deleted_user');
     }
 
     public function getAuthorAvatar(): string
@@ -144,13 +150,15 @@ class Comment extends Model implements RenderableComment
             }
         }
 
-        $providerAvatar = $this->resolveAvatarFromProvider();
+        if ($this->author !== null) {
+            $providerAvatar = $this->resolveAvatarFromProvider();
 
-        if (! is_null($providerAvatar)) {
-            return $providerAvatar;
+            if (! is_null($providerAvatar)) {
+                return $providerAvatar;
+            }
         }
 
-        $name = str(Manager::getName($this->author))
+        $name = str($this->getAuthorName())
             ->trim()
             ->explode(' ')
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
