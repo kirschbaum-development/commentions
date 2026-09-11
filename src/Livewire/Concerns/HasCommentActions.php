@@ -73,7 +73,9 @@ trait HasCommentActions
             return [];
         }
 
-        return $this->customActions ??= Config::getCommentActions($this->comment);
+        return $this->customActions ??= collect(Config::getCommentActions($this->comment))
+            ->each(fn (Action $action) => $action->defaultSize('xs'))
+            ->all();
     }
 
     protected function commentUserCan(string $ability): bool

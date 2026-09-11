@@ -45,7 +45,9 @@ test('other users cannot see edit and delete buttons by default', function () {
         'comment' => $comment,
     ])
         ->assertActionHidden('edit')
-        ->assertActionHidden('delete');
+        ->assertActionHidden('delete')
+        ->assertDontSee(__('commentions::comments.edit'))
+        ->assertDontSee(__('commentions::comments.delete'));
 });
 
 test('guests cannot see edit and delete buttons', function () {
