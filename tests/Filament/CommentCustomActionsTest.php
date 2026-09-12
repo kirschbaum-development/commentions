@@ -88,3 +88,79 @@ test('custom comment actions are not rendered for non-comment renderables', func
         ),
     ])->assertActionDoesNotExist('logs');
 });
+
+test('hidden custom comment actions are not rendered in the html', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    Config::registerCommentActions(fn (CommentModel $comment) => Action::make('deleteFiles')
+        ->label('Delete attached files')
+        ->visible(false));
+
+    livewire(CommentComponent::class, ['comment' => $comment])
+        ->assertActionHidden('deleteFiles')
+        ->assertDontSee('Delete attached files');
+});
+
+test('custom comment action visibility is evaluated against the comment', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    Config::registerCommentActions(fn (CommentModel $comment) => Action::make('deleteFiles')
+        ->label('Delete attached files')
+        ->visible(fn (): bool => $comment->attachments()->exists()));
+
+    livewire(CommentComponent::class, ['comment' => $comment])
+        ->assertActionHidden('deleteFiles')
+        ->assertDontSee('Delete attached files');
+});
+
+test('visible custom comment actions are rendered in the html', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    Config::registerCommentActions(fn (CommentModel $comment) => Action::make('deleteFiles')
+        ->label('Delete attached files')
+        ->visible(true));
+
+    livewire(CommentComponent::class, ['comment' => $comment])
+        ->assertActionVisible('deleteFiles')
+        ->assertSee('Delete attached files');
+});
+
+test('custom comment actions default to extra small size', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    Config::registerCommentActions(fn (CommentModel $comment) => Action::make('logs'));
+
+    $component = livewire(CommentComponent::class, ['comment' => $comment]);
+
+    expect($component->instance()->getAction('logs')->getSize())->toBe('xs');
+});
+
+test('custom comment actions can override the default size', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($user)->commentable($post)->create();
+
+    Config::registerCommentActions(fn (CommentModel $comment) => Action::make('logs')->size('sm'));
+
+    $component = livewire(CommentComponent::class, ['comment' => $comment]);
+
+    expect($component->instance()->getAction('logs')->getSize())->toBe('sm');
+});

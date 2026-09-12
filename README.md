@@ -575,7 +575,7 @@ Any class exposing a `get(Model|Authenticatable $user): string` method works.
 
 Add additional actions next to edit/delete:
 
-```bash
+```php
 use Kirschbaum\Commentions\Config;
 use Filament\Actions\Action;
 
@@ -585,6 +585,8 @@ Config::registerCommentActions(fn ($comment) => Action::make('activityLogs')
     ->modalContent(/* ... */)
 );
 ```
+
+Custom actions default to `size('xs')` so they match the built-in edit/delete buttons. Override with `->size()` if needed. Use `visible()` / `hidden()` to show or hide an action; hidden actions are not rendered.
 
 #### Configuring Comment Ratings
 

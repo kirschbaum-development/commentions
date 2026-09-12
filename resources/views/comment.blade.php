@@ -44,11 +44,10 @@
 
             @if (! $this->isReadonly() && $comment->isComment())
                 <div class="comm:flex comm:gap-x-1">
-                    {{ $this->editAction }}
-                    {{ $this->deleteAction }}
-
-                    @foreach ($this->getCustomActions() as $commentAction)
-                        {{ $commentAction }}
+                    @foreach ([$this->editAction, $this->deleteAction, ...$this->getCustomActions()] as $commentAction)
+                        @if ($commentAction->isVisible())
+                            {{ $commentAction }}
+                        @endif
                     @endforeach
                 </div>
             @endif
