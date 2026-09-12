@@ -33,6 +33,26 @@ test('can render a comment', function () {
         ->assertActionVisible('delete'); // Author should see a delete action
 });
 
+test('can render a comment whose author was deleted', function () {
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $author = User::factory()->create();
+    $post = Post::factory()->create();
+    $comment = CommentModel::factory()->author($author)->commentable($post)->create([
+        'body' => 'Orphaned comment',
+    ]);
+
+    $author->delete();
+    $comment->refresh();
+
+    livewire(CommentComponent::class, [
+        'comment' => $comment,
+    ])
+        ->assertSee('Orphaned comment')
+        ->assertSee(__('commentions::comments.deleted_user'));
+});
+
 test('other users cannot see edit and delete buttons by default', function () {
     $user = User::factory()->create();
     actingAs($user);

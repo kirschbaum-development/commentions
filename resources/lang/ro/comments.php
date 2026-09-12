@@ -7,6 +7,7 @@ return [
     'no_comments_yet' => 'Niciun comentariu încă.',
 
     'user_avatar_alt' => 'Avatar',
+    'deleted_user' => 'Utilizator șters',
 
     'commented_at' => 'Adăugat la :datetime',
     'edited_at' => 'Editat la :datetime',

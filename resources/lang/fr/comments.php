@@ -7,6 +7,7 @@ return [
     'no_comments_yet' => 'Aucun commentaire pour le moment.',
 
     'user_avatar_alt' => 'Avatar de l\'utilisateur',
+    'deleted_user' => 'Utilisateur supprimé',
 
     'commented_at' => 'Commenté le :datetime',
     'edited_at' => 'Edité le :datetime',

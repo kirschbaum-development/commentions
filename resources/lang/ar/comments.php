@@ -7,6 +7,7 @@ return [
     'no_comments_yet' => 'لا توجد تعليقات .',
 
     'user_avatar_alt' => 'صورة المستخدم ',
+    'deleted_user' => 'مستخدم محذوف',
 
     'commented_at' => 'علق في :datetime',
     'edited_at' => 'تم التعديل في :datetime',
