@@ -892,6 +892,23 @@ Infolists\Components\Section::make('Comments')
     ]),
 ```
 
+### Refreshing comments
+
+To reload the comments list immediately (for example after saving the record, so custom `getComments()` items such as activity-log entries appear without waiting for polling), dispatch the `commentions:refresh` Livewire event:
+
+```php
+protected function afterSave(): void
+{
+    $this->dispatch('commentions:refresh');
+}
+```
+
+Or from JavaScript:
+
+```js
+Livewire.dispatch('commentions:refresh')
+```
+
 ### Rendering non-Comments in the list
 
 Sometimes you might want to render non-Comments in the list of comments. For example, you might want to render when the status of a project is changed. For this, you can override the `getComments` method in your model, and return instances of the `Kirschbaum\Commentions\RenderableComment` data object.

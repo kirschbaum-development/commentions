@@ -161,6 +161,31 @@ test('CommentList can render both Comment and RenderableComment items', function
         ->assertSee('System message');
 });
 
+test('CommentList reloads comments when commentions:refresh is dispatched', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    /** @var Post $post */
+    $post = Post::factory()->create();
+
+    CommentModel::factory()->author($user)->commentable($post)->create([
+        'body' => 'Existing comment',
+    ]);
+
+    $component = livewire(CommentList::class, [
+        'record' => $post,
+        'paginate' => false,
+    ])->assertSee('Existing comment');
+
+    CommentModel::factory()->author($user)->commentable($post)->create([
+        'body' => 'Comment added after render',
+    ]);
+
+    $component
+        ->assertDontSee('Comment added after render')
+        ->dispatch('commentions:refresh')
+        ->assertSee('Comment added after render');
+});
+
 test('CommentList renders Comment and RenderableComment sharing an id without key collision', function () {
     /** @var User $user */
     $user = User::factory()->create();
