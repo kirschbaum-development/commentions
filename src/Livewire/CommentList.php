@@ -45,6 +45,7 @@ class CommentList extends Component
     #[On('comment:saved')]
     #[On('comment:updated')]
     #[On('comment:deleted')]
+    #[On('commentions:refresh')]
     public function reloadComments(): void
     {
         unset($this->comments);

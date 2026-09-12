@@ -45,6 +45,20 @@ test('can create a comment', function () {
     });
 });
 
+test('Comments forwards commentions:refresh so the list reloads', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+
+    livewire(Comments::class, [
+        'record' => $post,
+    ])
+        ->dispatch('commentions:refresh')
+        ->assertDispatched('comment:saved');
+});
+
 test('comment creation requires body', function () {
     /** @var User $user */
     $user = User::factory()->create();

@@ -98,6 +98,12 @@ class Comments extends Component
         $this->dispatch('comment:saved');
     }
 
+    #[On('commentions:refresh')]
+    public function refreshComments(): void
+    {
+        $this->dispatch('comment:saved');
+    }
+
     public function render()
     {
         return view('commentions::comments');
