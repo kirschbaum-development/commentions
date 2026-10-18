@@ -639,6 +639,9 @@ Enable attachments globally in `config/commentions.php` (or via the `COMMENTIONS
         // Maximum number of files per comment.
         'max_files' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_FILES', 5),
 
+        // Lifetime, in minutes, of signed URLs for attachments on a private disk.
+        'url_expiration' => (int) env('COMMENTIONS_ATTACHMENTS_URL_EXPIRATION', 30),
+
         // Accepted MIME types, validated against the file's actual contents.
         'accepted_mime_types' => [
             'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf',
@@ -646,6 +649,19 @@ Enable attachments globally in `config/commentions.php` (or via the `COMMENTIONS
         ],
     ],
 ```
+
+##### Storing attachments privately
+
+Any disk not configured with `'visibility' => 'public'` is treated as private, and its attachments are linked through a temporary signed URL (`Storage::temporaryUrl()`) that expires after `url_expiration` minutes. This works with the default Laravel 11+ `local` disk (which has `'serve' => true`) and with private S3 buckets:
+
+```env
+COMMENTIONS_ATTACHMENTS_DISK=local
+```
+
+The disk must support temporary URLs. If it does not (for example a `local` disk without `'serve' => true`), a plain URL is used instead.
+
+> [!NOTE]
+> A signed URL keeps files off a public, guessable path, but it is not tied to a user: anyone holding the link can open the file until it expires.
 
 You can also toggle attachments per component instead of globally, which overrides the config value:
 

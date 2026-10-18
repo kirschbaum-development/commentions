@@ -145,6 +145,10 @@ return [
         // Maximum number of files per comment.
         'max_files' => (int) env('COMMENTIONS_ATTACHMENTS_MAX_FILES', 5),
 
+        // Lifetime, in minutes, of the signed URLs generated for attachments
+        // stored on a private disk (any disk not configured as public).
+        'url_expiration' => (int) env('COMMENTIONS_ATTACHMENTS_URL_EXPIRATION', 30),
+
         // Accepted MIME types, validated against the file's actual contents.
         // The defaults below cover common images and documents. Setting this
         // to an empty array allows ANY file type — avoid this on a public
