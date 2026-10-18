@@ -51,6 +51,10 @@ class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
+
+        // Serve the private `local` disk through signed URLs like the
+        // Laravel 11+ skeleton does; older testbench skeletons omit it.
+        $app['config']->set('filesystems.disks.local.serve', true);
     }
 
     protected function setUpDatabase()
