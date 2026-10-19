@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -12,6 +13,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\freezeTime;
+use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
@@ -154,4 +157,68 @@ test('CommentsEntry enableAttachments toggles attachment support', function () {
 test('CommentAttachment identifies image attachments', function () {
     expect((new CommentAttachment(['mime_type' => 'image/png']))->isImage())->toBeTrue()
         ->and((new CommentAttachment(['mime_type' => 'application/pdf']))->isImage())->toBeFalse();
+});
+
+function storedAttachmentOn(string $disk): CommentAttachment
+{
+    Storage::disk($disk)->put('commentions-attachments/report.txt', 'quarterly numbers');
+
+    return Comment::factory()
+        ->author(User::factory()->create())
+        ->commentable(Post::factory()->create())
+        ->create()
+        ->attachments()
+        ->create([
+            'disk' => $disk,
+            'path' => 'commentions-attachments/report.txt',
+            'filename' => 'report.txt',
+            'mime_type' => 'text/plain',
+            'size' => 17,
+        ]);
+}
+
+// Points the private `local` disk (served through Laravel's signed
+// storage route) at an isolated directory, without faking it, so the
+// real route can be hit.
+function usePrivateLocalDisk(array $config = []): void
+{
+    $root = storage_path('framework/testing/disks/commentions-private');
+
+    (new Filesystem())->cleanDirectory($root);
+
+    config(['filesystems.disks.local' => array_merge(config('filesystems.disks.local'), ['root' => $root], $config)]);
+
+    Storage::forgetDisk('local');
+}
+
+test('attachments on a private disk get a signed url that can be opened', function () {
+    usePrivateLocalDisk();
+
+    $attachment = storedAttachmentOn('local');
+
+    get($attachment->getUrl())->assertOk();
+});
+
+test('signed attachment urls expire after the configured number of minutes', function () {
+    config(['commentions.attachments.url_expiration' => 5]);
+    usePrivateLocalDisk();
+    freezeTime();
+
+    parse_str((string) parse_url(storedAttachmentOn('local')->getUrl(), PHP_URL_QUERY), $query);
+
+    expect((int) $query['expires'])->toBe(now()->addMinutes(5)->getTimestamp());
+});
+
+test('attachments on a public disk keep a plain url', function () {
+    $attachment = storedAttachmentOn('public');
+
+    expect($attachment->getUrl())->toBe(Storage::disk('public')->url($attachment->path));
+});
+
+test('attachments on a disk that cannot sign urls fall back to a plain url', function () {
+    usePrivateLocalDisk(['serve' => false]);
+
+    $attachment = storedAttachmentOn('local');
+
+    expect($attachment->getUrl())->toBe(Storage::disk('local')->url($attachment->path));
 });

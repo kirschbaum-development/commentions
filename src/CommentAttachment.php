@@ -42,7 +42,20 @@ class CommentAttachment extends Model
 
     public function getUrl(): string
     {
-        return Storage::disk($this->disk)->url($this->path);
+        $disk = Storage::disk($this->disk);
+
+        // Files on a private disk are only reachable through a signed URL.
+        // Missing visibility means private, matching Laravel's own file serving.
+        $isPublic = config("filesystems.disks.{$this->disk}.visibility") === 'public';
+
+        if (! $isPublic && $disk->providesTemporaryUrls()) {
+            return $disk->temporaryUrl(
+                $this->path,
+                now()->addMinutes((int) config('commentions.attachments.url_expiration', 30))
+            );
+        }
+
+        return $disk->url($this->path);
     }
 
     public function isImage(): bool
