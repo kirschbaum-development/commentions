@@ -13,6 +13,7 @@ use Tests\Models\User;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertDatabaseMissing;
+use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
 test('can create a comment', function () {
@@ -184,8 +185,8 @@ test('the stylesheet and script are loaded only on the pages that show comments'
         ['post' => $post],
     ));
 
-    $without = $this->get('/without-comments');
-    $with = $this->get('/with-comments');
+    $without = get('/without-comments');
+    $with = get('/with-comments');
 
     foreach ($files as $file) {
         $without->assertDontSee($file, false);
