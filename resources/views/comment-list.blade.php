@@ -1,3 +1,4 @@
+@include('commentions::assets')
 <div @if ($pollingInterval) wire:poll.{{ $pollingInterval }} @endif>
     @if ($this->comments->isEmpty())
         <div class="comm:flex comm:items-center comm:justify-center comm:p-6 comm:text-center comm:rounded-lg comm:border comm:border-dashed comm:border-gray-300 comm:dark:border-gray-700">

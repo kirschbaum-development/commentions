@@ -1,4 +1,5 @@
 @use('\Kirschbaum\Commentions\Config')
+@include('commentions::assets')
 @php
     $toolbarButtons = $this->getToolbarButtons();
     $hasToolBar = is_array($toolbarButtons);
