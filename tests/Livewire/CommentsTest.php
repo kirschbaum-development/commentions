@@ -1,6 +1,9 @@
 <?php
 
+use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Events\CommentWasCreatedEvent;
 use Kirschbaum\Commentions\Livewire\Comments;
@@ -157,3 +160,35 @@ test('showSidebar defaults to config when not provided', function (bool $showSid
     ['Show sidebar' => true],
     ['Hide sidebar' => false],
 );
+
+test('the stylesheet and script are loaded only on the pages that show comments', function () {
+    /** @var User $user */
+    $user = User::factory()->create();
+    actingAs($user);
+
+    $post = Post::factory()->create();
+    $package = 'kirschbaum-development/commentions';
+
+    // Filament prints every registered asset on every page of every panel unless it is loaded on request.
+    expect(collect([...FilamentAsset::getStyles([$package]), ...FilamentAsset::getScripts([$package])])->every->isLoadedOnRequest())
+        ->toBeTrue();
+
+    $files = [
+        FilamentAsset::getStyleHref('commentions', $package),
+        FilamentAsset::getScriptSrc('commentions-scripts', $package),
+    ];
+
+    Route::get('/without-comments', fn () => Blade::render('<html><head></head><body></body></html>'));
+    Route::get('/with-comments', fn () => Blade::render(
+        '<html><head></head><body>@livewire(\\Kirschbaum\\Commentions\\Livewire\\Comments::class, [\'record\' => $post])</body></html>',
+        ['post' => $post],
+    ));
+
+    $without = $this->get('/without-comments');
+    $with = $this->get('/with-comments');
+
+    foreach ($files as $file) {
+        $without->assertDontSee($file, false);
+        $with->assertSee($file, false);
+    }
+});

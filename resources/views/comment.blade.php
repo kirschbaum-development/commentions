@@ -1,3 +1,4 @@
+@include('commentions::assets')
 @php
     $toolbarButtons = $this->getToolbarButtons();
     $hasToolBar = is_array($toolbarButtons);
